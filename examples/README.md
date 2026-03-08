@@ -1,10 +1,10 @@
 # Examples
 
-The examples in this template stay intentionally small.
+The examples in this repository are intentionally lightweight.
 
-- `basic_usage.py` prints the default project blueprint summary.
+- `basic_usage.py` imports `design_research` and prints top-level discovery info.
 
-Run it locally with:
+Run locally with:
 
 ```bash
 PYTHONPATH=src python examples/basic_usage.py

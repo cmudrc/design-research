@@ -1,20 +1,25 @@
 Dependencies And Extras
 =======================
 
-The base install intentionally has no required runtime dependencies.
+The base install depends on the four component libraries:
 
-The `dev` extra installs the local contributor toolchain:
+- ``design-research-problems``
+- ``design-research-agents``
+- ``design-research-experiments``
+- ``design-research-analysis``
 
-- `build`
-- `mypy`
-- `pre-commit`
-- `pytest`
-- `pytest-cov`
-- `ruff`
-- `sphinx`
-- `sphinx-rtd-theme`
-- `twine`
-- `uv`
+The ``dev`` extra installs the local contributor toolchain:
+
+- ``build``
+- ``mypy``
+- ``pre-commit``
+- ``pytest``
+- ``pytest-cov``
+- ``ruff``
+- ``sphinx``
+- ``sphinx-rtd-theme``
+- ``twine``
+- ``uv``
 
 Install it with:
 

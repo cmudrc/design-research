@@ -14,3 +14,36 @@
   order: -1;
   margin: 0;
 }
+
+/* Use a light brand-neutral accent so the full-color logo stands out. */
+.wy-side-nav-search,
+.wy-nav-top {
+  background: #f8f8f6;
+}
+
+.wy-side-nav-search > a.icon.icon-home,
+.wy-side-nav-search > a.icon.icon-home:visited,
+.wy-side-nav-search > a.icon.icon-home:hover {
+  color: #2b2b2b;
+}
+
+.wy-side-nav-search > div.version {
+  color: #4a4a4a;
+}
+
+.wy-menu-vertical header,
+.wy-menu-vertical p.caption {
+  color: #f3f3f0;
+}
+
+.wy-menu-vertical a:hover {
+  background-color: #f2f2ef;
+  color: #222;
+}
+
+.wy-menu-vertical li.current > a,
+.wy-menu-vertical li.toctree-l1.current > a,
+.wy-menu-vertical li.toctree-l2.current > a {
+  background: #f7f7f4;
+  color: #111;
+}

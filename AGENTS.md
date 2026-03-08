@@ -2,10 +2,10 @@
 
 ## Purpose
 
-This repository is a reusable Python 3.12+ package template for small,
-well-tested libraries. Keep changes focused, keep the public API intentional,
-and prefer standard-library solutions unless a third-party dependency clearly
-improves the maintenance story.
+This repository hosts `design-research`, a thin Python 3.12+ umbrella package
+for the CMU Design Research Collective ecosystem. Keep changes focused,
+keep the public API intentional, and avoid duplicating logic from sibling
+component libraries.
 
 ## Setup
 
@@ -39,20 +39,23 @@ merging.
 ## Public Vs Private Boundaries
 
 - The supported public surface is whatever is re-exported from
-  `src/python_template/__init__.py`.
-- Prefer adding new public behavior to stable top-level modules before creating
-  deeper internal package trees.
-- If you add internal helper modules later, prefix them with `_` and keep them
-  out of the top-level exports unless there is a deliberate API decision.
+  `src/design_research/__init__.py` and the wrapper submodules:
+  `design_research.problems`, `design_research.agents`,
+  `design_research.experiments`, and `design_research.analysis`.
+- Keep wrapper modules thin and explicit; prefer pass-through imports and curated
+  `__all__` lists.
+- If internal helper modules are added, prefix them with `_` and keep them out
+  of top-level exports unless there is a deliberate API decision.
 
 ## Behavioral Guardrails
 
 - Keep tests deterministic and offline by default.
 - Update tests, docs, and examples alongside behavior changes.
 - Avoid broad dependency growth in the base install.
-- Keep this template easy to fork: simple defaults beat clever abstractions.
+- Treat this package as an umbrella wrapper; do not duplicate implementation
+  logic from sibling repositories.
 
 ## Keep This File Up To Date
 
-Update this file whenever the contributor workflow changes, especially when
-setup commands, validation commands, or the public API expectations change.
+Update this file whenever contributor workflow changes, especially setup
+commands, validation commands, or public API expectations.

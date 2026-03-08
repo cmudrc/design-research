@@ -1,14 +1,14 @@
-"""Minimal example usage for the template package."""
+"""Minimal example usage for the umbrella package."""
 
 from __future__ import annotations
 
-from python_template import build_default_blueprint, describe_project
+import design_research as dr
 
 
 def main() -> None:
-    """Print the default project summary."""
-    blueprint = build_default_blueprint("python-template")
-    print(describe_project(blueprint))
+    """Print top-level discovery information for the ecosystem wrapper."""
+    print("Submodules:", ", ".join(name for name in dr.__all__ if name != "__version__"))
+    print("Version:", dr.__version__)
 
 
 if __name__ == "__main__":

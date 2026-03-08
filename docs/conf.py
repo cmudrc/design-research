@@ -1,4 +1,4 @@
-"""Sphinx configuration for the template documentation."""
+"""Sphinx configuration for design-research documentation."""
 
 from __future__ import annotations
 
@@ -14,9 +14,9 @@ autoclass_content = "both"
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
-project = "python-template"
-copyright = "2026, python-template contributors"
-author = "python-template contributors"
+project = "design-research"
+copyright = "2026, design-research contributors"
+author = "design-research contributors"
 
 extensions = [
     "sphinx.ext.autodoc",
@@ -50,6 +50,7 @@ else:
 html_static_path = ["_static"]
 html_css_files = ["custom.css"]
 html_logo = "drc.png"
+html_favicon = "_static/favicon.png"
 html_title = project
 html_theme_options = {"logo_only": False} if html_theme == "sphinx_rtd_theme" else {}
 

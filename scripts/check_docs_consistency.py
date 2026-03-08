@@ -53,12 +53,14 @@ def validate_docs_tree() -> list[str]:
         return errors
 
     for entry in extract_toctree_entries(INDEX_PATH):
+        if "<" in entry and ">" in entry:
+            continue
         if not (DOCS_DIR / f"{entry}.rst").exists():
             errors.append(f"docs/index.rst references missing document: {entry}.rst")
 
     if not API_PATH.exists():
         errors.append("docs/api.rst is missing.")
-    elif "python_template" not in API_PATH.read_text(encoding="utf-8"):
+    elif "design_research" not in API_PATH.read_text(encoding="utf-8"):
         errors.append("docs/api.rst does not reference the package module.")
     return errors
 
