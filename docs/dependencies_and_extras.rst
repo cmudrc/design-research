@@ -26,5 +26,5 @@ Install it with:
 
    pip install -e ".[dev]"
 
-Maintainer workflows target Python ``3.12.12`` from ``.python-version``.
+Maintainer workflows target Python ``3.12`` from ``.python-version``.
 Release packaging validation is exposed via ``make release-check``.
