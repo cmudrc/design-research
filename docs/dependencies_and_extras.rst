@@ -19,10 +19,12 @@ The ``dev`` extra installs the local contributor toolchain:
 - ``sphinx``
 - ``sphinx-rtd-theme``
 - ``twine``
-- ``uv``
 
 Install it with:
 
 .. code-block:: bash
 
    pip install -e ".[dev]"
+
+Maintainer workflows target Python ``3.12.12`` from ``.python-version``.
+Release packaging validation is exposed via ``make release-check``.

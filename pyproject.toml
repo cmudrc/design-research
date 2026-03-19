@@ -43,7 +43,6 @@ dev = [
   "sphinx-copybutton>=0.5,<1",
   "sphinx-rtd-theme>=2.0,<4",
   "twine>=5.1,<7",
-  "uv>=0.6,<1",
 ]
 
 [project.urls]
