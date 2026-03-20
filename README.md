@@ -1,5 +1,8 @@
 # design-research
 [![CI](https://github.com/cmudrc/design-research/actions/workflows/ci.yml/badge.svg)](https://github.com/cmudrc/design-research/actions/workflows/ci.yml)
+[![Coverage](https://raw.githubusercontent.com/cmudrc/design-research/main/.github/badges/coverage.svg)](https://github.com/cmudrc/design-research/actions/workflows/ci.yml)
+[![Examples Passing](https://raw.githubusercontent.com/cmudrc/design-research/main/.github/badges/examples-passing.svg)](https://github.com/cmudrc/design-research/actions/workflows/examples.yml)
+[![Public API In Examples](https://raw.githubusercontent.com/cmudrc/design-research/main/.github/badges/examples-api-coverage.svg)](https://github.com/cmudrc/design-research/actions/workflows/examples.yml)
 [![Docs](https://github.com/cmudrc/design-research/actions/workflows/docs-pages.yml/badge.svg)](https://github.com/cmudrc/design-research/actions/workflows/docs-pages.yml)
 
 <!-- release-callout:start -->
@@ -72,8 +75,8 @@ study design through execution and interpretation.
 
 ## Philosophy
 
-The full ecosystem philosophy is documented in
-[`docs/philosophy.rst`](docs/philosophy.rst) and in the published docs site.
+The full ecosystem philosophy is documented in the
+[published philosophy page](https://cmudrc.github.io/design-research/philosophy.html).
 
 ## Docs
 

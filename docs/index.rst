@@ -11,6 +11,26 @@ It is intentionally lightweight. The value here is not hidden implementation,
 but a coherent starting point for understanding how the package family fits
 together and when to drop into the more specialized repos directly.
 
+.. raw:: html
+
+   <div class="drc-badge-row">
+     <a class="drc-badge-link" href="https://github.com/cmudrc/design-research/actions/workflows/ci.yml">
+       <img alt="CI" src="https://github.com/cmudrc/design-research/actions/workflows/ci.yml/badge.svg">
+     </a>
+     <a class="drc-badge-link" href="https://github.com/cmudrc/design-research/actions/workflows/ci.yml">
+       <img alt="Coverage" src="https://raw.githubusercontent.com/cmudrc/design-research/main/.github/badges/coverage.svg">
+     </a>
+     <a class="drc-badge-link" href="https://github.com/cmudrc/design-research/actions/workflows/examples.yml">
+       <img alt="Examples Passing" src="https://raw.githubusercontent.com/cmudrc/design-research/main/.github/badges/examples-passing.svg">
+     </a>
+     <a class="drc-badge-link" href="https://github.com/cmudrc/design-research/actions/workflows/examples.yml">
+       <img alt="Public API In Examples" src="https://raw.githubusercontent.com/cmudrc/design-research/main/.github/badges/examples-api-coverage.svg">
+     </a>
+     <a class="drc-badge-link" href="https://github.com/cmudrc/design-research/actions/workflows/docs-pages.yml">
+       <img alt="Docs" src="https://github.com/cmudrc/design-research/actions/workflows/docs-pages.yml/badge.svg">
+     </a>
+   </div>
+
 .. note::
 
    **Start with** :doc:`quickstart` to install the umbrella package, confirm
