@@ -1,32 +1,42 @@
 design-research
 ===============
 
-The canonical umbrella package for the CMU Design Research Collective ecosystem.
+The umbrella entry point for the CMU Design Research Collective ecosystem.
 
-What This Library Does
-----------------------
+``design-research`` provides a thin, stable top-level namespace over the
+sibling libraries. It keeps implementation in specialized packages while
+making the ecosystem easier to discover, teach, and cite from one place.
 
-``design-research`` provides a thin, stable entry point over the ecosystem's
-component libraries. It keeps implementation in specialized packages while
-improving top-level discoverability for research workflows, tutorials, and
-papers.
+It is intentionally lightweight. The value here is not hidden implementation,
+but a coherent starting point for understanding how the package family fits
+together and when to drop into the more specialized repos directly.
 
-Highlights
-----------
+.. note::
 
-- Unified top-level namespace
-- Thin wrapper design
-- Curated stable re-exports
-- Ecosystem-level framing
-- Compatibility-focused packaging
+   **Start with** :doc:`quickstart` to install the umbrella package, confirm
+   the top-level imports, and orient yourself to when the combined namespace is
+   the right fit versus going straight to a sibling library.
 
-Typical Workflow
-----------------
+Guides
+------
 
-1. Import ``design_research`` as the canonical ecosystem entry point.
-2. Discover domain-specific capabilities via ``problems``, ``agents``, ``experiments``, and ``analysis``.
-3. Compose studies across sibling libraries without rewriting underlying logic.
-4. Keep package-specific behavior in component repos while using one coherent umbrella namespace.
+Use these pages to understand the umbrella package, the shared namespace, and
+the recommended path through the ecosystem.
+
+- :doc:`quickstart`
+- :doc:`installation`
+- :doc:`concepts`
+- :doc:`typical_workflow`
+- :doc:`philosophy`
+
+Reference
+---------
+
+Look up the stable re-export surface and the extras that shape development and
+documentation workflows.
+
+- :doc:`api`
+- :doc:`dependencies_and_extras`
 
 Integration With The Ecosystem
 ------------------------------
@@ -56,29 +66,16 @@ Start Here
 - :doc:`typical_workflow`
 - :doc:`api`
 - :doc:`philosophy`
+- `CONTRIBUTING.md <https://github.com/cmudrc/design-research/blob/main/CONTRIBUTING.md>`_
 
 .. toctree::
    :maxdepth: 2
-   :caption: Documentation
    :hidden:
 
    quickstart
    installation
    concepts
    typical_workflow
-   api
-
-.. toctree::
-   :maxdepth: 2
-   :caption: Development
-   :hidden:
-
-   dependencies_and_extras
-   Contributing <https://github.com/cmudrc/design-research/blob/main/CONTRIBUTING.md>
-
-.. toctree::
-   :maxdepth: 2
-   :caption: Additional Guides
-   :hidden:
-
    philosophy
+   api
+   dependencies_and_extras

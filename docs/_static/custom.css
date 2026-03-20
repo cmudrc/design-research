@@ -1,49 +1,33 @@
-.wy-side-nav-search > a.icon.icon-home {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.5rem;
-  text-align: center;
+:root {
+  --drc-docs-accent: #57b7ba;
 }
 
-.wy-side-nav-search > a.icon.icon-home::before {
-  display: none;
+html[data-theme="light"] {
+  --pst-color-primary: var(--drc-docs-accent);
+  --pst-color-accent: var(--drc-docs-accent);
+  --pst-color-link: #318f94;
+  --pst-color-link-hover: #226f74;
 }
 
-.wy-side-nav-search > a.icon.icon-home img.logo {
-  order: -1;
-  margin: 0;
+html[data-theme="dark"] {
+  --pst-color-primary: #7ad8db;
+  --pst-color-accent: #7ad8db;
+  --pst-color-link: #7ad8db;
+  --pst-color-link-hover: #a5e9eb;
+  --pst-color-secondary: #a5afb8;
+  --pst-color-background: #111318;
+  --pst-color-on-background: #171b21;
+  --pst-color-surface: #1d222a;
+  --pst-color-border: #353d48;
+  --pst-color-text-base: #e6ebef;
+  --pst-color-text-muted: #acb5be;
 }
 
-/* Use a light brand-neutral accent so the full-color logo stands out. */
-.wy-side-nav-search,
-.wy-nav-top {
-  background: #f8f8f6;
+.bd-header {
+  border-bottom: 1px solid
+    color-mix(in srgb, var(--drc-docs-accent) 30%, var(--pst-color-border));
 }
 
-.wy-side-nav-search > a.icon.icon-home,
-.wy-side-nav-search > a.icon.icon-home:visited,
-.wy-side-nav-search > a.icon.icon-home:hover {
-  color: #2b2b2b;
-}
-
-.wy-side-nav-search > div.version {
-  color: #4a4a4a;
-}
-
-.wy-menu-vertical header,
-.wy-menu-vertical p.caption {
-  color: #f3f3f0;
-}
-
-.wy-menu-vertical a:hover {
-  background-color: #f2f2ef;
-  color: #222;
-}
-
-.wy-menu-vertical li.current > a,
-.wy-menu-vertical li.toctree-l1.current > a,
-.wy-menu-vertical li.toctree-l2.current > a {
-  background: #f7f7f4;
-  color: #111;
+.navbar-brand img {
+  max-height: 2.7rem;
 }
