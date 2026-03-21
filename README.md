@@ -15,7 +15,7 @@
 `design-research` is the umbrella entry-point package in the cmudrc design
 research ecosystem.
 
-It provides a thin, curated, submodule-first namespace over the ecosystem's
+It provides a thin, submodule-first namespace over the ecosystem's
 specialized component libraries.
 
 ## Overview
@@ -23,7 +23,7 @@ specialized component libraries.
 This package focuses on discoverability and coherence rather than reimplementation:
 
 - Submodule-first top-level API: `problems`, `agents`, `experiments`, `analysis`
-- Curated re-exports of stable, user-facing APIs within the wrapper submodules
+- Wrapper submodules that mirror each sibling library's public API by default
 - Shared ecosystem framing and philosophy in one canonical package
 - Lightweight wrapper design that preserves modular versioning boundaries
 

@@ -32,9 +32,15 @@ def test_wrapper_dir_exposes_lazy_exports() -> None:
     assert "MultiStepAgent" in dir(agents)
     assert "LlamaCppServerLLMClient" in dir(agents)
     assert "ModelStep" in dir(agents)
+    assert "CallableToolConfig" in dir(agents)
+    assert "RunBudget" in dir(experiments)
+    assert "build_prompt_framing_study" in dir(experiments)
+    assert "render_significance_brief" in dir(experiments)
     assert "validate_unified_table" in dir(analysis)
+    assert "permutation_test" in dir(analysis)
     assert "run_study" in dir(experiments)
     assert "list_problems" in dir(problems)
+    assert "Citation" in dir(problems)
 
 
 def test_version_module_success_path(monkeypatch: pytest.MonkeyPatch) -> None:

@@ -42,8 +42,9 @@ merging.
   `src/design_research/__init__.py` and the wrapper submodules:
   `design_research.problems`, `design_research.agents`,
   `design_research.experiments`, and `design_research.analysis`.
-- Keep wrapper modules thin and explicit; prefer pass-through imports and curated
-  `__all__` lists.
+- Keep wrapper modules thin and trust the sibling libraries to define their own
+  public surfaces. Wrapper submodules should mirror each sibling package's
+  `__all__` by default rather than maintaining local allowlists.
 - If internal helper modules are added, prefix them with `_` and keep them out
   of top-level exports unless there is a deliberate API decision.
 

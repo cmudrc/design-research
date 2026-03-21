@@ -5,6 +5,27 @@ from __future__ import annotations
 from importlib import import_module
 
 
+def public_module_exports(module_path: str) -> dict[str, str]:
+    """Build lazy-export targets from a sibling module's public API.
+
+    Args:
+        module_path: Import path for the sibling module.
+
+    Returns:
+        Mapping of public name to ``module:attribute`` target.
+    """
+    module = import_module(module_path)
+    public_names = getattr(module, "__all__", None)
+    if public_names is None:
+        public_names = [name for name in dir(module) if not name.startswith("_")]
+        return {
+            str(name): f"{module_path}:{name}"
+            for name in public_names
+            if isinstance(name, str) and not name.startswith("_")
+        }
+    return {str(name): f"{module_path}:{name}" for name in public_names if isinstance(name, str)}
+
+
 def resolve_lazy_export(module_name: str, exports: dict[str, str], name: str) -> object:
     """Resolve one deferred export and cache it on the module.
 
