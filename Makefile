@@ -10,7 +10,7 @@ COVERAGE_MIN ?= 90
 
 .PHONY: help check-python dev install-dev \
 	lint fmt fmt-check type test qa coverage docstrings-check \
-	run-example examples-test examples-metrics \
+	run-example examples-test examples-coverage examples-metrics \
 	docs docs-build docs-check docs-linkcheck \
 	release-check ci clean
 
@@ -21,6 +21,7 @@ help:
 	@echo "  qa               Run lint, fmt-check, type, and test."
 	@echo "  run-example      Execute the live llama.cpp end-to-end walkthrough example."
 	@echo "  examples-test    Execute all bundled example scripts."
+	@echo "  examples-coverage Check public API coverage across examples."
 	@echo "  examples-metrics Generate example and public-API badge artifacts."
 	@echo "  docs             Build the HTML docs."
 	@echo "  ci               Run the main local CI checks."
@@ -76,6 +77,9 @@ examples-test: check-python
 		PYTHONPATH=src $(PYTHON) "$$script"; \
 	done
 
+examples-coverage: check-python
+	$(PYTHON) scripts/check_example_api_coverage.py --minimum 90
+
 examples-metrics: check-python examples-test
 	$(PYTHON) scripts/generate_examples_metrics.py
 	$(PYTHON) scripts/generate_examples_badges.py
@@ -96,7 +100,7 @@ release-check: check-python
 	$(BUILD)
 	$(TWINE) check dist/*
 
-ci: qa coverage docstrings-check docs-check examples-test release-check
+ci: qa coverage docstrings-check docs-check examples-test examples-coverage release-check
 
 clean:
 	rm -rf .coverage .mypy_cache .pytest_cache .ruff_cache artifacts build dist docs/_build
