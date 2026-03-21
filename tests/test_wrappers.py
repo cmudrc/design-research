@@ -40,6 +40,12 @@ def _install_dependency_stubs() -> dict[str, ModuleType]:
         "MultiStepAgent",
         "Toolbox",
         "Workflow",
+        "ModelStep",
+        "LLMRequest",
+        "LLMMessage",
+        "LlamaCppServerLLMClient",
+        "OpenAIServiceLLMClient",
+        "OllamaLLMClient",
         "CompiledExecution",
         "ModelSelector",
         "Tracer",
@@ -120,6 +126,9 @@ def test_wrapper_re_exports_are_reachable_via_stubs(monkeypatch: Any) -> None:
     assert problems.get_problem()[0] == "get_problem"
     assert problems.list_problems()[0] == "list_problems"
     assert agents.MultiStepAgent.__name__ == "MultiStepAgent"
+    assert agents.LlamaCppServerLLMClient.__name__ == "LlamaCppServerLLMClient"
+    assert agents.ModelStep.__name__ == "ModelStep"
+    assert agents.OpenAIServiceLLMClient.__name__ == "OpenAIServiceLLMClient"
     assert agents.PlanExecutePattern.__name__ == "PlanExecutePattern"
     assert experiments.run_study()[0] == "run_study"
     assert experiments.Study.__name__ == "Study"

@@ -12,12 +12,12 @@ The ``dev`` extra installs the local contributor toolchain:
 
 - ``build``
 - ``mypy``
+- ``pydata-sphinx-theme``
 - ``pre-commit``
 - ``pytest``
 - ``pytest-cov``
 - ``ruff``
 - ``sphinx``
-- ``sphinx-rtd-theme``
 - ``twine``
 
 Install it with:
@@ -27,4 +27,6 @@ Install it with:
    pip install -e ".[dev]"
 
 Maintainer workflows target Python ``3.12`` from ``.python-version``.
+CI enforces a strict 90% total line coverage floor through ``make coverage`` and
+``make ci``.
 Release packaging validation is exposed via ``make release-check``.

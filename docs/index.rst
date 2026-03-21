@@ -3,7 +3,7 @@ design-research
 
 The umbrella entry point for the CMU Design Research Collective ecosystem.
 
-``design-research`` provides a thin, stable top-level namespace over the
+``design-research`` provides a thin, stable, submodule-first namespace over the
 sibling libraries. It keeps implementation in specialized packages while
 making the ecosystem easier to discover, teach, and cite from one place.
 
@@ -33,9 +33,9 @@ together and when to drop into the more specialized repos directly.
 
 .. note::
 
-   **Start with** :doc:`quickstart` to install the umbrella package, confirm
-   the top-level imports, and orient yourself to when the combined namespace is
-   the right fit versus going straight to a sibling library.
+   **Start with** :doc:`compatibility` to choose between the umbrella package
+   and direct sibling installs, then follow :doc:`end_to_end_walkthrough` for
+   the canonical real-agent workflow example built from the umbrella namespace.
 
 Guides
 ------
@@ -43,6 +43,8 @@ Guides
 Use these pages to understand the umbrella package, the shared namespace, and
 the recommended path through the ecosystem.
 
+- :doc:`compatibility`
+- :doc:`end_to_end_walkthrough`
 - :doc:`quickstart`
 - :doc:`installation`
 - :doc:`concepts`
@@ -80,6 +82,8 @@ study design through execution and interpretation.
 Start Here
 ----------
 
+- :doc:`compatibility`
+- :doc:`end_to_end_walkthrough`
 - :doc:`quickstart`
 - :doc:`installation`
 - :doc:`concepts`
@@ -92,6 +96,8 @@ Start Here
    :maxdepth: 2
    :hidden:
 
+   compatibility
+   end_to_end_walkthrough
    quickstart
    installation
    concepts

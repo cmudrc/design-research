@@ -29,7 +29,8 @@ merging.
   - `make docs-check`
   - `make docs`
 - If the example changed:
-  - `make run-example`
+  - `make run-example` (install `llama-cpp-python` first; optionally set `LLAMA_CPP_MODEL` for a specific GGUF file)
+  - `make examples-test` (skips the live walkthrough unless `RUN_LIVE_EXAMPLE=1`)
 - Pre-merge baseline:
   - `make ci`
 - Pre-publish baseline:
@@ -49,6 +50,8 @@ merging.
 ## Behavioral Guardrails
 
 - Keep tests deterministic and offline by default.
+- Let the canonical walkthrough fail fast when the `llama.cpp` runtime is missing rather than silently falling back.
+- Keep total line coverage at or above 90% in CI and local release work.
 - Update tests, docs, and examples alongside behavior changes.
 - Avoid broad dependency growth in the base install.
 - Treat this package as an umbrella wrapper; do not duplicate implementation
@@ -59,6 +62,8 @@ merging.
 - Theme: cartography and wayfinding.
 - Monthly release names are shared across milestone titles, release PR titles,
   and release branches.
+- Milestone due dates should land about one week after the start of the release
+  month so new versions of sibling libraries have time to land first.
   - Milestone title / PR title: `{base name} - {Month YYYY}`
   - Release branch: slugified full title, for example `meridian-map-may-2026`
 - Milestone descriptions must use:
@@ -74,16 +79,16 @@ merging.
 
 | Due date | Base name | Source subject |
 | --- | --- | --- |
-| April 1, 2026 | Atlas Alignment | Atlas |
-| May 1, 2026 | Meridian Map | Meridian |
-| June 1, 2026 | Compass Course | Compass |
-| July 1, 2026 | Legend Line | Map legend |
-| August 1, 2026 | Bearing Bridge | Bearing |
-| September 1, 2026 | Surveyor Signal | Surveying |
-| October 1, 2026 | Cartographer Circuit | Cartography |
-| November 1, 2026 | Wayfinder Weave | Wayfinding |
-| December 1, 2026 | Transit Trace | Transit |
-| January 1, 2027 | North Star Nexus | Pole star |
+| April 8, 2026 | Atlas Alignment | Atlas |
+| May 8, 2026 | Meridian Map | Meridian |
+| June 8, 2026 | Compass Course | Compass |
+| July 8, 2026 | Legend Line | Map legend |
+| August 8, 2026 | Bearing Bridge | Bearing |
+| September 8, 2026 | Surveyor Signal | Surveying |
+| October 8, 2026 | Cartographer Circuit | Cartography |
+| November 8, 2026 | Wayfinder Weave | Wayfinding |
+| December 8, 2026 | Transit Trace | Transit |
+| January 8, 2027 | North Star Nexus | Pole star |
 
 ## Keep This File Up To Date
 

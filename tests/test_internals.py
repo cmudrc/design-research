@@ -30,6 +30,8 @@ def test_wrapper_dir_exposes_lazy_exports() -> None:
     import design_research.problems as problems
 
     assert "MultiStepAgent" in dir(agents)
+    assert "LlamaCppServerLLMClient" in dir(agents)
+    assert "ModelStep" in dir(agents)
     assert "validate_unified_table" in dir(analysis)
     assert "run_study" in dir(experiments)
     assert "list_problems" in dir(problems)

@@ -11,6 +11,12 @@ _EXPORTS: Final[dict[str, str]] = {
     "MultiStepAgent": "design_research_agents:MultiStepAgent",
     "Toolbox": "design_research_agents:Toolbox",
     "Workflow": "design_research_agents:Workflow",
+    "ModelStep": "design_research_agents:ModelStep",
+    "LLMRequest": "design_research_agents:LLMRequest",
+    "LLMMessage": "design_research_agents:LLMMessage",
+    "LlamaCppServerLLMClient": "design_research_agents:LlamaCppServerLLMClient",
+    "OpenAIServiceLLMClient": "design_research_agents:OpenAIServiceLLMClient",
+    "OllamaLLMClient": "design_research_agents:OllamaLLMClient",
     "CompiledExecution": "design_research_agents:CompiledExecution",
     "ModelSelector": "design_research_agents:ModelSelector",
     "Tracer": "design_research_agents:Tracer",
@@ -44,8 +50,14 @@ if TYPE_CHECKING:
     from design_research_agents import CompiledExecution as CompiledExecution
     from design_research_agents import DebatePattern as DebatePattern
     from design_research_agents import DirectLLMCall as DirectLLMCall
+    from design_research_agents import LlamaCppServerLLMClient as LlamaCppServerLLMClient
+    from design_research_agents import LLMMessage as LLMMessage
+    from design_research_agents import LLMRequest as LLMRequest
     from design_research_agents import ModelSelector as ModelSelector
+    from design_research_agents import ModelStep as ModelStep
     from design_research_agents import MultiStepAgent as MultiStepAgent
+    from design_research_agents import OllamaLLMClient as OllamaLLMClient
+    from design_research_agents import OpenAIServiceLLMClient as OpenAIServiceLLMClient
     from design_research_agents import PlanExecutePattern as PlanExecutePattern
     from design_research_agents import ProposeCriticPattern as ProposeCriticPattern
     from design_research_agents import RAGPattern as RAGPattern
