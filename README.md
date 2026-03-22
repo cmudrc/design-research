@@ -5,7 +5,7 @@
 <!-- release-callout:start -->
 > [!IMPORTANT]
 > Current monthly release: [Atlas Alignment - April 2026](https://github.com/cmudrc/design-research/milestone/1)  
-> Due: April 1, 2026  
+> Due: April 8, 2026  
 > Tracks: March 2026 work
 <!-- release-callout:end -->
 
