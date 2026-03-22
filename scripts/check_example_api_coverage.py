@@ -14,8 +14,16 @@ PUBLIC_API_INIT = REPO_ROOT / "src" / "design_research" / "__init__.py"
 
 def _discover_examples() -> list[Path]:
     """Return Python scripts and notebooks under ``examples``."""
-    python_examples = sorted(EXAMPLES_ROOT.rglob("*.py"))
-    notebook_examples = sorted(EXAMPLES_ROOT.rglob("*.ipynb"))
+    python_examples = [
+        path
+        for path in sorted(EXAMPLES_ROOT.rglob("*.py"))
+        if not any(part.startswith("_") for part in path.relative_to(EXAMPLES_ROOT).parts)
+    ]
+    notebook_examples = [
+        path
+        for path in sorted(EXAMPLES_ROOT.rglob("*.ipynb"))
+        if not any(part.startswith("_") for part in path.relative_to(EXAMPLES_ROOT).parts)
+    ]
     return python_examples + notebook_examples
 
 

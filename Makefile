@@ -19,7 +19,7 @@ help:
 	@echo "  dev              Install the project in editable mode with dev dependencies."
 	@echo "  test             Run the pytest suite."
 	@echo "  qa               Run lint, fmt-check, type, and test."
-	@echo "  run-example      Execute the live llama.cpp end-to-end walkthrough example."
+	@echo "  run-example      Execute the live llama.cpp strategy-comparison study example."
 	@echo "  examples-test    Execute all bundled example scripts."
 	@echo "  examples-coverage Check public API coverage across examples."
 	@echo "  examples-metrics Generate example and public-API badge artifacts."
@@ -61,21 +61,21 @@ docstrings-check: check-python
 	$(PYTHON) scripts/check_google_docstrings.py
 
 run-example: check-python
-	PYTHONPATH=src $(PYTHON) examples/end_to_end_walkthrough.py
+	PYTHONPATH=src $(PYTHON) examples/prompt_framing_study.py
 
 examples-test: check-python
 	@set -e; \
-	live_example="examples/end_to_end_walkthrough.py"; \
+	live_example="examples/prompt_framing_study.py"; \
 	run_live_example=0; \
 	if [ "$$RUN_LIVE_EXAMPLE" = "1" ]; then run_live_example=1; fi; \
-	for script in $$(ls examples/*.py | sort); do \
+	for script in $$(find examples -maxdepth 1 -type f -name '*.py' ! -name '_*.py' | sort); do \
 		if [ "$$script" = "$$live_example" ] && [ "$$run_live_example" -ne 1 ]; then \
-			echo "Skipping $$script (set RUN_LIVE_EXAMPLE=1 to run the managed llama.cpp walkthrough)"; \
+			echo "Skipping $$script (set RUN_LIVE_EXAMPLE=1 to run the managed llama.cpp study walkthrough)"; \
 			continue; \
 		fi; \
 		echo "Running $$script"; \
-		PYTHONPATH=src $(PYTHON) "$$script"; \
-	done
+			PYTHONPATH=src $(PYTHON) "$$script"; \
+		done
 
 examples-coverage: check-python
 	$(PYTHON) scripts/check_example_api_coverage.py --minimum 90
