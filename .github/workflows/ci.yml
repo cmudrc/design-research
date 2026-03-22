@@ -27,6 +27,11 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -e ".[dev]"
+          pip install --upgrade \
+            "design-research-analysis @ git+https://github.com/cmudrc/design-research-analysis.git@main" \
+            "design-research-agents @ git+https://github.com/cmudrc/design-research-agents.git@the-april-alignment" \
+            "design-research-problems @ git+https://github.com/cmudrc/design-research-problems.git@axolotl-array-april-2026" \
+            "design-research-experiments @ git+https://github.com/cmudrc/design-research-experiments.git@apollo-ascent-april-2026"
 
       - name: Run local CI gate
         run: make ci
@@ -58,6 +63,11 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -e ".[dev]"
+          pip install --upgrade \
+            "design-research-analysis @ git+https://github.com/cmudrc/design-research-analysis.git@main" \
+            "design-research-agents @ git+https://github.com/cmudrc/design-research-agents.git@the-april-alignment" \
+            "design-research-problems @ git+https://github.com/cmudrc/design-research-problems.git@axolotl-array-april-2026" \
+            "design-research-experiments @ git+https://github.com/cmudrc/design-research-experiments.git@apollo-ascent-april-2026"
 
       - name: Generate coverage artifacts
         run: make coverage
