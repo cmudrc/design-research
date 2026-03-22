@@ -30,6 +30,11 @@ Tested Package Combination
 These versions match the exact sibling pins in ``pyproject.toml`` and represent
 the tested umbrella combination for the current docs baseline.
 
+The bundled examples are intentionally more future-state oriented than that
+published pin set. When adjacent sibling worktrees are present, the examples
+prefer those local checkouts so the umbrella walkthroughs can target the newer
+recipe/workflow/reporting APIs before the pinned releases catch up.
+
 Start Here Vs Go Direct
 -----------------------
 
@@ -69,5 +74,6 @@ date.
 Next Step
 ---------
 
-If you want to see the umbrella package drive a real composed workflow, continue
-to :doc:`prompt_framing_study`.
+If you want to see the umbrella package drive a real composed workflow, use the
+deterministic bundled examples for the smallest recipe-first entry points and
+continue to :doc:`prompt_framing_study` for the live canonical walkthrough.

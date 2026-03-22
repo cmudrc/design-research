@@ -15,7 +15,7 @@ def _run_example(example_name: str, *, tmp_path: Path) -> subprocess.CompletedPr
     """Execute one example script in an isolated subprocess."""
     env = os.environ.copy()
     env["PYTHONPATH"] = str(REPO_ROOT / "src")
-    env["DESIGN_RESEARCH_WORKSPACE_ROOT"] = str(tmp_path / "missing-workspace")
+    env["DESIGN_RESEARCH_WORKSPACE_ROOT"] = str(REPO_ROOT.parent)
 
     return subprocess.run(
         [sys.executable, str(EXAMPLES_DIR / example_name)],
@@ -27,26 +27,24 @@ def _run_example(example_name: str, *, tmp_path: Path) -> subprocess.CompletedPr
     )
 
 
-def test_basic_usage_example_executes(tmp_path: Path) -> None:
-    """The import-surface smoke example should execute successfully."""
-    completed = _run_example("basic_usage.py", tmp_path=tmp_path)
-    assert "Submodules: agents, analysis, experiments, problems" in completed.stdout
-    assert "Packaged problems:" in completed.stdout
-
-
-def test_real_stack_interoperability_example_executes(tmp_path: Path) -> None:
-    """The portable real-stack example should export artifacts and validate events."""
-    completed = _run_example("real_stack_interoperability.py", tmp_path=tmp_path)
-    assert "Problem ID: decision_laptop_design_profit_maximization" in completed.stdout
-    assert "Run status: success" in completed.stdout
+def test_student_laptop_design_study_example_executes(tmp_path: Path) -> None:
+    """The student laptop study should report real packaged benchmark results."""
+    completed = _run_example("student_laptop_design_study.py", tmp_path=tmp_path)
+    assert "Study: student_laptop_design_study" in completed.stdout
+    assert "Application: Decision Problem - Student Laptop Design Under Choice-Based Demand" in (
+        completed.stdout
+    )
+    assert "Runs: 1 (success)" in completed.stdout
+    assert "Observed results:" in completed.stdout
     assert "Event rows valid: True" in completed.stdout
 
 
-def test_mechanical_design_stack_example_executes(tmp_path: Path) -> None:
-    """The mechanical-stack walkthrough should complete with canonical artifacts."""
-    completed = _run_example("mechanical_design_stack.py", tmp_path=tmp_path)
-    assert "Study problem: treadle_pump_ide_material_min" in completed.stdout
-    assert "Runs: 1 (success)" in completed.stdout
+def test_pump_and_battery_design_portfolio_example_executes(tmp_path: Path) -> None:
+    """The engineering portfolio example should report real benchmark results."""
+    completed = _run_example("pump_and_battery_design_portfolio.py", tmp_path=tmp_path)
+    assert "Executed study: pump_and_battery_design_portfolio" in completed.stdout
+    assert "Runs: 3 (3 success)" in completed.stdout
+    assert "Observed benchmark results:" in completed.stdout
     assert "Event rows valid: True" in completed.stdout
 
 

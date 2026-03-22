@@ -7,7 +7,7 @@ without adding new mandatory dependencies between the underlying libraries.
 from __future__ import annotations
 
 import random
-from collections.abc import Mapping
+from collections.abc import Mapping, Sequence
 from typing import Any, cast
 
 from . import problems
@@ -17,32 +17,25 @@ SEEDED_RANDOM_BASELINE_AGENT_ID = "SeededRandomBaselineAgent"
 
 def resolve_problem(experiments_module: Any, *, problem_id: str) -> object:
     """Resolve one packaged problem through the sibling package or a local fallback."""
+    packaged_problem = _load_packaged_problem(problem_id)
+    if packaged_problem is not None:
+        return _problem_packet_from_packaged_problem(
+            experiments_module,
+            problem_id=problem_id,
+            problem=packaged_problem,
+        )
+
     library_helper = cast(Any, getattr(experiments_module, "resolve_problem", None))
     if callable(library_helper):
         return library_helper(problem_id)
 
-    get_problem = cast(Any, problems.get_problem)
-    problem = get_problem(problem_id)
-    metadata = getattr(problem, "metadata", None)
-
-    def evaluator(run_output: Mapping[str, Any]) -> Any:
-        """Evaluate one candidate and normalize it to experiment rows."""
-        candidate = run_output.get("candidate", run_output)
-        return _normalize_evaluation_rows(problem.evaluate(candidate))
-
     problem_packet_cls = cast(Any, experiments_module.ProblemPacket)
     return problem_packet_cls(
-        problem_id=str(getattr(metadata, "problem_id", problem_id)),
-        family=str(getattr(getattr(metadata, "kind", None), "value", "unknown")),
-        brief=_problem_brief(problem, fallback=str(getattr(metadata, "title", problem_id))),
-        payload={"problem_object": problem},
-        metadata={
-            "title": str(getattr(metadata, "title", problem_id)),
-            "summary": str(getattr(metadata, "summary", problem_id)),
-            "capabilities": tuple(getattr(metadata, "capabilities", ())),
-            "study_suitability": tuple(getattr(metadata, "study_suitability", ())),
-        },
-        evaluator=evaluator,
+        problem_id=problem_id,
+        family="unknown",
+        brief=problem_id,
+        payload={"problem_id": problem_id},
+        metadata={},
     )
 
 
@@ -60,6 +53,51 @@ def make_seeded_random_baseline_factories(experiments_module: Any) -> dict[str, 
         return _fallback_seeded_random_baseline
 
     return {SEEDED_RANDOM_BASELINE_AGENT_ID: factory}
+
+
+def _load_packaged_problem(problem_id: str) -> Any | None:
+    """Load one packaged problem from the umbrella problems wrapper when available."""
+    get_problem = cast(Any, getattr(problems, "get_problem", None))
+    if not callable(get_problem):
+        return None
+    try:
+        return get_problem(problem_id)
+    except Exception:
+        return None
+
+
+def _problem_packet_from_packaged_problem(
+    experiments_module: Any,
+    *,
+    problem_id: str,
+    problem: Any,
+) -> object:
+    """Normalize one packaged problem into the sibling ``ProblemPacket`` shape."""
+    metadata = getattr(problem, "metadata", None)
+
+    def evaluator(run_output: Mapping[str, Any]) -> Any:
+        """Evaluate one candidate and normalize it to experiment rows."""
+        candidate = (
+            run_output.get("candidate", run_output)
+            if isinstance(run_output, Mapping)
+            else run_output
+        )
+        return _normalize_evaluation_rows(problem.evaluate(candidate))
+
+    problem_packet_cls = cast(Any, experiments_module.ProblemPacket)
+    return problem_packet_cls(
+        problem_id=str(getattr(metadata, "problem_id", problem_id)),
+        family=_problem_family(problem, metadata=metadata),
+        brief=_problem_brief(problem, fallback=str(getattr(metadata, "title", problem_id))),
+        payload={"problem_object": problem},
+        metadata={
+            "title": str(getattr(metadata, "title", problem_id)),
+            "summary": str(getattr(metadata, "summary", problem_id)),
+            "capabilities": tuple(getattr(metadata, "capabilities", ())),
+            "study_suitability": tuple(getattr(metadata, "study_suitability", ())),
+        },
+        evaluator=evaluator,
+    )
 
 
 def _fallback_seeded_random_baseline(
@@ -102,10 +140,27 @@ def _problem_brief(problem: Any, *, fallback: str) -> str:
     """Return the richest available brief text for a packaged problem."""
     render_brief = getattr(problem, "render_brief", None)
     if callable(render_brief):
-        rendered = render_brief()
+        try:
+            rendered = render_brief(include_citation=False)
+        except TypeError:
+            rendered = render_brief()
         if rendered:
             return str(rendered)
+    statement_markdown = str(getattr(problem, "statement_markdown", "")).strip()
+    if statement_markdown:
+        return statement_markdown
     return fallback
+
+
+def _problem_family(problem: Any, *, metadata: Any) -> str:
+    """Return the most helpful family label for a packaged problem."""
+    kind_value = getattr(getattr(metadata, "kind", None), "value", None)
+    if kind_value is not None:
+        return str(kind_value)
+    family = getattr(problem, "family", None)
+    if family is not None:
+        return str(family)
+    return "unknown"
 
 
 def _sample_candidate(problem: Any, *, seed: int) -> Any:
@@ -137,6 +192,13 @@ def _sample_candidate(problem: Any, *, seed: int) -> Any:
 
 def _normalize_evaluation_rows(evaluation: Any) -> list[dict[str, Any]]:
     """Convert packaged evaluation objects into canonical experiment rows."""
+    if isinstance(evaluation, Mapping):
+        return [_normalize_row(evaluation)]
+    if isinstance(evaluation, Sequence) and not isinstance(evaluation, (str, bytes, bytearray)):
+        rows = [_normalize_row(row) for row in evaluation if isinstance(row, Mapping)]
+        if rows:
+            return rows
+
     objective_metric = str(getattr(evaluation, "objective_metric", "") or "objective_value")
     rows = [
         {
@@ -174,6 +236,21 @@ def _normalize_evaluation_rows(evaluation: Any) -> list[dict[str, Any]]:
         )
 
     return rows
+
+
+def _normalize_row(row: Mapping[str, Any]) -> dict[str, Any]:
+    """Normalize one mapping-shaped evaluation row."""
+    notes_json = row.get("notes_json", {})
+    return {
+        "evaluator_id": str(row.get("evaluator_id", "packaged_problem_evaluator")),
+        "metric_name": str(row.get("metric_name", row.get("objective_metric", "objective_value"))),
+        "metric_value": row.get("metric_value", row.get("objective_value")),
+        "metric_unit": str(row.get("metric_unit", "unitless")),
+        "aggregation_level": str(row.get("aggregation_level", "run")),
+        "notes_json": dict(cast(Mapping[str, Any], notes_json))
+        if isinstance(notes_json, Mapping)
+        else {},
+    }
 
 
 __all__ = [

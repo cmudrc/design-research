@@ -39,12 +39,19 @@ make dev
 make test
 python -m pip install "llama-cpp-python[server]" huggingface-hub
 make run-example
+make examples-test
 ```
 
-`make run-example` now uses a managed `llama.cpp` client. Install
-`llama-cpp-python[server]` first. If you want the client to fetch its default
-GGUF model automatically, also install `huggingface-hub`; otherwise set
-`LLAMA_CPP_MODEL` to a specific local GGUF file.
+`make run-example` is the live canonical walkthrough. It uses a managed
+`llama.cpp` client, a workflow-backed strategy comparison, canonical exports,
+and downstream analysis helpers. Install `llama-cpp-python[server]` first. If
+you want the client to fetch its default GGUF model automatically, also
+install `huggingface-hub`; otherwise set `LLAMA_CPP_MODEL` to a specific local
+GGUF file.
+
+`make examples-test` stays deterministic and offline-first by default. It runs
+the two non-live recipe-first examples and skips the live walkthrough unless
+`RUN_LIVE_EXAMPLE=1`.
 
 Install from PyPI:
 
@@ -80,7 +87,7 @@ Choose your entry point based on how much of the ecosystem you need:
 - Start with `design-research` when you want one stable namespace and one set of docs across problems, agents, experiments, and analysis.
 - Install a sibling package directly when you only need one layer or want package-specific internals; direct sibling use is fully supported.
 - See [Compatibility and Start Here](https://cmudrc.github.io/design-research/compatibility.html) for the tested package combination and install guidance.
-- See [Prompt-Framing Study Walkthrough](https://cmudrc.github.io/design-research/prompt_framing_study.html) for the canonical composed workflow example with a live agent.
+- See [Prompt-Framing Study Walkthrough](https://cmudrc.github.io/design-research/prompt_framing_study.html) for the canonical live composed workflow, and the bundled deterministic examples for the smaller recipe-first entry points.
 
 ## Ecosystem Integration
 

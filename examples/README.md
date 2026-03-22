@@ -1,21 +1,17 @@
 # Examples
 
-The examples in this repository are intentionally lightweight and
-teaching-oriented.
+The examples in this repository are intentionally small, recipe-first, and
+future-branch oriented.
 
-- `real_stack_interoperability.py` is the smallest real end-to-end umbrella
-  study. It resolves one packaged decision problem, runs a deterministic
-  seeded baseline, exports canonical artifacts, and validates `events.csv`
-  through the analysis layer.
-- `mechanical_design_stack.py` does the same thing for a packaged
-  mechanical-design optimization benchmark and prints a short benchmark
-  shortlist first.
-- `prompt_framing_study.py` is the canonical composed workflow example. It
-  uses umbrella imports, a real packaged problem, a managed llama.cpp workflow
-  agent, the April-branch `build_strategy_comparison_study` scaffold, export-
-  driven condition-pair permutation tests, markdown reporting helpers, canonical
-  experiment artifact export, and event-table validation.
-- `basic_usage.py` remains the smallest possible import-surface smoke example.
+- `student_laptop_design_study.py` is the smallest application-first decision
+  study. It runs the packaged student laptop benchmark, prints the chosen
+  laptop configuration, and reports the evaluator's observed market metrics.
+- `pump_and_battery_design_portfolio.py` is the packaged engineering portfolio
+  example. It runs real pump and battery optimization benchmarks, reports the
+  observed objective and feasibility results, and previews a second recipe.
+- `prompt_framing_study.py` is the canonical live walkthrough. It keeps the
+  managed `llama.cpp` runtime, workflow-backed strategy arms, pairwise
+  condition comparisons, and markdown reporting.
 
 Run locally with:
 
@@ -24,19 +20,20 @@ make run-example
 make examples-test
 ```
 
-`make run-example` uses a managed `llama.cpp` runtime. Install
-`llama-cpp-python[server]` first. If you want the default model download path,
-also install `huggingface-hub`; otherwise set `LLAMA_CPP_MODEL` to point at a
-specific local GGUF file. This walkthrough also expects the April 2026
-workflow/recipe/reporting APIs from `design-research-agents`,
-`design-research-experiments`, and `design-research-analysis`. The study
+`make run-example` executes the live canonical walkthrough in
+`examples/prompt_framing_study.py`. Install `llama-cpp-python[server]` first.
+If you want the default model download path, also install `huggingface-hub`;
+otherwise set `LLAMA_CPP_MODEL` to a specific local GGUF file. The live study
 defaults to eight replicates per condition; set `PROMPT_STUDY_REPLICATES` to
 run a larger sample.
-Set `DESIGN_RESEARCH_WORKSPACE_ROOT=/path/to/your/workspace` if you want the
-live walkthrough to prefer sibling April workspaces during local development.
-The deterministic examples run directly against the installed umbrella
-dependency set.
-The default example-health checks and badges track the three deterministic
-examples; the live prompt-framing walkthrough remains an explicit opt-in run.
-`make examples-test` skips the live study walkthrough unless
+
+`make examples-test` stays deterministic and offline-first by default. It runs
+the two non-live examples and skips the live walkthrough unless
 `RUN_LIVE_EXAMPLE=1`.
+
+The examples prefer adjacent sibling worktrees during local development so
+they can use the future recipe/workflow/reporting APIs before the pinned PyPI
+versions catch up. Keep the sibling repos next to this repo or set
+`DESIGN_RESEARCH_WORKSPACE_ROOT=/path/to/your/workspace`. You can also point a
+single example layer at a different checkout with repo-specific overrides such
+as `DESIGN_RESEARCH_AGENTS_ROOT` or `DESIGN_RESEARCH_EXPERIMENTS_ROOT`.

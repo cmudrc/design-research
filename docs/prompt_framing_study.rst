@@ -18,12 +18,12 @@ What This Covers
 ----------------
 
 - resolves a real packaged problem through ``design_research.problems``
-- wraps that problem in ``design_research.experiments.ProblemPacket`` so the
-  runner emits canonical evaluator rows without umbrella-local export glue
+- resolves that problem through the umbrella compatibility layer so packaged
+  evaluations still normalize cleanly into experiment rows
 - builds the study from
-  ``design_research.experiments.build_strategy_comparison_study`` with explicit
-  strategy arms for a random baseline, a neutral prompt, and a profit-focused
-  prompt
+  ``design_research.experiments.build_strategy_comparison_study`` with a
+  recipe-first benchmark bundle containing a random baseline, a neutral
+  prompt, and a profit-focused prompt
 - runs the live study through ``design_research.experiments.run_study``
 - exports the canonical study artifacts plus a markdown summary report built
   from ``render_markdown_summary``, ``render_methods_scaffold``,
@@ -41,6 +41,13 @@ from ``design-research-agents``, ``design-research-experiments``, and
 ``design-research-analysis``. If you run it against older releases of those
 sibling packages, it will fail fast with a clear upgrade message instead of
 silently drifting from the new workflow/recipe/reporting surface.
+
+During local development the script prefers adjacent sibling worktrees when
+they are present, which lets the umbrella example track the future-state APIs
+before the pinned PyPI versions catch up. Use
+``DESIGN_RESEARCH_WORKSPACE_ROOT=/path/to/your/workspace`` to point the
+walkthrough at a different parent workspace, or repo-specific overrides such
+as ``DESIGN_RESEARCH_AGENTS_ROOT`` when needed.
 
 Run It
 ------
@@ -82,7 +89,7 @@ model before the walkthrough executes, which is why the setup above includes
 The script is intentionally written in a linear, step-by-step style so it can
 double as training material and as the literal-included documentation example.
 The only local callbacks left in place are the small adapters required by the
-workflow and experiments APIs.
+workflow runtime and the temporary delegate-to-experiments bridge.
 
 Code
 ----

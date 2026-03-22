@@ -20,6 +20,7 @@ Run the bundled example:
 
    python -m pip install "llama-cpp-python[server]" huggingface-hub
    make run-example
+   make examples-test
 
 ``make run-example`` executes the canonical umbrella-level walkthrough that
 uses a real packaged problem, a live model-backed workflow agent, canonical
@@ -29,6 +30,10 @@ The walkthrough uses a managed ``llama.cpp`` client. Install
 ``llama-cpp-python[server]`` before running it. If you want the default GGUF
 download path to work, also install ``huggingface-hub``; otherwise set
 ``LLAMA_CPP_MODEL`` to a specific local GGUF file.
+
+``make examples-test`` stays deterministic and offline-first by default. It
+exercises the two smaller recipe-first examples and skips the live
+walkthrough unless ``RUN_LIVE_EXAMPLE=1``.
 
 Build the docs:
 
