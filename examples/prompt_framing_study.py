@@ -201,6 +201,7 @@ def main() -> None:
         """Wrap the packaged problem in the experiments adapter shape."""
 
         def evaluator(output: Mapping[str, object]) -> list[dict[str, object]]:
+            """Evaluate one candidate emitted by the strategy-comparison agent."""
             candidate = {factor_key: output[factor_key] for factor_key in factor_keys}
             rows, _ = evaluate_candidate(candidate)
             return rows

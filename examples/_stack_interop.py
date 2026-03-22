@@ -32,6 +32,7 @@ def build_problem_packet(dr: Any, *, problem_id: str) -> tuple[Any, Any]:
     brief = _problem_brief(problem, fallback=str(getattr(metadata, "title", problem_id)))
 
     def evaluator(run_output: Mapping[str, Any]) -> list[dict[str, Any]]:
+        """Evaluate one normalized run output against the packaged problem."""
         candidate = _extract_candidate(run_output)
         evaluation = _evaluate_problem(problem, candidate)
         return _normalize_evaluation_rows(evaluation)
@@ -57,6 +58,8 @@ def make_portable_agent_factories(dr: Any) -> dict[str, Any]:
     """Return agent factories that work on both released and April stack versions."""
 
     def factory(_condition: object) -> Any:
+        """Build one executable seeded-baseline adapter for a study condition."""
+
         def execute_portable_agent(
             problem_packet: Any | None = None,
             problem: Any | None = None,
@@ -69,6 +72,7 @@ def make_portable_agent_factories(dr: Any) -> dict[str, Any]:
             request_id: str | None = None,
             dependencies: Mapping[str, object] | None = None,
         ) -> dict[str, Any]:
+            """Execute one portable seeded-baseline run and normalize the result."""
             del condition
 
             resolved_problem = _problem_from_inputs(problem_packet=problem_packet, problem=problem)
