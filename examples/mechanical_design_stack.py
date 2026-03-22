@@ -5,11 +5,9 @@ Trace a lightweight mechanical-design workflow through the umbrella package
 using packaged structural and humanitarian-product benchmarks.
 
 ## Technical Implementation
-1. Resolve the top-level agents, problems, experiments, and analysis modules
-   against the sibling workspace checkouts.
-2. Load a small shortlist of mechanical-design problems from the packaged
+1. Load a small shortlist of mechanical-design problems from the packaged
    problem catalog and build a one-run umbrella study around a safe benchmark.
-3. Export canonical artifacts and validate the resulting `events.csv` table.
+2. Export canonical artifacts and validate the resulting `events.csv` table.
 
 ## Expected Results
 The script prints the wrapped module names, a short summary for each packaged
@@ -23,17 +21,6 @@ import csv
 import importlib
 from pathlib import Path
 
-from _stack_interop import (
-    PORTABLE_BASELINE_AGENT_ID,
-    build_problem_packet,
-    make_portable_agent_factories,
-    portable_agent_backend,
-    run_study_compatible,
-)
-from _workspace_bootstrap import bootstrap_sibling_sources
-
-bootstrap_sibling_sources()
-
 dr = importlib.import_module("design_research")
 
 MECHANICAL_PROBLEM_IDS = (
@@ -42,6 +29,7 @@ MECHANICAL_PROBLEM_IDS = (
     "space_truss_span_mass_min",
 )
 DEMO_PROBLEM_ID = "treadle_pump_ide_material_min"
+BASELINE_AGENT_ID = "SeededRandomBaselineAgent"
 STUDY_ID = "mechanical_design_stack"
 OUTPUT_DIR = Path("artifacts") / "examples" / STUDY_ID
 
@@ -66,7 +54,7 @@ def _build_study() -> object:
         ),
         output_dir=OUTPUT_DIR,
         problem_ids=(DEMO_PROBLEM_ID,),
-        agent_specs=(PORTABLE_BASELINE_AGENT_ID,),
+        agent_specs=(BASELINE_AGENT_ID,),
         outcomes=(
             dr.experiments.OutcomeSpec(
                 name="primary_outcome",
@@ -83,7 +71,7 @@ def _build_study() -> object:
 
 def main() -> None:
     """Run a compact mechanical-design workflow through the umbrella stack."""
-    _, problem_packet = build_problem_packet(dr, problem_id=DEMO_PROBLEM_ID)
+    problem_packet = dr.experiments.resolve_problem(DEMO_PROBLEM_ID)
     stack = {
         "agents": dr.agents.__name__,
         "analysis": dr.analysis.__name__,
@@ -99,11 +87,10 @@ def main() -> None:
 
     study = _build_study()
     conditions = dr.experiments.build_design(study)
-    run_results = run_study_compatible(
-        dr,
-        study=study,
+    run_results = dr.experiments.run_study(
+        study,
         conditions=conditions,
-        agent_factories=make_portable_agent_factories(dr),
+        agent_factories=dr.experiments.make_seeded_random_baseline_factories(),
         problem_registry={DEMO_PROBLEM_ID: problem_packet},
     )
     exported_paths = dr.experiments.export_analysis_tables(
@@ -121,7 +108,6 @@ def main() -> None:
     print("Study builder:", type(study).__name__)
     print("Study problem:", DEMO_PROBLEM_ID)
     print("Agent:", study.agent_specs[0])
-    print("Agent backend:", portable_agent_backend(dr))
     print("Runs:", len(run_results), f"({run_results[0].status.value})")
     print("Primary outcome:", run_results[0].metrics.get("primary_outcome"))
     print("Event rows valid:", report.is_valid, f"(rows={report.n_rows})")

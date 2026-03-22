@@ -431,3 +431,74 @@ def test_wrapper_re_exports_are_reachable_via_stubs(monkeypatch: Any) -> None:
     assert "build_prompt_framing_study" in experiments.__all__
     assert "CallableToolConfig" in agents.__all__
     assert "Citation" in problems.__all__
+
+
+def test_experiments_wrapper_compat_helpers_work_without_new_sibling_exports(
+    monkeypatch: Any,
+) -> None:
+    """Provide compatibility helpers even when the sibling package is older."""
+    stubs = _install_dependency_stubs()
+    for name, module in stubs.items():
+        monkeypatch.setitem(sys.modules, name, module)
+
+    class _ProblemPacket:
+        def __init__(self, **kwargs: object) -> None:
+            self.__dict__.update(kwargs)
+
+    stubs["design_research_experiments"].ProblemPacket = _ProblemPacket
+
+    kind = type("ProblemKind", (), {"value": "decision"})()
+    problem_metadata = type(
+        "ProblemMetadata",
+        (),
+        {
+            "problem_id": "demo_problem",
+            "kind": kind,
+            "title": "Demo Problem",
+            "summary": "A demo packaged problem.",
+            "capabilities": ("tradeoff_reasoning",),
+            "study_suitability": ("agent",),
+        },
+    )()
+    factor = type("Factor", (), {"key": "choice", "levels": (1, 2, 3)})()
+    evaluation = type(
+        "DecisionEvaluation",
+        (),
+        {
+            "objective_metric": "score",
+            "objective_value": 0.75,
+            "higher_is_better": True,
+        },
+    )()
+
+    class _Problem:
+        metadata = problem_metadata
+        option_factors = (factor,)
+
+        def render_brief(self) -> str:
+            return "Choose one allowed factor level."
+
+        def evaluate(self, _candidate: object) -> object:
+            return evaluation
+
+    stubs["design_research_problems"].get_problem = lambda _problem_id: _Problem()
+
+    sys.modules.pop("design_research._experiments_compat", None)
+    sys.modules.pop("design_research.experiments", None)
+    sys.modules.pop("design_research.problems", None)
+    importlib.import_module("design_research.problems")
+    experiments = importlib.import_module("design_research.experiments")
+
+    packet = experiments.resolve_problem("demo_problem")
+    assert packet.problem_id == "demo_problem"
+    assert packet.family == "decision"
+    assert packet.metadata["title"] == "Demo Problem"
+    assert "resolve_problem" not in experiments.__all__
+    assert packet.evaluator({"candidate": {"choice": 2}})[0]["metric_name"] == "score"
+
+    factories = experiments.make_seeded_random_baseline_factories()
+    baseline = factories["SeededRandomBaselineAgent"](object())
+    run_spec = type("RunSpec", (), {"run_id": "run-1"})()
+    result = baseline(problem_packet=packet, run_spec=run_spec, seed=7)
+    assert result["metadata"]["request_id"] == "run-1"
+    assert result["output"]["candidate"]["choice"] in {1, 2, 3}

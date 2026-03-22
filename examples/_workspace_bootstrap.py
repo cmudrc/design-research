@@ -8,10 +8,12 @@ from pathlib import Path
 
 
 def bootstrap_sibling_sources() -> tuple[str, ...]:
-    """Add sibling repository `src/` directories to `sys.path` when present."""
-    workspace_root = Path(
-        os.getenv("DESIGN_RESEARCH_WORKSPACE_ROOT", Path(__file__).resolve().parents[2])
-    )
+    """Add sibling repository `src/` directories to `sys.path` when requested."""
+    workspace_root_text = os.getenv("DESIGN_RESEARCH_WORKSPACE_ROOT")
+    if not workspace_root_text:
+        return ()
+
+    workspace_root = Path(workspace_root_text)
     candidate_paths = (
         workspace_root / "design-research-agents-april-merge75" / "src",
         workspace_root / "design-research-agents" / "src",

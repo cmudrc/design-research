@@ -6,9 +6,8 @@ canonical artifacts, and validate the resulting `events.csv` contract through
 the analysis layer.
 
 ## Technical Implementation
-1. Bootstrap sibling April workspaces when they are available locally.
-2. Resolve a packaged decision problem into an explicit `ProblemPacket`.
-3. Execute one deterministic baseline run, export artifacts, and validate the
+1. Resolve a packaged decision problem into an explicit `ProblemPacket`.
+2. Execute one deterministic baseline run, export artifacts, and validate the
    analysis handoff.
 
 ## Expected Results
@@ -22,20 +21,10 @@ import csv
 import importlib
 from pathlib import Path
 
-from _stack_interop import (
-    PORTABLE_BASELINE_AGENT_ID,
-    build_problem_packet,
-    make_portable_agent_factories,
-    portable_agent_backend,
-    run_study_compatible,
-)
-from _workspace_bootstrap import bootstrap_sibling_sources
-
-bootstrap_sibling_sources()
-
 dr = importlib.import_module("design_research")
 
 PROBLEM_ID = "decision_laptop_design_profit_maximization"
+BASELINE_AGENT_ID = "SeededRandomBaselineAgent"
 STUDY_ID = "real_stack_interoperability"
 OUTPUT_DIR = Path("artifacts") / "examples" / STUDY_ID
 
@@ -51,7 +40,7 @@ def _build_study() -> object:
         ),
         output_dir=OUTPUT_DIR,
         problem_ids=(PROBLEM_ID,),
-        agent_specs=(PORTABLE_BASELINE_AGENT_ID,),
+        agent_specs=(BASELINE_AGENT_ID,),
         outcomes=(
             dr.experiments.OutcomeSpec(
                 name="primary_outcome",
@@ -68,14 +57,14 @@ def _build_study() -> object:
 
 def main() -> None:
     """Run one real end-to-end interoperability path through the umbrella stack."""
-    packaged_problem, problem_packet = build_problem_packet(dr, problem_id=PROBLEM_ID)
+    problem_packet = dr.experiments.resolve_problem(PROBLEM_ID)
+    packaged_problem = problem_packet.payload["problem_object"]
     study = _build_study()
     conditions = dr.experiments.build_design(study)
-    run_results = run_study_compatible(
-        dr,
-        study=study,
+    run_results = dr.experiments.run_study(
+        study,
         conditions=conditions,
-        agent_factories=make_portable_agent_factories(dr),
+        agent_factories=dr.experiments.make_seeded_random_baseline_factories(),
         problem_registry={PROBLEM_ID: problem_packet},
     )
     exported_paths = dr.experiments.export_analysis_tables(
@@ -94,7 +83,6 @@ def main() -> None:
     print("Problem ID:", packaged_problem.metadata.problem_id)
     print("Problem title:", packaged_problem.metadata.title)
     print("Problem family:", packaged_problem.metadata.kind.value)
-    print("Agent backend:", portable_agent_backend(dr))
     print("Completed runs:", len(run_results))
     print("Run status:", run_result.status.value)
     print("Output keys:", ", ".join(sorted(run_result.outputs)))

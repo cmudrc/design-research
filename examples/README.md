@@ -32,8 +32,11 @@ workflow/recipe/reporting APIs from `design-research-agents`,
 `design-research-experiments`, and `design-research-analysis`. The study
 defaults to eight replicates per condition; set `PROMPT_STUDY_REPLICATES` to
 run a larger sample.
-The deterministic examples automatically use sibling April workspaces when
-they are checked out beside this repo, and otherwise fall back to the
-published umbrella dependency set.
+Set `DESIGN_RESEARCH_WORKSPACE_ROOT=/path/to/your/workspace` if you want the
+live walkthrough to prefer sibling April workspaces during local development.
+The deterministic examples run directly against the installed umbrella
+dependency set.
+The default example-health checks and badges track the three deterministic
+examples; the live prompt-framing walkthrough remains an explicit opt-in run.
 `make examples-test` skips the live study walkthrough unless
 `RUN_LIVE_EXAMPLE=1`.
