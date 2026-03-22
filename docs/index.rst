@@ -1,32 +1,64 @@
 design-research
 ===============
 
-The canonical umbrella package for the CMU Design Research Collective ecosystem.
+The umbrella entry point for the CMU Design Research Collective ecosystem.
 
-What This Library Does
-----------------------
+``design-research`` provides a thin, stable, submodule-first namespace over the
+sibling libraries. It keeps implementation in specialized packages while
+making the ecosystem easier to discover, teach, and cite from one place.
 
-``design-research`` provides a thin, stable entry point over the ecosystem's
-component libraries. It keeps implementation in specialized packages while
-improving top-level discoverability for research workflows, tutorials, and
-papers.
+It is intentionally lightweight. The value here is not hidden implementation,
+but a coherent starting point for understanding how the package family fits
+together and when to drop into the more specialized repos directly.
 
-Highlights
-----------
+.. raw:: html
 
-- Unified top-level namespace
-- Thin wrapper design
-- Curated stable re-exports
-- Ecosystem-level framing
-- Compatibility-focused packaging
+   <div class="drc-badge-row">
+     <a class="drc-badge-link" href="https://github.com/cmudrc/design-research/actions/workflows/ci.yml">
+       <img alt="CI" src="https://github.com/cmudrc/design-research/actions/workflows/ci.yml/badge.svg">
+     </a>
+     <a class="drc-badge-link" href="https://github.com/cmudrc/design-research/actions/workflows/ci.yml">
+       <img alt="Coverage" src="https://raw.githubusercontent.com/cmudrc/design-research/main/.github/badges/coverage.svg">
+     </a>
+     <a class="drc-badge-link" href="https://github.com/cmudrc/design-research/actions/workflows/examples.yml">
+       <img alt="Examples Passing" src="https://raw.githubusercontent.com/cmudrc/design-research/main/.github/badges/examples-passing.svg">
+     </a>
+     <a class="drc-badge-link" href="https://github.com/cmudrc/design-research/actions/workflows/examples.yml">
+       <img alt="Public API In Examples" src="https://raw.githubusercontent.com/cmudrc/design-research/main/.github/badges/examples-api-coverage.svg">
+     </a>
+     <a class="drc-badge-link" href="https://github.com/cmudrc/design-research/actions/workflows/docs-pages.yml">
+       <img alt="Docs" src="https://github.com/cmudrc/design-research/actions/workflows/docs-pages.yml/badge.svg">
+     </a>
+   </div>
 
-Typical Workflow
-----------------
+.. note::
 
-1. Import ``design_research`` as the canonical ecosystem entry point.
-2. Discover domain-specific capabilities via ``problems``, ``agents``, ``experiments``, and ``analysis``.
-3. Compose studies across sibling libraries without rewriting underlying logic.
-4. Keep package-specific behavior in component repos while using one coherent umbrella namespace.
+   **Start with** :doc:`compatibility` to choose between the umbrella package
+   and direct sibling installs, then follow :doc:`end_to_end_walkthrough` for
+   the canonical real-agent workflow example built from the umbrella namespace.
+
+Guides
+------
+
+Use these pages to understand the umbrella package, the shared namespace, and
+the recommended path through the ecosystem.
+
+- :doc:`compatibility`
+- :doc:`end_to_end_walkthrough`
+- :doc:`quickstart`
+- :doc:`installation`
+- :doc:`concepts`
+- :doc:`typical_workflow`
+- :doc:`philosophy`
+
+Reference
+---------
+
+Look up the stable re-export surface and the extras that shape development and
+documentation workflows.
+
+- :doc:`api`
+- :doc:`dependencies_and_extras`
 
 Integration With The Ecosystem
 ------------------------------
@@ -50,35 +82,26 @@ study design through execution and interpretation.
 Start Here
 ----------
 
+- :doc:`compatibility`
+- :doc:`end_to_end_walkthrough`
 - :doc:`quickstart`
 - :doc:`installation`
 - :doc:`concepts`
 - :doc:`typical_workflow`
 - :doc:`api`
 - :doc:`philosophy`
+- `CONTRIBUTING.md <https://github.com/cmudrc/design-research/blob/main/CONTRIBUTING.md>`_
 
 .. toctree::
    :maxdepth: 2
-   :caption: Documentation
    :hidden:
 
+   compatibility
+   end_to_end_walkthrough
    quickstart
    installation
    concepts
    typical_workflow
-   api
-
-.. toctree::
-   :maxdepth: 2
-   :caption: Development
-   :hidden:
-
-   dependencies_and_extras
-   Contributing <https://github.com/cmudrc/design-research/blob/main/CONTRIBUTING.md>
-
-.. toctree::
-   :maxdepth: 2
-   :caption: Additional Guides
-   :hidden:
-
    philosophy
+   api
+   dependencies_and_extras

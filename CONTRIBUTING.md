@@ -30,6 +30,30 @@ make docs-check
 make docs
 ```
 
+If the example or walkthrough docs changed, also run:
+
+```bash
+make run-example
+make examples-test
+```
+
+`make run-example` is the live walkthrough path and uses a managed
+`llama.cpp` client. Install `llama-cpp-python` before running it, and
+optionally set `LLAMA_CPP_MODEL` if you want to point at a specific local GGUF
+file. `make examples-test` skips that walkthrough unless
+`RUN_LIVE_EXAMPLE=1`, which keeps the default local and CI loop offline-safe.
+
+## Coverage Policy
+
+`design-research` follows the family-wide baseline of at least 90% total line
+coverage in CI.
+
+- Treat 90% as a strict floor for this repository, not a soft target.
+- Keep new family repositories at the same baseline unless the shared policy is
+  intentionally changed across the ecosystem.
+- `make ci` enforces this floor through the coverage gate, so coverage-impacting
+  changes should be validated there before merge.
+
 Optional but useful:
 
 ```bash

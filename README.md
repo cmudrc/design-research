@@ -1,5 +1,8 @@
 # design-research
 [![CI](https://github.com/cmudrc/design-research/actions/workflows/ci.yml/badge.svg)](https://github.com/cmudrc/design-research/actions/workflows/ci.yml)
+[![Coverage](https://raw.githubusercontent.com/cmudrc/design-research/main/.github/badges/coverage.svg)](https://github.com/cmudrc/design-research/actions/workflows/ci.yml)
+[![Examples Passing](https://raw.githubusercontent.com/cmudrc/design-research/main/.github/badges/examples-passing.svg)](https://github.com/cmudrc/design-research/actions/workflows/examples.yml)
+[![Public API In Examples](https://raw.githubusercontent.com/cmudrc/design-research/main/.github/badges/examples-api-coverage.svg)](https://github.com/cmudrc/design-research/actions/workflows/examples.yml)
 [![Docs](https://github.com/cmudrc/design-research/actions/workflows/docs-pages.yml/badge.svg)](https://github.com/cmudrc/design-research/actions/workflows/docs-pages.yml)
 
 <!-- release-callout:start -->
@@ -12,7 +15,7 @@
 `design-research` is the umbrella entry-point package in the cmudrc design
 research ecosystem.
 
-It provides a thin, curated top-level import surface over the ecosystem's
+It provides a thin, submodule-first namespace over the ecosystem's
 specialized component libraries.
 
 ## Overview
@@ -20,7 +23,7 @@ specialized component libraries.
 This package focuses on discoverability and coherence rather than reimplementation:
 
 - Submodule-first top-level API: `problems`, `agents`, `experiments`, `analysis`
-- Curated re-exports of stable, user-facing APIs from component libraries
+- Wrapper submodules that mirror each sibling library's public API by default
 - Shared ecosystem framing and philosophy in one canonical package
 - Lightweight wrapper design that preserves modular versioning boundaries
 
@@ -34,7 +37,13 @@ python -m venv .venv
 source .venv/bin/activate
 make dev
 make test
+python -m pip install llama-cpp-python
+make run-example
 ```
+
+`make run-example` now uses a managed `llama.cpp` client. Install
+`llama-cpp-python` first, and optionally set `LLAMA_CPP_MODEL` if you want to
+point at a specific local GGUF file instead of using the client defaults.
 
 Install from PyPI:
 
@@ -57,6 +66,21 @@ print(experiments.Study)
 print(analysis.validate_unified_table)
 ```
 
+The package root intentionally stays small: it exports only ``__version__`` and
+the four wrapper submodules. Reach the stable user-facing APIs through
+`design_research.problems`, `design_research.agents`,
+`design_research.experiments`, and `design_research.analysis` rather than a
+flattened root namespace.
+
+## Start Here
+
+Choose your entry point based on how much of the ecosystem you need:
+
+- Start with `design-research` when you want one stable namespace and one set of docs across problems, agents, experiments, and analysis.
+- Install a sibling package directly when you only need one layer or want package-specific internals; direct sibling use is fully supported.
+- See [Compatibility and Start Here](https://cmudrc.github.io/design-research/compatibility.html) for the tested package combination and install guidance.
+- See [End-to-End Walkthrough](https://cmudrc.github.io/design-research/end_to_end_walkthrough.html) for the canonical composed workflow example with a live agent.
+
 ## Ecosystem Integration
 
 The Design Research Collective maintains a modular ecosystem of libraries for
@@ -72,8 +96,8 @@ study design through execution and interpretation.
 
 ## Philosophy
 
-The full ecosystem philosophy is documented in
-[`docs/philosophy.rst`](docs/philosophy.rst) and in the published docs site.
+The full ecosystem philosophy is documented in the
+[published philosophy page](https://cmudrc.github.io/design-research/philosophy.html).
 
 ## Docs
 
