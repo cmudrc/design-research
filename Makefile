@@ -10,7 +10,7 @@ COVERAGE_MIN ?= 90
 
 .PHONY: help check-python dev install-dev \
 	lint fmt fmt-check type test qa coverage docstrings-check \
-	run-example examples-test examples-metrics \
+	run-example examples-test examples-coverage examples-metrics \
 	docs docs-build docs-check docs-linkcheck \
 	release-check ci clean
 
@@ -19,8 +19,9 @@ help:
 	@echo "  dev              Install the project in editable mode with dev dependencies."
 	@echo "  test             Run the pytest suite."
 	@echo "  qa               Run lint, fmt-check, type, and test."
-	@echo "  run-example      Execute the live llama.cpp end-to-end walkthrough example."
+	@echo "  run-example      Execute the live llama.cpp strategy-comparison study example."
 	@echo "  examples-test    Execute all bundled example scripts."
+	@echo "  examples-coverage Check public API coverage across examples."
 	@echo "  examples-metrics Generate example and public-API badge artifacts."
 	@echo "  docs             Build the HTML docs."
 	@echo "  ci               Run the main local CI checks."
@@ -60,21 +61,13 @@ docstrings-check: check-python
 	$(PYTHON) scripts/check_google_docstrings.py
 
 run-example: check-python
-	PYTHONPATH=src $(PYTHON) examples/end_to_end_walkthrough.py
+	PYTHONPATH=src $(PYTHON) examples/prompt_framing_study.py
 
 examples-test: check-python
-	@set -e; \
-	live_example="examples/end_to_end_walkthrough.py"; \
-	run_live_example=0; \
-	if [ "$$RUN_LIVE_EXAMPLE" = "1" ]; then run_live_example=1; fi; \
-	for script in $$(ls examples/*.py | sort); do \
-		if [ "$$script" = "$$live_example" ] && [ "$$run_live_example" -ne 1 ]; then \
-			echo "Skipping $$script (set RUN_LIVE_EXAMPLE=1 to run the managed llama.cpp walkthrough)"; \
-			continue; \
-		fi; \
-		echo "Running $$script"; \
-		PYTHONPATH=src $(PYTHON) "$$script"; \
-	done
+	$(PYTHON) scripts/run_examples.py
+
+examples-coverage: check-python
+	$(PYTHON) scripts/check_example_api_coverage.py --minimum 90
 
 examples-metrics: check-python examples-test
 	$(PYTHON) scripts/generate_examples_metrics.py
@@ -96,7 +89,7 @@ release-check: check-python
 	$(BUILD)
 	$(TWINE) check dist/*
 
-ci: qa coverage docstrings-check docs-check examples-test release-check
+ci: qa coverage docstrings-check docs-check examples-test examples-coverage release-check
 
 clean:
 	rm -rf .coverage .mypy_cache .pytest_cache .ruff_cache artifacts build dist docs/_build
