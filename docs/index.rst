@@ -34,7 +34,7 @@ together and when to drop into the more specialized repos directly.
 .. note::
 
    **Start with** :doc:`compatibility` to choose between the umbrella package
-   and direct sibling installs, then follow :doc:`end_to_end_walkthrough` for
+   and direct sibling installs, then follow :doc:`prompt_framing_study` for
    the canonical real-agent workflow example built from the umbrella namespace.
 
 Guides
@@ -44,7 +44,7 @@ Use these pages to understand the umbrella package, the shared namespace, and
 the recommended path through the ecosystem.
 
 - :doc:`compatibility`
-- :doc:`end_to_end_walkthrough`
+- :doc:`prompt_framing_study`
 - :doc:`quickstart`
 - :doc:`installation`
 - :doc:`concepts`
@@ -83,7 +83,7 @@ Start Here
 ----------
 
 - :doc:`compatibility`
-- :doc:`end_to_end_walkthrough`
+- :doc:`prompt_framing_study`
 - :doc:`quickstart`
 - :doc:`installation`
 - :doc:`concepts`
@@ -97,7 +97,7 @@ Start Here
    :hidden:
 
    compatibility
-   end_to_end_walkthrough
+   prompt_framing_study
    quickstart
    installation
    concepts

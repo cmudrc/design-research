@@ -70,4 +70,4 @@ Next Step
 ---------
 
 If you want to see the umbrella package drive a real composed workflow, continue
-to :doc:`end_to_end_walkthrough`.
+to :doc:`prompt_framing_study`.

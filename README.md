@@ -37,13 +37,14 @@ python -m venv .venv
 source .venv/bin/activate
 make dev
 make test
-python -m pip install llama-cpp-python
+python -m pip install "llama-cpp-python[server]" huggingface-hub
 make run-example
 ```
 
 `make run-example` now uses a managed `llama.cpp` client. Install
-`llama-cpp-python` first, and optionally set `LLAMA_CPP_MODEL` if you want to
-point at a specific local GGUF file instead of using the client defaults.
+`llama-cpp-python[server]` first. If you want the client to fetch its default
+GGUF model automatically, also install `huggingface-hub`; otherwise set
+`LLAMA_CPP_MODEL` to a specific local GGUF file.
 
 Install from PyPI:
 
@@ -79,7 +80,7 @@ Choose your entry point based on how much of the ecosystem you need:
 - Start with `design-research` when you want one stable namespace and one set of docs across problems, agents, experiments, and analysis.
 - Install a sibling package directly when you only need one layer or want package-specific internals; direct sibling use is fully supported.
 - See [Compatibility and Start Here](https://cmudrc.github.io/design-research/compatibility.html) for the tested package combination and install guidance.
-- See [End-to-End Walkthrough](https://cmudrc.github.io/design-research/end_to_end_walkthrough.html) for the canonical composed workflow example with a live agent.
+- See [Prompt-Framing Study Walkthrough](https://cmudrc.github.io/design-research/prompt_framing_study.html) for the canonical composed workflow example with a live agent.
 
 ## Ecosystem Integration
 

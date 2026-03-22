@@ -18,7 +18,7 @@ Run the bundled example:
 
 .. code-block:: bash
 
-   python -m pip install llama-cpp-python
+   python -m pip install "llama-cpp-python[server]" huggingface-hub
    make run-example
 
 ``make run-example`` executes the canonical umbrella-level walkthrough that
@@ -26,8 +26,9 @@ uses a real packaged problem, a live model-backed workflow agent, canonical
 experiment artifacts, and exported event-table validation.
 
 The walkthrough uses a managed ``llama.cpp`` client. Install
-``llama-cpp-python`` before running it, and optionally set ``LLAMA_CPP_MODEL``
-if you want to point at a specific local GGUF file.
+``llama-cpp-python[server]`` before running it. If you want the default GGUF
+download path to work, also install ``huggingface-hub``; otherwise set
+``LLAMA_CPP_MODEL`` to a specific local GGUF file.
 
 Build the docs:
 

@@ -38,9 +38,10 @@ make examples-test
 ```
 
 `make run-example` is the live walkthrough path and uses a managed
-`llama.cpp` client. Install `llama-cpp-python` before running it, and
-optionally set `LLAMA_CPP_MODEL` if you want to point at a specific local GGUF
-file. `make examples-test` skips that walkthrough unless
+`llama.cpp` client. Install `llama-cpp-python[server]` before running it. If
+you want to use the default GGUF download path, also install
+`huggingface-hub`; otherwise set `LLAMA_CPP_MODEL` to point at a specific local
+GGUF file. `make examples-test` skips that walkthrough unless
 `RUN_LIVE_EXAMPLE=1`, which keeps the default local and CI loop offline-safe.
 
 ## Coverage Policy

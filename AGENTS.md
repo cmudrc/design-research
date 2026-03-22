@@ -29,7 +29,7 @@ merging.
   - `make docs-check`
   - `make docs`
 - If the example changed:
-  - `make run-example` (install `llama-cpp-python` first; optionally set `LLAMA_CPP_MODEL` for a specific GGUF file)
+  - `make run-example` (install `llama-cpp-python[server]`; also install `huggingface-hub` unless `LLAMA_CPP_MODEL` points at a local GGUF file)
   - `make examples-test` (skips the live walkthrough unless `RUN_LIVE_EXAMPLE=1`)
 - Pre-merge baseline:
   - `make ci`
