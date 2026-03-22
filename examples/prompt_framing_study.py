@@ -295,6 +295,7 @@ def main() -> None:
         port=configured_port,
         context_window=configured_context_window,
     ) as llm_client:
+
         def build_request(context: dict[str, object]) -> object:
             """Build one structured model request for the workflow step."""
             prompt = str(context.get("prompt", "")).strip()
@@ -551,8 +552,7 @@ def main() -> None:
     validation_report = dr.analysis.validate_unified_table(event_rows)
     if validation_report.errors:
         raise RuntimeError(
-            "Unified event table validation failed:\n- "
-            + "\n- ".join(validation_report.errors)
+            "Unified event table validation failed:\n- " + "\n- ".join(validation_report.errors)
         )
 
     primary_metric_rows = dr.analysis.build_condition_metric_table(
@@ -695,8 +695,7 @@ def _require_april_branch_apis() -> None:
             "This walkthrough tracks the April 2026 sibling-library branches. Install "
             "design-research-agents, design-research-experiments, and "
             "design-research-analysis from those branches, or wait for the matching release "
-            "versions, before running it. Missing APIs: "
-            + ", ".join(missing)
+            "versions, before running it. Missing APIs: " + ", ".join(missing)
         )
 
 
