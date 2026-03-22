@@ -24,7 +24,7 @@ import design_research as dr  # noqa: E402
 BENCHMARK_PROBLEM_IDS = (
     "treadle_pump_ide_material_min",
     "moneymaker_hip_pump_cost_min",
-    "battery_18650_t1_rectangular_surrogate_opt",
+    "battery_pack_18650_series_parallel_cost_min",
 )
 STUDY_ID = "pump_and_battery_design_portfolio"
 OUTPUT_DIR = Path("artifacts") / "examples" / STUDY_ID
