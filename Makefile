@@ -64,18 +64,7 @@ run-example: check-python
 	PYTHONPATH=src $(PYTHON) examples/prompt_framing_study.py
 
 examples-test: check-python
-	@set -e; \
-	live_example="examples/prompt_framing_study.py"; \
-	run_live_example=0; \
-	if [ "$$RUN_LIVE_EXAMPLE" = "1" ]; then run_live_example=1; fi; \
-	for script in $$(find examples -maxdepth 1 -type f -name '*.py' ! -name '_*.py' | sort); do \
-		if [ "$$script" = "$$live_example" ] && [ "$$run_live_example" -ne 1 ]; then \
-			echo "Skipping $$script (set RUN_LIVE_EXAMPLE=1 to run the managed llama.cpp study walkthrough)"; \
-			continue; \
-		fi; \
-		echo "Running $$script"; \
-			PYTHONPATH=src $(PYTHON) "$$script"; \
-		done
+	$(PYTHON) scripts/run_examples.py
 
 examples-coverage: check-python
 	$(PYTHON) scripts/check_example_api_coverage.py --minimum 90
