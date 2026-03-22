@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import random
 from collections.abc import Mapping
-from typing import Any
+from typing import Any, cast
 
 from . import problems
 
@@ -17,11 +17,12 @@ SEEDED_RANDOM_BASELINE_AGENT_ID = "SeededRandomBaselineAgent"
 
 def resolve_problem(experiments_module: Any, *, problem_id: str) -> object:
     """Resolve one packaged problem through the sibling package or a local fallback."""
-    library_helper = getattr(experiments_module, "resolve_problem", None)
+    library_helper = cast(Any, getattr(experiments_module, "resolve_problem", None))
     if callable(library_helper):
         return library_helper(problem_id)
 
-    problem = problems.get_problem(problem_id)
+    get_problem = cast(Any, problems.get_problem)
+    problem = get_problem(problem_id)
     metadata = getattr(problem, "metadata", None)
 
     def evaluator(run_output: Mapping[str, Any]) -> Any:
@@ -29,7 +30,8 @@ def resolve_problem(experiments_module: Any, *, problem_id: str) -> object:
         candidate = run_output.get("candidate", run_output)
         return _normalize_evaluation_rows(problem.evaluate(candidate))
 
-    return experiments_module.ProblemPacket(
+    problem_packet_cls = cast(Any, experiments_module.ProblemPacket)
+    return problem_packet_cls(
         problem_id=str(getattr(metadata, "problem_id", problem_id)),
         family=str(getattr(getattr(metadata, "kind", None), "value", "unknown")),
         brief=_problem_brief(problem, fallback=str(getattr(metadata, "title", problem_id))),
@@ -46,9 +48,12 @@ def resolve_problem(experiments_module: Any, *, problem_id: str) -> object:
 
 def make_seeded_random_baseline_factories(experiments_module: Any) -> dict[str, Any]:
     """Return seeded-baseline factories from the sibling package or a local fallback."""
-    library_helper = getattr(experiments_module, "make_seeded_random_baseline_factories", None)
+    library_helper = cast(
+        Any,
+        getattr(experiments_module, "make_seeded_random_baseline_factories", None),
+    )
     if callable(library_helper):
-        return library_helper()
+        return cast(dict[str, Any], library_helper())
 
     def factory(_condition: object) -> Any:
         """Build one deterministic fallback baseline executor."""
