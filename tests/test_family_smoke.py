@@ -20,7 +20,9 @@ SIBLING_REPOS = (
 
 def _bootstrap_april_family() -> object:
     """Prefer adjacent sibling worktrees for the April family smoke test."""
-    missing = [repo_name for repo_name in SIBLING_REPOS if not (WORKSPACE_ROOT / repo_name).exists()]
+    missing = [
+        repo_name for repo_name in SIBLING_REPOS if not (WORKSPACE_ROOT / repo_name).exists()
+    ]
     if missing:
         pytest.skip("Missing sibling worktrees: " + ", ".join(sorted(missing)))
 
