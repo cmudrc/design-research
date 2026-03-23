@@ -7,7 +7,6 @@ from pathlib import Path
 from _future_stack import (
     artifact_names,
     bootstrap_future_stack,
-    make_delegate_agent_factory,
     require_future_apis,
     validate_exported_events,
 )
@@ -29,7 +28,7 @@ BENCHMARK_PROBLEM_IDS = (
 STUDY_ID = "pump_and_battery_design_portfolio"
 OUTPUT_DIR = Path("artifacts") / "examples" / STUDY_ID
 SUMMARY_REPORT_NAME = "pump_and_battery_design_summary.md"
-BASELINE_AGENT_ID = "seeded_random_baseline"
+BASELINE_AGENT_ID = "SeededRandomBaselineAgent"
 
 
 def main() -> None:
@@ -93,16 +92,12 @@ def main() -> None:
     # Materialize the primary study's condition table before execution.
     conditions = dr.experiments.build_design(primary_study)
 
-    # Run one seeded baseline agent across the packaged mechanical problems. The
-    # delegate bridge keeps the example small while still exercising the real
-    # experiments API.
+    # Run one seeded baseline agent across the packaged mechanical problems.
     results = dr.experiments.run_study(
         primary_study,
         conditions=conditions,
         agent_factories={
-            BASELINE_AGENT_ID: make_delegate_agent_factory(
-                lambda: dr.agents.SeededRandomBaselineAgent(seed=7)
-            )
+            BASELINE_AGENT_ID: lambda _condition: dr.agents.SeededRandomBaselineAgent(seed=7)
         },
         # Resolve each packaged problem through the experiments wrapper so the
         # study sees normalized problem packets with real evaluator behavior.

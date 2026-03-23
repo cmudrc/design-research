@@ -18,8 +18,9 @@ What This Covers
 ----------------
 
 - resolves a real packaged problem through ``design_research.problems``
-- resolves that problem through the umbrella compatibility layer so packaged
-  evaluations still normalize cleanly into experiment rows
+- resolves that problem through the sibling-owned
+  ``design_research.experiments.resolve_problem`` interop API so packaged
+  evaluations normalize cleanly into experiment rows
 - builds the study from
   ``design_research.experiments.build_strategy_comparison_study`` with a
   recipe-first benchmark bundle containing a random baseline, a neutral
@@ -43,8 +44,8 @@ sibling packages, it will fail fast with a clear upgrade message instead of
 silently drifting from the new workflow/recipe/reporting surface.
 
 During local development the script prefers adjacent sibling worktrees when
-they are present, which lets the umbrella example track the future-state APIs
-before the pinned PyPI versions catch up. Use
+they are present, which lets the umbrella example track the April-family public
+APIs before the pinned PyPI versions catch up. Use
 ``DESIGN_RESEARCH_WORKSPACE_ROOT=/path/to/your/workspace`` to point the
 walkthrough at a different parent workspace, or repo-specific overrides such
 as ``DESIGN_RESEARCH_AGENTS_ROOT`` when needed.
@@ -88,8 +89,9 @@ model before the walkthrough executes, which is why the setup above includes
 
 The script is intentionally written in a linear, step-by-step style so it can
 double as training material and as the literal-included documentation example.
-The only local callbacks left in place are the small adapters required by the
-workflow runtime and the temporary delegate-to-experiments bridge.
+The only local callbacks left in place are the small workflow request/response
+adapters and the condition-specific prompt builders passed into
+``WorkflowStudyDelegate``.
 
 Code
 ----

@@ -11,7 +11,6 @@ from _future_stack import (
     decision_candidate_schema,
     llama_cpp_runtime_config,
     load_analysis_exports,
-    make_delegate_agent_factory,
     require_future_apis,
     validate_exported_events,
 )
@@ -79,18 +78,17 @@ def main() -> None:
         context_window=int(runtime["context_window"]),
     ) as llm_client:
         # Each `agent_id` in the strategy bundle maps to an experiments
-        # `agent_factory`. The helper bridge converts our delegate/workflow
-        # objects into the callback shape `run_study(...)` expects.
+        # `agent_factory`. Workflow-backed conditions use the sibling-owned
+        # `WorkflowStudyDelegate` so experiments receives a normal executable
+        # agent without any umbrella-only bridge code.
         agent_factories = {
             # A simple seeded baseline gives us something deterministic to
             # compare the prompt-based strategies against.
-            "random_selection": make_delegate_agent_factory(
-                lambda: dr.agents.SeededRandomBaselineAgent(seed=7)
-            ),
+            "random_selection": lambda _condition: dr.agents.SeededRandomBaselineAgent(seed=7),
             # The neutral condition uses the live model but keeps the instruction
             # framing generic.
-            "neutral_prompt": make_delegate_agent_factory(
-                lambda: build_json_model_workflow(
+            "neutral_prompt": lambda _condition: dr.agents.WorkflowStudyDelegate(
+                workflow=build_json_model_workflow(
                     dr,
                     llm_client=llm_client,
                     candidate_schema=candidate_schema,
@@ -109,8 +107,8 @@ def main() -> None:
             ),
             # The profit-focused condition swaps only the framing instruction so
             # the study isolates prompt strategy rather than model identity.
-            "profit_focus_prompt": make_delegate_agent_factory(
-                lambda: build_json_model_workflow(
+            "profit_focus_prompt": lambda _condition: dr.agents.WorkflowStudyDelegate(
+                workflow=build_json_model_workflow(
                     dr,
                     llm_client=llm_client,
                     candidate_schema=candidate_schema,

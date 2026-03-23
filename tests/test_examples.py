@@ -53,3 +53,5 @@ def test_prompt_framing_walkthrough_bootstraps_workspace_sources() -> None:
     source = (EXAMPLES_DIR / "prompt_framing_study.py").read_text(encoding="utf-8")
     assert "from _workspace_bootstrap import bootstrap_sibling_sources" in source
     assert "bootstrap_sibling_sources()" in source
+    assert "WorkflowStudyDelegate" in source
+    assert "make_delegate_agent_factory" not in source

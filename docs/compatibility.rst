@@ -30,10 +30,12 @@ Tested Package Combination
 These versions match the exact sibling pins in ``pyproject.toml`` and represent
 the tested umbrella combination for the current docs baseline.
 
-The bundled examples are intentionally more future-state oriented than that
-published pin set. When adjacent sibling worktrees are present, the examples
-prefer those local checkouts so the umbrella walkthroughs can target the newer
-recipe/workflow/reporting APIs before the pinned releases catch up.
+The bundled examples and smoke tests intentionally target the April 2026 family
+interop seams directly: ``design_research_experiments.resolve_problem(...)``,
+``design_research_agents.WorkflowStudyDelegate``, and
+``design_research_analysis.integration``. When adjacent sibling worktrees are
+present, the examples prefer those local checkouts so the umbrella package is
+exercising the same public APIs owned by the sibling libraries themselves.
 
 Start Here Vs Go Direct
 -----------------------

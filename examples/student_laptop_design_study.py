@@ -8,7 +8,6 @@ from pathlib import Path
 from _future_stack import (
     artifact_names,
     bootstrap_future_stack,
-    make_delegate_agent_factory,
     require_future_apis,
     validate_exported_events,
 )
@@ -29,7 +28,7 @@ PROBLEM_ID = "decision_laptop_design_profit_maximization"
 STUDY_ID = "student_laptop_design_study"
 OUTPUT_DIR = Path("artifacts") / "examples" / STUDY_ID
 SUMMARY_REPORT_NAME = "student_laptop_design_summary.md"
-BASELINE_AGENT_ID = "seeded_random_baseline"
+BASELINE_AGENT_ID = "SeededRandomBaselineAgent"
 
 
 def main() -> None:
@@ -80,18 +79,14 @@ def main() -> None:
     # condition rows it should execute.
     conditions = dr.experiments.build_design(study)
 
-    # Run the study with a single baseline agent. The helper bridge adapts a
-    # design-research-agents delegate into the experiments package's
-    # `agent_factories` contract so the example can stay concise.
+    # Run the study with the sibling-owned seeded baseline agent directly.
     results = dr.experiments.run_study(
         study,
         conditions=conditions,
         agent_factories={
-            BASELINE_AGENT_ID: make_delegate_agent_factory(
-                lambda: dr.agents.SeededRandomBaselineAgent(seed=7)
-            )
+            BASELINE_AGENT_ID: lambda _condition: dr.agents.SeededRandomBaselineAgent(seed=7)
         },
-        # Resolve the packaged problem once up front. The future-state path is
+        # Resolve the packaged problem once up front. The April-family path is
         # that packaged problems flow straight through the umbrella without any
         # hand-built `ProblemPacket` boilerplate in the example itself.
         problem_registry={PROBLEM_ID: dr.experiments.resolve_problem(PROBLEM_ID)},

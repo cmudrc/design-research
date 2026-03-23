@@ -44,10 +44,13 @@ make examples-test
 
 `make run-example` is the live canonical walkthrough. It uses a managed
 `llama.cpp` client, a workflow-backed strategy comparison, canonical exports,
-and downstream analysis helpers. Install `llama-cpp-python[server]` first. If
-you want the client to fetch its default GGUF model automatically, also
-install `huggingface-hub`; otherwise set `LLAMA_CPP_MODEL` to a specific local
-GGUF file.
+and downstream analysis helpers. The live workflow path now uses the sibling
+public seams directly: `WorkflowStudyDelegate`,
+`design_research.experiments.resolve_problem(...)`, and
+`design_research.analysis.integration`. Install
+`llama-cpp-python[server]` first. If you want the client to fetch its default
+GGUF model automatically, also install `huggingface-hub`; otherwise set
+`LLAMA_CPP_MODEL` to a specific local GGUF file.
 
 `make examples-test` stays deterministic and offline-first by default. It runs
 the two non-live recipe-first examples and skips the live walkthrough unless

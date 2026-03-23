@@ -1,4 +1,4 @@
-"""Private helpers for future-state umbrella examples."""
+"""Private helpers for the April-family umbrella examples."""
 
 from __future__ import annotations
 
@@ -8,7 +8,7 @@ import importlib.util
 import json
 import os
 import sys
-from collections.abc import Callable, Mapping, Sequence
+from collections.abc import Mapping, Sequence
 from pathlib import Path
 from typing import Any
 
@@ -44,24 +44,27 @@ def import_design_research() -> Any:
 
 
 def require_future_apis(dr: Any, *, live: bool = False) -> None:
-    """Fail fast when the future-state sibling APIs are unavailable."""
+    """Fail fast when the April-family sibling APIs are unavailable."""
     required = {
         "design_research.experiments": (
             "BenchmarkBundle",
             "build_strategy_comparison_study",
+            "make_seeded_random_baseline_factories",
             "render_markdown_summary",
+            "resolve_problem",
         ),
         "design_research.analysis": (
-            "compare_condition_pairs",
             "build_condition_metric_table",
-            "validate_unified_table",
+            "compare_condition_pairs",
+            "integration",
         ),
         "design_research.agents": (
             "SeededRandomBaselineAgent",
             "Workflow",
+            "WorkflowStudyDelegate",
         ),
         "design_research.problems": (
-            "get_problem_as",
+            "get_problem",
             "list_problems",
         ),
     }
@@ -77,62 +80,10 @@ def require_future_apis(dr: Any, *, live: bool = False) -> None:
 
     if missing:
         raise RuntimeError(
-            "These examples track the future recipe-first sibling APIs. Install the target "
+            "These examples track the April family sibling APIs. Install the target "
             "branches or keep sibling worktrees next to this repo. Missing APIs: "
             + ", ".join(missing)
         )
-
-
-def make_delegate_agent_factory(
-    delegate_builder: Callable[[], object],
-    *,
-    prompt_builder: Callable[[object, object, object], str] | None = None,
-) -> Callable[[object], Callable[..., dict[str, object]]]:
-    """Adapt a delegate or workflow-backed agent to the experiments factory contract."""
-    resolved_prompt_builder = prompt_builder or _default_prompt
-
-    def factory(_condition: object) -> Callable[..., dict[str, object]]:
-        """Build one experiments-compatible executor from a delegate instance."""
-        delegate = delegate_builder()
-        run_delegate = delegate.run
-
-        def run(
-            *,
-            problem_packet: object,
-            run_spec: object,
-            condition: object,
-        ) -> dict[str, object]:
-            """Execute one delegate call and normalize its outputs for experiments."""
-            dependencies = {
-                "problem_packet": problem_packet,
-                "problem": _problem_object(problem_packet),
-                "run_spec": run_spec,
-                "condition": condition,
-                "seed": getattr(run_spec, "seed", None),
-            }
-            execution = run_delegate(
-                resolved_prompt_builder(problem_packet, run_spec, condition),
-                request_id=str(getattr(run_spec, "run_id", "")),
-                dependencies=dependencies,
-            )
-            if not bool(getattr(execution, "success", False)):
-                raise RuntimeError(
-                    f"Agent execution failed: {getattr(execution, 'error', 'unknown error')}"
-                )
-
-            metadata = dict(getattr(execution, "metadata", {}) or {})
-            trace_refs = _trace_refs(metadata=metadata)
-            return {
-                "output": _output_mapping(execution, "final_output"),
-                "metrics": _output_mapping(execution, "metrics"),
-                "events": _output_sequence(execution, "events"),
-                "trace_refs": trace_refs,
-                "metadata": metadata,
-            }
-
-        return run
-
-    return factory
 
 
 def read_csv_rows(path: Path) -> list[dict[str, str]]:
@@ -152,7 +103,7 @@ def load_analysis_exports(
 
 def validate_exported_events(dr: Any, artifact_paths: Mapping[str, Path]) -> Any:
     """Validate the exported canonical event table through the analysis layer."""
-    return dr.analysis.validate_unified_table(read_csv_rows(artifact_paths["events.csv"]))
+    return dr.analysis.integration.validate_experiment_events(artifact_paths["events.csv"])
 
 
 def condition_means(rows: list[dict[str, object]]) -> dict[str, float]:
@@ -340,59 +291,6 @@ def _resolve_namespace(dr: Any, namespace: str) -> Any:
     return current
 
 
-def _problem_object(problem_packet: object) -> object | None:
-    """Extract the underlying packaged problem object when present."""
-    payload = getattr(problem_packet, "payload", {})
-    if not isinstance(payload, Mapping):
-        return None
-    return payload.get("problem_object")
-
-
-def _default_prompt(problem_packet: object, _run_spec: object, _condition: object) -> str:
-    """Build the default delegate prompt from the normalized problem packet."""
-    return str(getattr(problem_packet, "brief", "")).strip()
-
-
-def _output_mapping(execution: object, key: str) -> dict[str, object]:
-    """Read one mapping-valued entry from an execution result."""
-    output_dict = getattr(execution, "output_dict", None)
-    if callable(output_dict):
-        value = output_dict(key)
-        if isinstance(value, Mapping):
-            return dict(value)
-    output = getattr(execution, "output", {})
-    if isinstance(output, Mapping):
-        value = output.get(key, {})
-        if isinstance(value, Mapping):
-            return dict(value)
-    return {}
-
-
-def _output_sequence(execution: object, key: str) -> list[dict[str, object]]:
-    """Read one sequence-valued entry from an execution result."""
-    output_list = getattr(execution, "output_list", None)
-    if callable(output_list):
-        value = output_list(key)
-        if isinstance(value, Sequence):
-            return [dict(item) for item in value if isinstance(item, Mapping)]
-    output = getattr(execution, "output", {})
-    if isinstance(output, Mapping):
-        value = output.get(key, ())
-        if isinstance(value, Sequence):
-            return [dict(item) for item in value if isinstance(item, Mapping)]
-    return []
-
-
-def _trace_refs(*, metadata: Mapping[str, object]) -> list[str]:
-    """Extract best-effort trace references from execution metadata."""
-    trace_refs: list[str] = []
-    for key in ("trace_path", "trace_ref"):
-        value = metadata.get(key)
-        if isinstance(value, str) and value.strip():
-            trace_refs.append(value)
-    return trace_refs
-
-
 def strip_markdown_fences(text: str) -> str:
     """Strip one optional fenced-code wrapper from a model response."""
     if not text.startswith("```"):
@@ -430,7 +328,6 @@ __all__ = [
     "import_design_research",
     "llama_cpp_runtime_config",
     "load_analysis_exports",
-    "make_delegate_agent_factory",
     "read_csv_rows",
     "require_future_apis",
     "strip_markdown_fences",
