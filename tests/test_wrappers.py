@@ -288,7 +288,7 @@ def _install_dependency_stubs() -> dict[str, ModuleType]:
     ]
 
     analysis = ModuleType("design_research_analysis")
-    analysis.integration = ModuleType("design_research_analysis.integration")
+    analysis_integration = ModuleType("design_research_analysis.integration")
     for symbol in [
         "DecodeResult",
         "DiscreteHMMResult",
@@ -326,7 +326,6 @@ def _install_dependency_stubs() -> dict[str, ModuleType]:
         "fit_topic_model",
         "is_google_colab",
         "is_notebook",
-        "integration",
         "language",
         "minimum_detectable_effect",
         "permutation_test",
@@ -341,6 +340,7 @@ def _install_dependency_stubs() -> dict[str, ModuleType]:
         "write_run_manifest",
     ]:
         setattr(analysis, symbol, _fn(symbol))
+    analysis.integration = analysis_integration
     analysis.__all__ = [
         "DecodeResult",
         "DiscreteHMMResult",
@@ -394,6 +394,7 @@ def _install_dependency_stubs() -> dict[str, ModuleType]:
         "design_research_agents": agents,
         "design_research_experiments": experiments,
         "design_research_analysis": analysis,
+        "design_research_analysis.integration": analysis_integration,
     }
     sys.modules.update(stubs)
     return stubs
