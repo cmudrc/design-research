@@ -20,11 +20,11 @@ Tested Package Combination
      - ``design-research-experiments``
      - ``design-research-analysis``
      - Monthly release context
-   * - ``0.1.0``
-     - ``0.2.0``
-     - ``0.2.0``
-     - ``0.1.0``
-     - ``0.1.0``
+   * - ``0.1.1``
+     - ``0.2.1``
+     - ``0.3.0``
+     - ``0.1.1``
+     - ``0.1.1``
      - ``Atlas Alignment - April 2026``
 
 These versions match the exact sibling pins in ``pyproject.toml`` and represent
@@ -34,8 +34,9 @@ The bundled examples and smoke tests intentionally target the April 2026 family
 interop seams directly: ``design_research_experiments.resolve_problem(...)``,
 ``design_research_agents.WorkflowStudyDelegate``, and
 ``design_research_analysis.integration``. When adjacent sibling worktrees are
-present, the examples prefer those local checkouts so the umbrella package is
-exercising the same public APIs owned by the sibling libraries themselves.
+present, the examples and family-sync tests prefer those local checkouts so the
+umbrella package is exercising the same public APIs owned by the sibling
+libraries themselves.
 
 Start Here Vs Go Direct
 -----------------------

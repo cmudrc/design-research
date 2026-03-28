@@ -89,6 +89,7 @@ def _install_dependency_stubs() -> dict[str, ModuleType]:
         "__version__",
         "DirectLLMCall",
         "MultiStepAgent",
+        "SeededRandomBaselineAgent",
         "Toolbox",
         "CallableToolConfig",
         "ScriptToolConfig",
@@ -138,6 +139,7 @@ def _install_dependency_stubs() -> dict[str, ModuleType]:
         "__version__",
         "DirectLLMCall",
         "MultiStepAgent",
+        "SeededRandomBaselineAgent",
         "Toolbox",
         "CallableToolConfig",
         "ScriptToolConfig",
@@ -186,11 +188,13 @@ def _install_dependency_stubs() -> dict[str, ModuleType]:
     experiments = ModuleType("design_research_experiments")
     for symbol in [
         "AgentArchitectureComparisonConfig",
-        "Study",
-        "Hypothesis",
         "OutcomeSpec",
         "AnalysisPlan",
         "BenchmarkBundle",
+        "BivariateComparisonConfig",
+        "ComparisonStudyConfig",
+        "Study",
+        "Hypothesis",
         "RunBudget",
         "SeedPolicy",
         "Factor",
@@ -208,15 +212,20 @@ def _install_dependency_stubs() -> dict[str, ModuleType]:
         "RecipeStudyConfig",
         "RunResult",
         "RunSpec",
+        "StrategyComparisonConfig",
+        "UnivariateComparisonConfig",
     ]:
         setattr(experiments, symbol, type(symbol, (), {}))
     for symbol in [
         "build_agent_architecture_comparison_study",
+        "build_bivariate_comparison_study",
         "build_diversity_and_exploration_study",
         "build_grammar_scaffold_study",
         "build_human_vs_agent_process_study",
         "build_optimization_benchmark_study",
         "build_prompt_framing_study",
+        "build_strategy_comparison_study",
+        "build_univariate_comparison_study",
         "grammar_problem_bundle",
         "human_vs_agent_bundle",
         "ideation_bundle",
@@ -241,7 +250,9 @@ def _install_dependency_stubs() -> dict[str, ModuleType]:
         "AgentArchitectureComparisonConfig",
         "AnalysisPlan",
         "BenchmarkBundle",
+        "BivariateComparisonConfig",
         "Block",
+        "ComparisonStudyConfig",
         "Condition",
         "Constraint",
         "DiversityAndExplorationConfig",
@@ -260,14 +271,19 @@ def _install_dependency_stubs() -> dict[str, ModuleType]:
         "RunResult",
         "RunSpec",
         "SeedPolicy",
+        "StrategyComparisonConfig",
         "Study",
+        "UnivariateComparisonConfig",
         "build_agent_architecture_comparison_study",
+        "build_bivariate_comparison_study",
         "build_design",
         "build_diversity_and_exploration_study",
         "build_grammar_scaffold_study",
         "build_human_vs_agent_process_study",
         "build_optimization_benchmark_study",
         "build_prompt_framing_study",
+        "build_strategy_comparison_study",
+        "build_univariate_comparison_study",
         "export_analysis_tables",
         "generate_doe",
         "grammar_problem_bundle",
@@ -288,79 +304,113 @@ def _install_dependency_stubs() -> dict[str, ModuleType]:
     ]
 
     analysis = ModuleType("design_research_analysis")
+    analysis_dataset = ModuleType("design_research_analysis.dataset")
+    analysis_embedding_maps = ModuleType("design_research_analysis.embedding_maps")
     analysis_integration = ModuleType("design_research_analysis.integration")
+    analysis_language = ModuleType("design_research_analysis.language")
+    analysis_runtime = ModuleType("design_research_analysis.runtime")
+    analysis_sequence = ModuleType("design_research_analysis.sequence")
+    analysis_stats = ModuleType("design_research_analysis.stats")
+    analysis_visualization = ModuleType("design_research_analysis.visualization")
     for symbol in [
+        "ComparisonResult",
         "DecodeResult",
         "DiscreteHMMResult",
+        "EmbeddingMapResult",
+        "EmbeddingResult",
         "GaussianHMMResult",
         "MarkovChainResult",
         "UnifiedTableConfig",
         "UnifiedTableValidationReport",
     ]:
         setattr(analysis, symbol, type(symbol, (), {}))
+    analysis.__version__ = "0.1.1"
+    analysis.dataset = analysis_dataset
+    analysis.embedding_maps = analysis_embedding_maps
+    analysis.integration = analysis_integration
+    analysis.language = analysis_language
+    analysis.runtime = analysis_runtime
+    analysis.sequence = analysis_sequence
+    analysis.stats = analysis_stats
+    analysis.visualization = analysis_visualization
     for symbol in [
         "attach_provenance",
         "bootstrap_ci",
+        "build_condition_metric_table",
+        "build_embedding_map",
         "capture_run_context",
-        "cluster_projection",
+        "cluster_embedding_map",
         "coerce_unified_table",
+        "compare_condition_pairs",
+        "compare_embedding_maps",
         "derive_columns",
-        "validate_unified_table",
-        "dataset",
-        "decode_hmm",
-        "dimred",
-        "embed_records",
-        "estimate_sample_size",
-        "profile_dataframe",
-        "validate_dataframe",
-        "generate_codebook",
-        "fit_markov_chain_from_table",
-        "fit_discrete_hmm_from_table",
+        "compare_groups",
+        "compute_design_space_coverage",
+        "compute_divergence_convergence",
+        "compute_idea_space_trajectory",
         "compute_language_convergence",
         "compute_semantic_distance_trajectory",
-        "reduce_dimensions",
-        "compare_groups",
+        "decode_hmm",
+        "embed_records",
+        "estimate_sample_size",
+        "fit_discrete_hmm_from_table",
+        "fit_markov_chain_from_table",
         "fit_regression",
         "fit_mixed_effects",
         "fit_text_gaussian_hmm_from_table",
         "fit_topic_model",
+        "generate_codebook",
         "is_google_colab",
         "is_notebook",
-        "language",
         "minimum_detectable_effect",
         "permutation_test",
+        "plot_convergence_curve",
+        "plot_design_process_timeline",
+        "plot_embedding_map",
+        "plot_embedding_map_grid",
+        "plot_idea_trajectory",
         "plot_state_graph",
         "plot_transition_matrix",
         "power_curve",
+        "profile_dataframe",
         "rank_tests_one_stop",
-        "runtime",
         "score_sentiment",
-        "sequence",
-        "stats",
+        "validate_dataframe",
+        "validate_unified_table",
         "write_run_manifest",
     ]:
         setattr(analysis, symbol, _fn(symbol))
-    analysis.integration = analysis_integration
     analysis.__all__ = [
+        "ComparisonResult",
         "DecodeResult",
         "DiscreteHMMResult",
+        "EmbeddingMapResult",
+        "EmbeddingResult",
         "GaussianHMMResult",
         "MarkovChainResult",
         "UnifiedTableConfig",
         "UnifiedTableValidationReport",
+        "__version__",
         "attach_provenance",
         "bootstrap_ci",
+        "build_condition_metric_table",
+        "build_embedding_map",
         "capture_run_context",
-        "cluster_projection",
+        "cluster_embedding_map",
         "coerce_unified_table",
+        "compare_condition_pairs",
+        "compare_embedding_maps",
         "compare_groups",
+        "compute_design_space_coverage",
+        "compute_divergence_convergence",
+        "compute_idea_space_trajectory",
         "compute_language_convergence",
         "compute_semantic_distance_trajectory",
         "dataset",
         "decode_hmm",
         "derive_columns",
-        "dimred",
         "embed_records",
+        "embedding_maps",
         "estimate_sample_size",
         "fit_discrete_hmm_from_table",
         "fit_markov_chain_from_table",
@@ -369,23 +419,29 @@ def _install_dependency_stubs() -> dict[str, ModuleType]:
         "fit_text_gaussian_hmm_from_table",
         "fit_topic_model",
         "generate_codebook",
+        "integration",
         "is_google_colab",
         "is_notebook",
         "language",
         "minimum_detectable_effect",
         "permutation_test",
+        "plot_convergence_curve",
+        "plot_design_process_timeline",
+        "plot_embedding_map",
+        "plot_embedding_map_grid",
+        "plot_idea_trajectory",
         "plot_state_graph",
         "plot_transition_matrix",
         "power_curve",
         "profile_dataframe",
         "rank_tests_one_stop",
-        "reduce_dimensions",
         "runtime",
         "score_sentiment",
         "sequence",
         "stats",
         "validate_dataframe",
         "validate_unified_table",
+        "visualization",
         "write_run_manifest",
     ]
 
@@ -394,7 +450,14 @@ def _install_dependency_stubs() -> dict[str, ModuleType]:
         "design_research_agents": agents,
         "design_research_experiments": experiments,
         "design_research_analysis": analysis,
+        "design_research_analysis.dataset": analysis_dataset,
+        "design_research_analysis.embedding_maps": analysis_embedding_maps,
         "design_research_analysis.integration": analysis_integration,
+        "design_research_analysis.language": analysis_language,
+        "design_research_analysis.runtime": analysis_runtime,
+        "design_research_analysis.sequence": analysis_sequence,
+        "design_research_analysis.stats": analysis_stats,
+        "design_research_analysis.visualization": analysis_visualization,
     }
     sys.modules.update(stubs)
     return stubs
@@ -405,15 +468,23 @@ def test_wrapper_re_exports_are_reachable_via_stubs(monkeypatch: Any) -> None:
     stubs = _install_dependency_stubs()
     for name, module in stubs.items():
         monkeypatch.setitem(sys.modules, name, module)
+    for module_name in (
+        "design_research.problems",
+        "design_research.agents",
+        "design_research.experiments",
+        "design_research.analysis",
+    ):
+        sys.modules.pop(module_name, None)
 
-    problems = importlib.reload(importlib.import_module("design_research.problems"))
-    agents = importlib.reload(importlib.import_module("design_research.agents"))
-    experiments = importlib.reload(importlib.import_module("design_research.experiments"))
-    analysis = importlib.reload(importlib.import_module("design_research.analysis"))
+    problems = importlib.import_module("design_research.problems")
+    agents = importlib.import_module("design_research.agents")
+    experiments = importlib.import_module("design_research.experiments")
+    analysis = importlib.import_module("design_research.analysis")
 
     assert problems.get_problem()[0] == "get_problem"
     assert problems.list_problems()[0] == "list_problems"
     assert agents.MultiStepAgent.__name__ == "MultiStepAgent"
+    assert agents.SeededRandomBaselineAgent.__name__ == "SeededRandomBaselineAgent"
     assert agents.LlamaCppServerLLMClient.__name__ == "LlamaCppServerLLMClient"
     assert agents.ModelStep.__name__ == "ModelStep"
     assert agents.CallableToolConfig.__name__ == "CallableToolConfig"
@@ -429,12 +500,21 @@ def test_wrapper_re_exports_are_reachable_via_stubs(monkeypatch: Any) -> None:
     )
     assert experiments.run_study()[0] == "run_study"
     assert experiments.build_prompt_framing_study()[0] == "build_prompt_framing_study"
+    assert experiments.build_strategy_comparison_study()[0] == "build_strategy_comparison_study"
     assert experiments.render_significance_brief()[0] == "render_significance_brief"
     assert experiments.RunBudget.__name__ == "RunBudget"
+    assert experiments.StrategyComparisonConfig.__name__ == "StrategyComparisonConfig"
     assert experiments.Study.__name__ == "Study"
+    assert analysis.__version__ == "0.1.1"
+    assert analysis.build_condition_metric_table()[0] == "build_condition_metric_table"
+    assert analysis.compare_condition_pairs()[0] == "compare_condition_pairs"
+    assert analysis.ComparisonResult.__name__ == "ComparisonResult"
+    assert analysis.EmbeddingMapResult.__name__ == "EmbeddingMapResult"
+    assert analysis.embedding_maps.__name__ == "design_research_analysis.embedding_maps"
     assert analysis.permutation_test()[0] == "permutation_test"
     assert analysis.estimate_sample_size()[0] == "estimate_sample_size"
     assert analysis.integration.__name__ == "design_research_analysis.integration"
+    assert analysis.visualization.__name__ == "design_research_analysis.visualization"
     assert analysis.validate_unified_table()[0] == "validate_unified_table"
     assert analysis.UnifiedTableConfig.__name__ == "UnifiedTableConfig"
 
@@ -444,6 +524,9 @@ def test_wrapper_re_exports_are_reachable_via_stubs(monkeypatch: Any) -> None:
     assert analysis.__all__ == stubs["design_research_analysis"].__all__
 
     assert "permutation_test" in analysis.__all__
+    assert "compare_condition_pairs" in analysis.__all__
+    assert "visualization" in analysis.__all__
     assert "build_prompt_framing_study" in experiments.__all__
+    assert "build_strategy_comparison_study" in experiments.__all__
     assert "CallableToolConfig" in agents.__all__
     assert "Citation" in problems.__all__

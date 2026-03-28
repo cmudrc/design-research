@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "design-research"
-version = "0.1.0"
+version = "0.1.1"
 description = "Thin umbrella package for the CMU Design Research Collective ecosystem"
 readme = "README.md"
 requires-python = ">=3.12"
@@ -25,10 +25,10 @@ classifiers = [
   "Typing :: Typed",
 ]
 dependencies = [
-  "design-research-problems==0.2.0",
-  "design-research-agents==0.2.0",
-  "design-research-experiments==0.1.0",
-  "design-research-analysis==0.1.0",
+  "design-research-problems==0.2.1",
+  "design-research-agents==0.3.0",
+  "design-research-experiments==0.1.1",
+  "design-research-analysis==0.1.1",
 ]
 
 [project.optional-dependencies]

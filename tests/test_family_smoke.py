@@ -32,21 +32,47 @@ def _bootstrap_april_family() -> object:
         if src_text not in sys.path:
             sys.path.insert(0, src_text)
 
-    for module_name in (
+    for module_prefix in (
         "design_research",
-        "design_research.agents",
-        "design_research.analysis",
-        "design_research.experiments",
-        "design_research.problems",
         "design_research_agents",
         "design_research_analysis",
-        "design_research_analysis.integration",
         "design_research_experiments",
         "design_research_problems",
     ):
-        sys.modules.pop(module_name, None)
+        for module_name in [
+            name
+            for name in sys.modules
+            if name == module_prefix or name.startswith(f"{module_prefix}.")
+        ]:
+            sys.modules.pop(module_name, None)
 
     return importlib.import_module("design_research")
+
+
+def test_april_family_wrapper_exports_track_local_siblings() -> None:
+    """Keep the umbrella wrappers aligned with adjacent sibling public exports."""
+    dr = _bootstrap_april_family()
+    sibling_agents = importlib.import_module("design_research_agents")
+    sibling_experiments = importlib.import_module("design_research_experiments")
+    sibling_analysis = importlib.import_module("design_research_analysis")
+    sibling_problems = importlib.import_module("design_research_problems")
+
+    assert dr.agents.__all__ == sibling_agents.__all__
+    assert dr.experiments.__all__ == sibling_experiments.__all__
+    assert dr.analysis.__all__ == sibling_analysis.__all__
+    assert dr.problems.__all__ == sibling_problems.__all__
+    assert dr.agents.SeededRandomBaselineAgent is sibling_agents.SeededRandomBaselineAgent
+    assert dr.experiments.build_strategy_comparison_study is (
+        sibling_experiments.build_strategy_comparison_study
+    )
+    assert dr.analysis.build_condition_metric_table is sibling_analysis.build_condition_metric_table
+    assert dr.analysis.compare_condition_pairs is sibling_analysis.compare_condition_pairs
+    assert dr.analysis.embedding_maps is sibling_analysis.embedding_maps
+    assert dr.analysis.integration is sibling_analysis.integration
+    assert dr.analysis.visualization is sibling_analysis.visualization
+    assert dr.analysis.__version__ == sibling_analysis.__version__
+    assert dr.problems.list_problems is sibling_problems.list_problems
+    assert dr.problems.__version__ == sibling_problems.__version__
 
 
 def test_april_family_interoperability_smoke(tmp_path: Path) -> None:
