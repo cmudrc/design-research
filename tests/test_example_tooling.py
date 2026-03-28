@@ -3,31 +3,21 @@
 from __future__ import annotations
 
 import json
-import os
-import subprocess
-import sys
-from pathlib import Path
 
-REPO_ROOT = Path(__file__).resolve().parents[1]
+from tests._subprocess_support import REPO_ROOT, run_python_script, subprocess_env
+
 METRICS_SCRIPT = REPO_ROOT / "scripts" / "generate_examples_metrics.py"
 METRICS_PATH = REPO_ROOT / "artifacts" / "examples" / "examples_metrics.json"
 
 
 def _run_metrics(*, run_live_example: bool) -> dict[str, object]:
     """Generate example metrics and return the parsed artifact."""
-    env = os.environ.copy()
-    if run_live_example:
-        env["RUN_LIVE_EXAMPLE"] = "1"
-    else:
-        env.pop("RUN_LIVE_EXAMPLE", None)
-
-    subprocess.run(
-        [sys.executable, str(METRICS_SCRIPT)],
+    run_python_script(
+        METRICS_SCRIPT,
         cwd=REPO_ROOT,
-        check=True,
-        capture_output=True,
-        text=True,
-        env=env,
+        env=subprocess_env(
+            updates={"RUN_LIVE_EXAMPLE": "1" if run_live_example else None},
+        ),
     )
     return json.loads(METRICS_PATH.read_text(encoding="utf-8"))
 

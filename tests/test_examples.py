@@ -2,28 +2,20 @@
 
 from __future__ import annotations
 
-import os
 import subprocess
-import sys
 from pathlib import Path
 
-REPO_ROOT = Path(__file__).resolve().parents[1]
+from tests._subprocess_support import REPO_ROOT, run_python_script, subprocess_env
+
 EXAMPLES_DIR = REPO_ROOT / "examples"
 
 
 def _run_example(example_name: str, *, tmp_path: Path) -> subprocess.CompletedProcess[str]:
     """Execute one example script in an isolated subprocess."""
-    env = os.environ.copy()
-    env["PYTHONPATH"] = str(REPO_ROOT / "src")
-    env["DESIGN_RESEARCH_WORKSPACE_ROOT"] = str(REPO_ROOT.parent)
-
-    return subprocess.run(
-        [sys.executable, str(EXAMPLES_DIR / example_name)],
+    return run_python_script(
+        EXAMPLES_DIR / example_name,
         cwd=tmp_path,
-        check=True,
-        capture_output=True,
-        text=True,
-        env=env,
+        env=subprocess_env(workspace_root=REPO_ROOT.parent),
     )
 
 

@@ -6,17 +6,13 @@ from pathlib import Path
 
 from _future_stack import (
     artifact_names,
-    bootstrap_future_stack,
+    import_design_research,
     require_future_apis,
     validate_exported_events,
 )
 
-# Make local sibling checkouts available before importing the umbrella package.
-# That keeps the example aligned with the future branch APIs we expect to land.
-bootstrap_future_stack()
-
-# Import after bootstrapping so the wrapper module can see those future siblings.
-import design_research as dr  # noqa: E402
+# Import through the shared helper so sibling worktrees are bootstrapped first.
+dr = import_design_research()
 
 # Group the packaged problem ids up front so the portfolio nature of the example
 # is obvious at a glance.

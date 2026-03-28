@@ -7,19 +7,13 @@ from pathlib import Path
 
 from _future_stack import (
     artifact_names,
-    bootstrap_future_stack,
+    import_design_research,
     require_future_apis,
     validate_exported_events,
 )
 
-# Pull the sibling repositories onto `sys.path` when they are available locally.
-# This lets the example target the upcoming APIs directly instead of waiting for
-# the next packaged releases.
-bootstrap_future_stack()
-
-# Import the umbrella package only after the bootstrap hook has had a chance to
-# expose those sibling worktrees.
-import design_research as dr  # noqa: E402
+# Import through the shared helper so sibling worktrees are bootstrapped first.
+dr = import_design_research()
 
 # Keep the packaged benchmark id, output location, and agent id as module-level
 # constants so readers can see the moving pieces without digging through the
