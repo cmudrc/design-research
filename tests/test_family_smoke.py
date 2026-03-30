@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import importlib
+import os
 import sys
 from pathlib import Path
 
@@ -18,16 +19,29 @@ SIBLING_REPOS = (
 )
 
 
+def _resolve_repo_root(repo_name: str) -> Path:
+    """Resolve one sibling repo root from repo-specific env overrides when present."""
+    repo_key = repo_name.removeprefix("design-research-").replace("-", "_").upper()
+    src_override = os.getenv(f"DESIGN_RESEARCH_{repo_key}_SRC", "").strip()
+    if src_override:
+        return Path(src_override).expanduser().resolve().parent
+
+    root_override = os.getenv(f"DESIGN_RESEARCH_{repo_key}_ROOT", "").strip()
+    if root_override:
+        return Path(root_override).expanduser().resolve()
+
+    return WORKSPACE_ROOT / repo_name
+
+
 def _bootstrap_april_family() -> object:
     """Prefer adjacent sibling worktrees for the April family smoke test."""
-    missing = [
-        repo_name for repo_name in SIBLING_REPOS if not (WORKSPACE_ROOT / repo_name).exists()
-    ]
+    repo_roots = {repo_name: _resolve_repo_root(repo_name) for repo_name in SIBLING_REPOS}
+    missing = [repo_name for repo_name, repo_root in repo_roots.items() if not repo_root.exists()]
     if missing:
         pytest.skip("Missing sibling worktrees: " + ", ".join(sorted(missing)))
 
     for repo_name in reversed(SIBLING_REPOS):
-        src_path = WORKSPACE_ROOT / repo_name / "src"
+        src_path = repo_roots[repo_name] / "src"
         src_text = str(src_path)
         if src_text not in sys.path:
             sys.path.insert(0, src_text)
@@ -61,7 +75,7 @@ def test_april_family_wrapper_exports_track_local_siblings() -> None:
     assert dr.experiments.__all__ == sibling_experiments.__all__
     assert dr.analysis.__all__ == sibling_analysis.__all__
     assert dr.problems.__all__ == sibling_problems.__all__
-    assert dr.agents.SeededRandomBaselineAgent is sibling_agents.SeededRandomBaselineAgent
+    assert dr.agents.Workflow is sibling_agents.Workflow
     assert dr.experiments.build_strategy_comparison_study is (
         sibling_experiments.build_strategy_comparison_study
     )
@@ -79,6 +93,7 @@ def test_april_family_interoperability_smoke(tmp_path: Path) -> None:
     """Run one packaged problem through the family stack and validate the artifact handoff."""
     dr = _bootstrap_april_family()
     problem_id = "gmpb_default_dynamic_min"
+    baseline_agent_id = "SeededRandomBaselineAgent"
 
     study = dr.experiments.Study(
         study_id="umbrella-april-family-smoke",
@@ -86,7 +101,7 @@ def test_april_family_interoperability_smoke(tmp_path: Path) -> None:
         description="Exercise packaged problems, agents, experiments, and analysis together.",
         output_dir=tmp_path / "umbrella-april-family-smoke",
         problem_ids=(problem_id,),
-        agent_specs=("SeededRandomBaselineAgent",),
+        agent_specs=(baseline_agent_id,),
         outcomes=(
             dr.experiments.OutcomeSpec(
                 name="primary_outcome",
@@ -104,7 +119,6 @@ def test_april_family_interoperability_smoke(tmp_path: Path) -> None:
         study,
         conditions=conditions,
         problem_registry={problem_id: dr.experiments.resolve_problem(problem_id)},
-        agent_factories=dr.experiments.make_seeded_random_baseline_factories(),
         checkpoint=False,
         show_progress=False,
     )

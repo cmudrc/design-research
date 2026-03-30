@@ -40,10 +40,10 @@ def test_pump_and_battery_design_portfolio_example_executes(tmp_path: Path) -> N
     assert "Event rows valid: True" in completed.stdout
 
 
-def test_prompt_framing_walkthrough_bootstraps_workspace_sources() -> None:
-    """The live walkthrough should opt into sibling April workspace bootstrapping."""
+def test_prompt_framing_walkthrough_uses_public_prompt_workflow_agent() -> None:
+    """The live walkthrough should use the sibling-owned prompt workflow agent."""
     source = (EXAMPLES_DIR / "prompt_framing_study.py").read_text(encoding="utf-8")
-    assert "from _workspace_bootstrap import bootstrap_sibling_sources" in source
-    assert "bootstrap_sibling_sources()" in source
-    assert "WorkflowStudyDelegate" in source
-    assert "make_delegate_agent_factory" not in source
+    assert "_future_stack" not in source
+    assert "_workspace_bootstrap" not in source
+    assert "PromptWorkflowAgent" in source
+    assert "agent_bindings" in source

@@ -5,7 +5,8 @@ This walkthrough demonstrates the umbrella package doing real work with a live
 model-backed agent while following the comparison-study recipe/reporting APIs
 landing on the April 2026 sibling-library branches. It uses a real packaged
 problem from ``design_research.problems``, a managed
-prompt-mode ``design_research.agents.Workflow``, the
+prompt-mode ``design_research.agents.Workflow``,
+``design_research.agents.PromptWorkflowAgent``, the
 ``design_research.experiments.build_strategy_comparison_study`` scaffold, and
 the newer condition-comparison helpers from ``design_research.analysis``.
 
@@ -43,12 +44,9 @@ from ``design-research-agents``, ``design-research-experiments``, and
 sibling packages, it will fail fast with a clear upgrade message instead of
 silently drifting from the new workflow/recipe/reporting surface.
 
-During local development the script prefers adjacent sibling worktrees when
-they are present, which lets the umbrella example track the April-family public
-APIs before the pinned PyPI versions catch up. Use
-``DESIGN_RESEARCH_WORKSPACE_ROOT=/path/to/your/workspace`` to point the
-walkthrough at a different parent workspace, or repo-specific overrides such
-as ``DESIGN_RESEARCH_AGENTS_ROOT`` when needed.
+During local development, the umbrella test harness can point subprocess runs
+at adjacent sibling worktrees so the examples stay validated against the same
+public APIs owned by the sibling libraries themselves.
 
 Run It
 ------
@@ -91,7 +89,7 @@ The script is intentionally written in a linear, step-by-step style so it can
 double as training material and as the literal-included documentation example.
 The only local callbacks left in place are the small workflow request/response
 adapters and the condition-specific prompt builders passed into
-``WorkflowStudyDelegate``.
+``PromptWorkflowAgent(...)``.
 
 Code
 ----

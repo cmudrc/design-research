@@ -5,15 +5,7 @@ from __future__ import annotations
 from collections.abc import Mapping
 from pathlib import Path
 
-from _future_stack import (
-    artifact_names,
-    import_design_research,
-    require_future_apis,
-    validate_exported_events,
-)
-
-# Import through the shared helper so sibling worktrees are bootstrapped first.
-dr = import_design_research()
+import design_research as dr
 
 # Keep the packaged benchmark id, output location, and agent id as module-level
 # constants so readers can see the moving pieces without digging through the
@@ -27,10 +19,6 @@ BASELINE_AGENT_ID = "SeededRandomBaselineAgent"
 
 def main() -> None:
     """Run one authentic laptop-design benchmark and print its observed results."""
-    # Refuse to continue if the environment still points at older sibling APIs.
-    # These refreshed examples are intentionally future-first.
-    require_future_apis(dr)
-
     # Load the packaged problem so the summary can use the real benchmark title
     # and factor labels rather than only the internal problem id.
     problem = dr.problems.get_problem(PROBLEM_ID)
@@ -73,13 +61,9 @@ def main() -> None:
     # condition rows it should execute.
     conditions = dr.experiments.build_design(study)
 
-    # Run the study with the sibling-owned seeded baseline agent directly.
     results = dr.experiments.run_study(
         study,
         conditions=conditions,
-        agent_factories={
-            BASELINE_AGENT_ID: lambda _condition: dr.agents.SeededRandomBaselineAgent(seed=7)
-        },
         # Resolve the packaged problem once up front. The April-family path is
         # that packaged problems flow straight through the umbrella without any
         # hand-built `ProblemPacket` boilerplate in the example itself.
@@ -99,7 +83,7 @@ def main() -> None:
 
     # Sanity-check that the unified event export is structurally valid before we
     # tell readers to trust the generated artifacts.
-    validation_report = validate_exported_events(dr, artifact_paths)
+    validation_report = validate_exported_events(artifact_paths)
 
     # Write one human-readable markdown summary next to the raw CSV artifacts.
     summary_path = dr.experiments.write_markdown_report(
@@ -157,6 +141,18 @@ def main() -> None:
     print("Event rows valid:", validation_report.is_valid, f"(rows={validation_report.n_rows})")
     print("Summary report:", summary_path.name)
     print("Artifacts:", artifact_names(artifact_paths))
+
+
+def artifact_names(artifact_paths: Mapping[str, Path]) -> str:
+    """Return exported artifact filenames in stable sorted order."""
+    return ", ".join(sorted(path.name for path in artifact_paths.values()))
+
+
+def validate_exported_events(
+    artifact_paths: Mapping[str, Path],
+) -> object:
+    """Validate the exported canonical event table through the analysis layer."""
+    return dr.analysis.integration.validate_experiment_events(artifact_paths["events.csv"])
 
 
 if __name__ == "__main__":

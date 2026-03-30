@@ -2,17 +2,10 @@
 
 from __future__ import annotations
 
+from collections.abc import Mapping
 from pathlib import Path
 
-from _future_stack import (
-    artifact_names,
-    import_design_research,
-    require_future_apis,
-    validate_exported_events,
-)
-
-# Import through the shared helper so sibling worktrees are bootstrapped first.
-dr = import_design_research()
+import design_research as dr
 
 # Group the packaged problem ids up front so the portfolio nature of the example
 # is obvious at a glance.
@@ -29,10 +22,6 @@ BASELINE_AGENT_ID = "SeededRandomBaselineAgent"
 
 def main() -> None:
     """Run the primary engineering recipe and print the portfolio snapshot."""
-    # Stop immediately if the environment does not provide the future APIs these
-    # examples are written toward.
-    require_future_apis(dr)
-
     # Resolve the real packaged benchmark titles up front so the rest of the
     # script can report application names instead of only ids.
     benchmark_titles = {
@@ -88,13 +77,9 @@ def main() -> None:
     # Materialize the primary study's condition table before execution.
     conditions = dr.experiments.build_design(primary_study)
 
-    # Run one seeded baseline agent across the packaged mechanical problems.
     results = dr.experiments.run_study(
         primary_study,
         conditions=conditions,
-        agent_factories={
-            BASELINE_AGENT_ID: lambda _condition: dr.agents.SeededRandomBaselineAgent(seed=7)
-        },
         # Resolve each packaged problem through the experiments wrapper so the
         # study sees normalized problem packets with real evaluator behavior.
         problem_registry={
@@ -115,7 +100,7 @@ def main() -> None:
 
     # Check that the event export is internally consistent before reporting
     # success back to the reader.
-    validation_report = validate_exported_events(dr, artifact_paths)
+    validation_report = validate_exported_events(artifact_paths)
 
     # Write a lightweight markdown summary next to those exported artifacts.
     summary_path = dr.experiments.write_markdown_report(
@@ -153,6 +138,18 @@ def main() -> None:
     print("Event rows valid:", validation_report.is_valid, f"(rows={validation_report.n_rows})")
     print("Summary report:", summary_path.name)
     print("Artifacts:", artifact_names(artifact_paths))
+
+
+def artifact_names(artifact_paths: Mapping[str, Path]) -> str:
+    """Return exported artifact filenames in stable sorted order."""
+    return ", ".join(sorted(path.name for path in artifact_paths.values()))
+
+
+def validate_exported_events(
+    artifact_paths: Mapping[str, Path],
+) -> object:
+    """Validate the exported canonical event table through the analysis layer."""
+    return dr.analysis.integration.validate_experiment_events(artifact_paths["events.csv"])
 
 
 if __name__ == "__main__":

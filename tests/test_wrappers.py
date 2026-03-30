@@ -89,7 +89,9 @@ def _install_dependency_stubs() -> dict[str, ModuleType]:
         "__version__",
         "DirectLLMCall",
         "MultiStepAgent",
+        "SkillsConfig",
         "SeededRandomBaselineAgent",
+        "PromptWorkflowAgent",
         "Toolbox",
         "CallableToolConfig",
         "ScriptToolConfig",
@@ -108,7 +110,6 @@ def _install_dependency_stubs() -> dict[str, ModuleType]:
         "LLMMessage",
         "LLMResponse",
         "ToolResult",
-        "WorkflowStudyDelegate",
         "LlamaCppServerLLMClient",
         "AnthropicServiceLLMClient",
         "AzureOpenAIServiceLLMClient",
@@ -128,10 +129,11 @@ def _install_dependency_stubs() -> dict[str, ModuleType]:
         "DebatePattern",
         "PlanExecutePattern",
         "ProposeCriticPattern",
+        "NominalTeamPattern",
         "RouterDelegatePattern",
         "RoundBasedCoordinationPattern",
         "BlackboardPattern",
-        "BeamSearchPattern",
+        "TreeSearchPattern",
         "RAGPattern",
     ]:
         setattr(agents, symbol, type(symbol, (), {}))
@@ -139,7 +141,9 @@ def _install_dependency_stubs() -> dict[str, ModuleType]:
         "__version__",
         "DirectLLMCall",
         "MultiStepAgent",
+        "SkillsConfig",
         "SeededRandomBaselineAgent",
+        "PromptWorkflowAgent",
         "Toolbox",
         "CallableToolConfig",
         "ScriptToolConfig",
@@ -158,16 +162,16 @@ def _install_dependency_stubs() -> dict[str, ModuleType]:
         "LLMResponse",
         "ToolResult",
         "Workflow",
-        "WorkflowStudyDelegate",
         "CompiledExecution",
         "TwoSpeakerConversationPattern",
         "DebatePattern",
         "PlanExecutePattern",
         "ProposeCriticPattern",
+        "NominalTeamPattern",
         "RouterDelegatePattern",
         "RoundBasedCoordinationPattern",
         "BlackboardPattern",
-        "BeamSearchPattern",
+        "TreeSearchPattern",
         "RAGPattern",
         "AnthropicServiceLLMClient",
         "AzureOpenAIServiceLLMClient",
@@ -240,7 +244,6 @@ def _install_dependency_stubs() -> dict[str, ModuleType]:
     experiments.build_design = _fn("build_design")
     experiments.generate_doe = _fn("generate_doe")
     experiments.materialize_conditions = _fn("materialize_conditions")
-    experiments.make_seeded_random_baseline_factories = _fn("make_seeded_random_baseline_factories")
     experiments.resolve_problem = _fn("resolve_problem")
     experiments.run_study = _fn("run_study")
     experiments.resume_study = _fn("resume_study")
@@ -289,7 +292,6 @@ def _install_dependency_stubs() -> dict[str, ModuleType]:
         "grammar_problem_bundle",
         "human_vs_agent_bundle",
         "ideation_bundle",
-        "make_seeded_random_baseline_factories",
         "materialize_conditions",
         "optimization_bundle",
         "render_codebook",
@@ -484,20 +486,17 @@ def test_wrapper_re_exports_are_reachable_via_stubs(monkeypatch: Any) -> None:
     assert problems.get_problem()[0] == "get_problem"
     assert problems.list_problems()[0] == "list_problems"
     assert agents.MultiStepAgent.__name__ == "MultiStepAgent"
-    assert agents.SeededRandomBaselineAgent.__name__ == "SeededRandomBaselineAgent"
+    assert agents.CompiledExecution.__name__ == "CompiledExecution"
     assert agents.LlamaCppServerLLMClient.__name__ == "LlamaCppServerLLMClient"
     assert agents.ModelStep.__name__ == "ModelStep"
     assert agents.CallableToolConfig.__name__ == "CallableToolConfig"
     assert agents.OpenAICompatibleHTTPLLMClient.__name__ == "OpenAICompatibleHTTPLLMClient"
     assert agents.OpenAIServiceLLMClient.__name__ == "OpenAIServiceLLMClient"
+    assert agents.PromptWorkflowAgent.__name__ == "PromptWorkflowAgent"
     assert agents.PlanExecutePattern.__name__ == "PlanExecutePattern"
-    assert agents.WorkflowStudyDelegate.__name__ == "WorkflowStudyDelegate"
+    assert agents.TreeSearchPattern.__name__ == "TreeSearchPattern"
     assert problems.Citation.__name__ == "Citation"
     assert experiments.resolve_problem()[0] == "resolve_problem"
-    assert (
-        experiments.make_seeded_random_baseline_factories()[0]
-        == "make_seeded_random_baseline_factories"
-    )
     assert experiments.run_study()[0] == "run_study"
     assert experiments.build_prompt_framing_study()[0] == "build_prompt_framing_study"
     assert experiments.build_strategy_comparison_study()[0] == "build_strategy_comparison_study"

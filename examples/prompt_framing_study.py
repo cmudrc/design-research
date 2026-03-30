@@ -2,30 +2,18 @@
 
 from __future__ import annotations
 
+import csv
+import importlib.util
+import json
+import os
 from pathlib import Path
 
-from _future_stack import (
-    artifact_names,
-    build_json_model_workflow,
-    condition_means,
-    decision_candidate_schema,
-    llama_cpp_runtime_config,
-    load_analysis_exports,
-    require_future_apis,
-    validate_exported_events,
-)
-from _workspace_bootstrap import bootstrap_sibling_sources
-
-# For the live walkthrough, use the workspace bootstrap helper that knows where
-# the sibling repositories usually live and how to override them in local setups.
-bootstrap_sibling_sources()
-
-# Import the umbrella package only after the sibling-source bootstrap step.
-import design_research as dr  # noqa: E402
+import design_research as dr
 
 # These constants keep the live walkthrough readable: one packaged problem, one
 # study id, stable artifact paths, and the statistical settings used in the
 # pairwise comparisons later on.
+BASELINE_AGENT_ID = "SeededRandomBaselineAgent"
 PROBLEM_ID = "decision_laptop_design_profit_maximization"
 STUDY_ID = "prompt_strategy_comparison_study"
 OUTPUT_DIR = Path("artifacts") / "examples" / STUDY_ID
@@ -35,20 +23,16 @@ SIGNIFICANCE_ALPHA = 0.05
 EXACT_PERMUTATION_THRESHOLD = 250_000
 MONTE_CARLO_PERMUTATIONS = 20_000
 PERMUTATION_TEST_SEED = 17
-STRATEGY_ORDER = ("random_selection", "neutral_prompt", "profit_focus_prompt")
+STRATEGY_ORDER = (BASELINE_AGENT_ID, "neutral_prompt", "profit_focus_prompt")
 PAIRWISE_COMPARISONS = (
     ("profit_focus_prompt", "neutral_prompt"),
-    ("neutral_prompt", "random_selection"),
-    ("profit_focus_prompt", "random_selection"),
+    ("neutral_prompt", BASELINE_AGENT_ID),
+    ("profit_focus_prompt", BASELINE_AGENT_ID),
 )
 
 
 def main() -> None:
     """Run the live strategy-comparison walkthrough with managed llama.cpp."""
-    # The live example expects the newer sibling APIs and a usable llama.cpp
-    # runtime. `live=True` keeps the error message honest if either is missing.
-    require_future_apis(dr, live=True)
-
     # Read runtime settings from the environment and apply the example's default
     # replicate count when the user does not override it.
     runtime = llama_cpp_runtime_config(default_replicates=DEFAULT_REPLICATES_PER_CONDITION)
@@ -77,19 +61,14 @@ def main() -> None:
         port=int(runtime["port"]),
         context_window=int(runtime["context_window"]),
     ) as llm_client:
-        # Each `agent_id` in the strategy bundle maps to an experiments
-        # `agent_factory`. Workflow-backed conditions use the sibling-owned
-        # `WorkflowStudyDelegate` so experiments receives a normal executable
-        # agent without any umbrella-only bridge code.
-        agent_factories = {
-            # A simple seeded baseline gives us something deterministic to
-            # compare the prompt-based strategies against.
-            "random_selection": lambda _condition: dr.agents.SeededRandomBaselineAgent(seed=7),
+        # Each `agent_id` in the strategy bundle maps either to a public agent
+        # id resolved directly by experiments or to one explicit binding that
+        # returns a prompt-driven workflow agent.
+        agent_bindings = {
             # The neutral condition uses the live model but keeps the instruction
             # framing generic.
-            "neutral_prompt": lambda _condition: dr.agents.WorkflowStudyDelegate(
+            "neutral_prompt": lambda _condition: dr.agents.PromptWorkflowAgent(
                 workflow=build_json_model_workflow(
-                    dr,
                     llm_client=llm_client,
                     candidate_schema=candidate_schema,
                     study_id=STUDY_ID,
@@ -107,9 +86,8 @@ def main() -> None:
             ),
             # The profit-focused condition swaps only the framing instruction so
             # the study isolates prompt strategy rather than model identity.
-            "profit_focus_prompt": lambda _condition: dr.agents.WorkflowStudyDelegate(
+            "profit_focus_prompt": lambda _condition: dr.agents.PromptWorkflowAgent(
                 workflow=build_json_model_workflow(
-                    dr,
                     llm_client=llm_client,
                     candidate_schema=candidate_schema,
                     study_id=STUDY_ID,
@@ -131,7 +109,7 @@ def main() -> None:
         results = dr.experiments.run_study(
             study,
             conditions=conditions,
-            agent_factories=agent_factories,
+            agent_bindings=agent_bindings,
             problem_registry=problem_registry,
             checkpoint=False,
             show_progress=False,
@@ -155,7 +133,7 @@ def main() -> None:
 
     # Confirm that the event-level export is structurally valid before building
     # downstream tables from it.
-    validation_report = validate_exported_events(dr, artifact_paths)
+    validation_report = validate_exported_events(artifact_paths)
 
     # Build one condition-by-metric table for the primary outcome we care about
     # and another for a secondary business-facing metric.
@@ -286,6 +264,205 @@ def _strategy_prompt(problem_packet: object, *, instruction: str) -> str:
             "Return JSON only with no markdown fences and no extra commentary.",
         ]
     )
+
+
+def read_csv_rows(path: Path) -> list[dict[str, str]]:
+    """Read one exported CSV table into a list of row dictionaries."""
+    with path.open("r", encoding="utf-8", newline="") as file_obj:
+        return list(csv.DictReader(file_obj))
+
+
+def load_analysis_exports(
+    artifact_paths: dict[str, Path],
+    *,
+    names: tuple[str, ...],
+) -> dict[str, list[dict[str, str]]]:
+    """Load selected exported CSV artifacts into memory."""
+    return {name: read_csv_rows(artifact_paths[name]) for name in names}
+
+
+def validate_exported_events(artifact_paths: dict[str, Path]) -> object:
+    """Validate the exported canonical event table through the analysis layer."""
+    return dr.analysis.integration.validate_experiment_events(artifact_paths["events.csv"])
+
+
+def artifact_names(artifact_paths: dict[str, Path]) -> str:
+    """Return exported artifact filenames in stable sorted order."""
+    return ", ".join(sorted(path.name for path in artifact_paths.values()))
+
+
+def condition_means(rows: list[dict[str, object]]) -> dict[str, float]:
+    """Compute one mean per condition label from normalized rows."""
+    grouped: dict[str, list[float]] = {}
+    for row in rows:
+        grouped.setdefault(str(row["condition"]), []).append(float(row["value"]))
+    return {
+        condition: (sum(values) / len(values) if values else 0.0)
+        for condition, values in grouped.items()
+    }
+
+
+def decision_candidate_schema(problem: object) -> dict[str, object]:
+    """Build a JSON schema for discrete decision-factor candidates."""
+    properties: dict[str, object] = {}
+    required: list[str] = []
+    for factor in getattr(problem, "option_factors", ()):
+        levels = tuple(getattr(factor, "levels", ()))
+        key = str(getattr(factor, "key", ""))
+        if not key or not levels:
+            continue
+        properties[key] = {"type": "number", "enum": list(levels)}
+        required.append(key)
+
+    if not required:
+        raise RuntimeError("Expected a packaged decision problem with explicit option factors.")
+
+    return {
+        "type": "object",
+        "properties": properties,
+        "required": required,
+        "additionalProperties": False,
+    }
+
+
+def llama_cpp_runtime_config(*, default_replicates: int) -> dict[str, object]:
+    """Resolve runtime configuration and fail fast on missing live dependencies."""
+    missing_runtime = [
+        module_name
+        for module_name in ("llama_cpp", "fastapi", "uvicorn")
+        if importlib.util.find_spec(module_name) is None
+    ]
+    if missing_runtime:
+        raise RuntimeError(
+            "Install llama-cpp-python[server] before running the live walkthrough. Missing: "
+            + ", ".join(sorted(missing_runtime))
+        )
+
+    model_source = (
+        os.getenv("LLAMA_CPP_MODEL", "Qwen2.5-1.5B-Instruct-Q4_K_M.gguf").strip()
+        or "Qwen2.5-1.5B-Instruct-Q4_K_M.gguf"
+    )
+    model_repo = (
+        os.getenv("LLAMA_CPP_HF_MODEL_REPO_ID", "bartowski/Qwen2.5-1.5B-Instruct-GGUF").strip()
+        or None
+    )
+    if (
+        model_repo
+        and not Path(model_source).expanduser().exists()
+        and importlib.util.find_spec("huggingface_hub") is None
+    ):
+        raise RuntimeError(
+            "Install huggingface-hub or point LLAMA_CPP_MODEL at a local GGUF file before "
+            "running the live walkthrough."
+        )
+
+    replicates = int(os.getenv("PROMPT_STUDY_REPLICATES", str(default_replicates)))
+    if replicates < 2:
+        raise RuntimeError("PROMPT_STUDY_REPLICATES must be at least 2.")
+
+    return {
+        "provider_name": "llama-cpp",
+        "model_source": model_source,
+        "model_name": os.getenv("LLAMA_CPP_API_MODEL", "qwen2-1.5b-q4").strip() or "qwen2-1.5b-q4",
+        "model_repo": model_repo,
+        "host": os.getenv("LLAMA_CPP_HOST", "127.0.0.1").strip() or "127.0.0.1",
+        "port": int(os.getenv("LLAMA_CPP_PORT", "8001")),
+        "context_window": int(os.getenv("LLAMA_CPP_CONTEXT_WINDOW", "4096")),
+        "replicates": replicates,
+    }
+
+
+def build_json_model_workflow(
+    *,
+    llm_client: object,
+    candidate_schema: dict[str, object],
+    study_id: str,
+    problem_id: str,
+    fallback_model_name: str,
+    fallback_provider: str,
+) -> object:
+    """Build one reusable prompt-mode workflow that returns structured JSON."""
+
+    def request_builder(context: dict[str, object]) -> object:
+        """Build one structured LLM request from the workflow context."""
+        return dr.agents.LLMRequest(
+            messages=[
+                dr.agents.LLMMessage(
+                    role="system",
+                    content=(
+                        "You are a careful study participant. Return valid JSON only and match "
+                        "the requested schema exactly."
+                    ),
+                ),
+                dr.agents.LLMMessage(role="user", content=str(context["prompt"])),
+            ],
+            temperature=0.0,
+            max_tokens=400,
+            response_schema=candidate_schema,
+            metadata={"study_id": study_id, "problem_id": problem_id},
+        )
+
+    def response_parser(response: object, _context: dict[str, object]) -> dict[str, object]:
+        """Parse one model response into workflow output, metrics, and events."""
+        model_text = strip_markdown_fences(str(getattr(response, "text", "")).strip())
+        candidate = json.loads(model_text)
+        if not isinstance(candidate, dict):
+            raise RuntimeError("Expected the live workflow to return one JSON object candidate.")
+        provider = str(getattr(response, "provider", "") or fallback_provider)
+        model_name = str(getattr(response, "model", "") or fallback_model_name)
+        return {
+            "final_output": candidate,
+            "metrics": usage_metrics(getattr(response, "usage", None)),
+            "events": [
+                {
+                    "event_type": "model_response",
+                    "actor_id": "agent",
+                    "text": model_text,
+                    "meta_json": {"provider": provider, "model_name": model_name},
+                }
+            ],
+        }
+
+    return dr.agents.Workflow(
+        steps=(
+            dr.agents.ModelStep(
+                step_id="select_candidate",
+                llm_client=llm_client,
+                request_builder=request_builder,
+                response_parser=response_parser,
+            ),
+        ),
+        output_schema=candidate_schema,
+        default_request_id_prefix=study_id,
+    )
+
+
+def strip_markdown_fences(text: str) -> str:
+    """Strip one optional fenced-code wrapper from a model response."""
+    if not text.startswith("```"):
+        return text
+    lines = text.splitlines()
+    if lines and lines[0].startswith("```"):
+        lines = lines[1:]
+    if lines and lines[-1].startswith("```"):
+        lines = lines[:-1]
+    return "\n".join(lines).strip()
+
+
+def usage_metrics(usage: object) -> dict[str, object]:
+    """Normalize usage payloads into canonical metric names."""
+    metrics: dict[str, object] = {"cost_usd": 0.0}
+    if isinstance(usage, dict):
+        prompt_tokens = usage.get("prompt_tokens")
+        completion_tokens = usage.get("completion_tokens")
+    else:
+        prompt_tokens = getattr(usage, "prompt_tokens", None)
+        completion_tokens = getattr(usage, "completion_tokens", None)
+    if isinstance(prompt_tokens, int):
+        metrics["input_tokens"] = prompt_tokens
+    if isinstance(completion_tokens, int):
+        metrics["output_tokens"] = completion_tokens
+    return metrics
 
 
 if __name__ == "__main__":
