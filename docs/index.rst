@@ -11,31 +11,35 @@ It is intentionally lightweight. The value here is not hidden implementation,
 but a coherent starting point for understanding how the package family fits
 together and when to drop into the more specialized repos directly.
 
-.. raw:: html
+.. container:: drc-home-badges
 
-   <div class="drc-badge-row">
-     <a class="drc-badge-link" href="https://github.com/cmudrc/design-research/actions/workflows/ci.yml">
-       <img alt="CI" src="https://github.com/cmudrc/design-research/actions/workflows/ci.yml/badge.svg">
-     </a>
-     <a class="drc-badge-link" href="https://github.com/cmudrc/design-research/actions/workflows/ci.yml">
-       <img alt="Coverage" src="https://raw.githubusercontent.com/cmudrc/design-research/main/.github/badges/coverage.svg">
-     </a>
-     <a class="drc-badge-link" href="https://github.com/cmudrc/design-research/actions/workflows/examples.yml">
-       <img alt="Examples Passing" src="https://raw.githubusercontent.com/cmudrc/design-research/main/.github/badges/examples-passing.svg">
-     </a>
-     <a class="drc-badge-link" href="https://github.com/cmudrc/design-research/actions/workflows/examples.yml">
-       <img alt="Public API In Examples" src="https://raw.githubusercontent.com/cmudrc/design-research/main/.github/badges/examples-api-coverage.svg">
-     </a>
-     <a class="drc-badge-link" href="https://github.com/cmudrc/design-research/actions/workflows/docs-pages.yml">
-       <img alt="Docs" src="https://github.com/cmudrc/design-research/actions/workflows/docs-pages.yml/badge.svg">
-     </a>
-   </div>
+   .. raw:: html
 
-.. note::
+      <div class="drc-badge-row">
+        <a class="drc-badge-link" href="https://github.com/cmudrc/design-research/actions/workflows/ci.yml">
+          <img alt="CI" src="https://github.com/cmudrc/design-research/actions/workflows/ci.yml/badge.svg">
+        </a>
+        <a class="drc-badge-link" href="https://github.com/cmudrc/design-research/actions/workflows/ci.yml">
+          <img alt="Coverage" src="https://raw.githubusercontent.com/cmudrc/design-research/main/.github/badges/coverage.svg">
+        </a>
+        <a class="drc-badge-link" href="https://github.com/cmudrc/design-research/actions/workflows/examples.yml">
+          <img alt="Examples Passing" src="https://raw.githubusercontent.com/cmudrc/design-research/main/.github/badges/examples-passing.svg">
+        </a>
+        <a class="drc-badge-link" href="https://github.com/cmudrc/design-research/actions/workflows/examples.yml">
+          <img alt="Public API In Examples" src="https://raw.githubusercontent.com/cmudrc/design-research/main/.github/badges/examples-api-coverage.svg">
+        </a>
+        <a class="drc-badge-link" href="https://github.com/cmudrc/design-research/actions/workflows/docs-pages.yml">
+          <img alt="Docs" src="https://github.com/cmudrc/design-research/actions/workflows/docs-pages.yml/badge.svg">
+        </a>
+      </div>
 
-   **Start with** :doc:`compatibility` to choose between the umbrella package
-   and direct sibling installs, then follow :doc:`prompt_framing_study` for
-   the canonical real-agent workflow example built from the umbrella namespace.
+.. container:: drc-home-callout
+
+   .. note::
+
+      **Start with** :doc:`compatibility` to choose between the umbrella package
+      and direct sibling installs, then follow :doc:`prompt_framing_study` for
+      the canonical real-agent workflow example built from the umbrella namespace.
 
 Guides
 ------
@@ -74,10 +78,13 @@ studying human and AI design behavior.
 Together these libraries support end-to-end design research pipelines, from
 study design through execution and interpretation.
 
-.. image:: _static/ecosystem-platform.svg
-   :alt: Ecosystem diagram showing experiments above agents, problems, and analysis.
-   :width: 100%
-   :align: center
+.. container:: drc-home-ecosystem
+
+   .. image:: _static/ecosystem-platform.svg
+      :alt: Ecosystem diagram showing experiments above agents, problems, and analysis.
+      :class: dark-light drc-ecosystem-figure
+      :width: 100%
+      :align: center
 
 Start Here
 ----------

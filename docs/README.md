@@ -25,6 +25,12 @@ Prefer compact tables for scanning. Preserve nuance in narrative paragraphs dire
 
 Use `:doc:` for internal links and explicitly point readers to sibling package docs when behavior lives outside the umbrella layer.
 
+## Branding
+
+- The ecosystem figure is the source of truth for constituent package colors.
+- Keep docs CSS tokens, `drc-light.png`, `drc-dark.png`, and `favicon.ico` aligned with the shared docs theme.
+- The umbrella site uses a four-color decorative gradient drawn from agents, problems, analysis, and experiments, while repeated interactive controls stay on the experiments teal pair.
+
 ## API Page Updates
 
 When public exports change, update:
