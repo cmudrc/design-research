@@ -11,6 +11,36 @@ component libraries. It keeps implementation in specialized packages while
 improving top-level discoverability for research workflows, tutorials, and
 papers.
 
+.. container:: drc-home-badges
+
+   .. raw:: html
+
+      <div class="drc-badge-row">
+        <a class="drc-badge-link" href="https://github.com/cmudrc/design-research/actions/workflows/ci.yml">
+          <img alt="CI" src="https://github.com/cmudrc/design-research/actions/workflows/ci.yml/badge.svg">
+        </a>
+        <a class="drc-badge-link" href="https://github.com/cmudrc/design-research/actions/workflows/ci.yml">
+          <img alt="Coverage" src="https://raw.githubusercontent.com/cmudrc/design-research/main/.github/badges/coverage.svg">
+        </a>
+        <a class="drc-badge-link" href="https://github.com/cmudrc/design-research/actions/workflows/examples.yml">
+          <img alt="Examples Passing" src="https://raw.githubusercontent.com/cmudrc/design-research/main/.github/badges/examples-passing.svg">
+        </a>
+        <a class="drc-badge-link" href="https://github.com/cmudrc/design-research/actions/workflows/examples.yml">
+          <img alt="Public API In Examples" src="https://raw.githubusercontent.com/cmudrc/design-research/main/.github/badges/examples-api-coverage.svg">
+        </a>
+        <a class="drc-badge-link" href="https://github.com/cmudrc/design-research/actions/workflows/docs-pages.yml">
+          <img alt="Docs" src="https://github.com/cmudrc/design-research/actions/workflows/docs-pages.yml/badge.svg">
+        </a>
+      </div>
+
+.. container:: drc-home-callout
+
+   .. note::
+
+      **Start with** :doc:`quickstart` for the umbrella entry path, then use
+      :doc:`typical_workflow` and :doc:`api` to see how the top-level namespace
+      maps onto the sibling packages.
+
 Highlights
 ----------
 
@@ -42,10 +72,13 @@ studying human and AI design behavior.
 Together these libraries support end-to-end design research pipelines, from
 study design through execution and interpretation.
 
-.. image:: _static/ecosystem-platform.svg
-   :alt: Ecosystem diagram showing experiments above agents, problems, and analysis.
-   :width: 100%
-   :align: center
+.. container:: drc-home-ecosystem
+
+   .. image:: _static/ecosystem-platform.svg
+      :alt: Ecosystem diagram showing experiments above agents, problems, and analysis.
+      :class: dark-light drc-ecosystem-figure
+      :width: 100%
+      :align: center
 
 Start Here
 ----------
