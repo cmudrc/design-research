@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "design-research"
-version = "0.1.0"
+version = "0.1.1"
 description = "Thin umbrella package for the CMU Design Research Collective ecosystem"
 readme = "README.md"
 requires-python = ">=3.12"
@@ -25,28 +25,29 @@ classifiers = [
   "Typing :: Typed",
 ]
 dependencies = [
-  "design-research-problems==0.2.0",
-  "design-research-agents==0.2.0",
-  "design-research-experiments==0.1.0",
-  "design-research-analysis==0.1.0",
+  "design-research-problems==0.2.1",
+  "design-research-agents==0.3.0",
+  "design-research-experiments==0.1.1",
+  "design-research-analysis==0.1.1",
 ]
 
 [project.optional-dependencies]
 dev = [
   "build>=1.2,<2",
   "mypy>=1.10,<2",
+  "pydata-sphinx-theme>=0.16,<1",
   "pre-commit>=3.7,<5",
   "pytest>=8.2,<9",
   "pytest-cov>=7.0,<8",
   "ruff>=0.6.0,<1",
   "sphinx>=7.4,<9",
   "sphinx-copybutton>=0.5,<1",
-  "sphinx-rtd-theme>=2.0,<4",
   "twine>=5.1,<7",
 ]
 
 [project.urls]
-Homepage = "https://github.com/cmudrc/design-research"
+Homepage = "https://cmudrc.github.io/design-research/"
+Documentation = "https://cmudrc.github.io/design-research/"
 Repository = "https://github.com/cmudrc/design-research"
 Issues = "https://github.com/cmudrc/design-research/issues"
 

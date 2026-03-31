@@ -6,10 +6,12 @@ MYPY ?= $(PYTHON) -m mypy
 SPHINX ?= $(PYTHON) -m sphinx
 BUILD ?= $(PYTHON) -m build
 TWINE ?= $(PYTHON) -m twine
+COVERAGE_MIN ?= 90
 
 .PHONY: help check-python dev install-dev \
 	lint fmt fmt-check type test qa coverage docstrings-check \
-	run-example docs docs-build docs-check docs-linkcheck \
+	run-example examples-test examples-coverage examples-metrics \
+	docs docs-build docs-check docs-linkcheck \
 	release-check ci clean
 
 help:
@@ -17,7 +19,10 @@ help:
 	@echo "  dev              Install the project in editable mode with dev dependencies."
 	@echo "  test             Run the pytest suite."
 	@echo "  qa               Run lint, fmt-check, type, and test."
-	@echo "  run-example      Execute the bundled example script."
+	@echo "  run-example      Execute the live llama.cpp strategy-comparison study example."
+	@echo "  examples-test    Execute all bundled example scripts."
+	@echo "  examples-coverage Check public API coverage across examples."
+	@echo "  examples-metrics Generate example and public-API badge artifacts."
 	@echo "  docs             Build the HTML docs."
 	@echo "  ci               Run the main local CI checks."
 
@@ -49,14 +54,24 @@ qa: lint fmt-check type test
 
 coverage: check-python
 	mkdir -p artifacts/coverage
-	PYTHONPATH=src $(PYTEST) --cov=src/design_research --cov-report=term --cov-report=json:artifacts/coverage/coverage.json -q
-	$(PYTHON) scripts/check_coverage_thresholds.py --coverage-json artifacts/coverage/coverage.json
+	PYTHONPATH=src $(PYTEST) --cov=src/design_research --cov-fail-under=$(COVERAGE_MIN) --cov-report=term --cov-report=json:artifacts/coverage/coverage.json -q
+	$(PYTHON) scripts/check_coverage_thresholds.py --coverage-json artifacts/coverage/coverage.json --minimum $(COVERAGE_MIN)
 
 docstrings-check: check-python
 	$(PYTHON) scripts/check_google_docstrings.py
 
 run-example: check-python
-	PYTHONPATH=src $(PYTHON) examples/basic_usage.py
+	PYTHONPATH=src $(PYTHON) examples/prompt_framing_study.py
+
+examples-test: check-python
+	$(PYTHON) scripts/run_examples.py
+
+examples-coverage: check-python
+	$(PYTHON) scripts/check_example_api_coverage.py --minimum 90
+
+examples-metrics: check-python examples-test
+	$(PYTHON) scripts/generate_examples_metrics.py
+	$(PYTHON) scripts/generate_examples_badges.py
 
 docs-build: check-python
 	PYTHONPATH=src $(SPHINX) -b html docs docs/_build/html -n -W --keep-going -E
@@ -74,7 +89,7 @@ release-check: check-python
 	$(BUILD)
 	$(TWINE) check dist/*
 
-ci: qa coverage docstrings-check docs-check run-example release-check
+ci: qa coverage docstrings-check docs-check examples-test examples-coverage release-check
 
 clean:
 	rm -rf .coverage .mypy_cache .pytest_cache .ruff_cache artifacts build dist docs/_build

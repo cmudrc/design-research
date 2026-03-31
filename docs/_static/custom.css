@@ -2,14 +2,6 @@
   --drc-brand: #57b7ba;
   --drc-interactive-brand: #57b7ba;
   --drc-brand-gradient: linear-gradient(90deg, #df5127 0%, #ea8534 34%, #4d8687 67%, #57b7ba 100%);
-  --drc-brand-strong: color-mix(in srgb, var(--drc-interactive-brand) 82%, black);
-  --drc-brand-soft: color-mix(in srgb, var(--drc-brand) 10%, white);
-  --drc-brand-muted: color-mix(in srgb, var(--drc-brand) 18%, white);
-  --drc-brand-border: color-mix(in srgb, var(--drc-brand) 42%, #d6dee8);
-  --drc-link: color-mix(in srgb, var(--drc-interactive-brand) 82%, black);
-  --drc-link-hover: color-mix(in srgb, var(--drc-interactive-brand) 68%, black);
-  --drc-panel-bg: #ffffff;
-  --drc-panel-elevated: color-mix(in srgb, var(--drc-brand) 4%, #ffffff);
 }
 
 html[data-theme="light"] {
@@ -53,59 +45,6 @@ html[data-theme="dark"] {
   --pst-color-accent: var(--drc-brand-strong);
   --pst-color-link: var(--drc-link);
   --pst-color-link-hover: var(--drc-link-hover);
-}
-
-.wy-side-nav-search > a.icon.icon-home {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.5rem;
-  text-align: center;
-}
-
-.wy-side-nav-search > a.icon.icon-home::before {
-  display: none;
-}
-
-.wy-side-nav-search > a.icon.icon-home img.logo {
-  order: -1;
-  margin: 0;
-  border: 1px solid var(--drc-brand-border);
-  border-radius: 0.9rem;
-  background: var(--drc-panel-bg);
-}
-
-/* Use a light brand-neutral accent so the full-color logo stands out. */
-.wy-side-nav-search,
-.wy-nav-top {
-  background: #f8f8f6;
-}
-
-.wy-side-nav-search > a.icon.icon-home,
-.wy-side-nav-search > a.icon.icon-home:visited,
-.wy-side-nav-search > a.icon.icon-home:hover {
-  color: #2b2b2b;
-}
-
-.wy-side-nav-search > div.version {
-  color: #4a4a4a;
-}
-
-.wy-menu-vertical header,
-.wy-menu-vertical p.caption {
-  color: #f3f3f0;
-}
-
-.wy-menu-vertical a:hover {
-  background-color: var(--drc-brand-soft);
-  color: #222;
-}
-
-.wy-menu-vertical li.current > a,
-.wy-menu-vertical li.toctree-l1.current > a,
-.wy-menu-vertical li.toctree-l2.current > a {
-  background: var(--drc-brand-muted);
-  color: #111;
 }
 
 .bd-header {

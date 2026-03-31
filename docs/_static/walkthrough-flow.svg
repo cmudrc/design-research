@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="220" viewBox="0 0 920 220" role="img" aria-labelledby="title desc">
+  <title id="title">Umbrella walkthrough flow</title>
+  <desc id="desc">A real packaged problem flows into a live workflow agent, then into study execution and artifact export, then into event table validation.</desc>
+  <defs>
+    <style>
+      .label { font: 600 18px sans-serif; fill: #0f172a; }
+      .sub { font: 400 13px sans-serif; fill: #334155; }
+      .box { stroke: #0f172a; stroke-width: 2; rx: 16; ry: 16; }
+      .arrow { stroke: #0f172a; stroke-width: 3; fill: none; marker-end: url(#arrowhead); }
+    </style>
+    <marker id="arrowhead" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <polygon points="0 0, 10 4, 0 8" fill="#0f172a" />
+    </marker>
+  </defs>
+
+  <rect class="box" x="20" y="48" width="200" height="124" fill="#dbeafe" />
+  <text class="label" x="120" y="86" text-anchor="middle">Problems</text>
+  <text class="sub" x="120" y="112" text-anchor="middle">real packaged benchmark</text>
+  <text class="sub" x="120" y="134" text-anchor="middle">selected through</text>
+  <text class="sub" x="120" y="156" text-anchor="middle">design_research.problems</text>
+
+  <rect class="box" x="250" y="48" width="200" height="124" fill="#dcfce7" />
+  <text class="label" x="350" y="86" text-anchor="middle">Agents</text>
+  <text class="sub" x="350" y="112" text-anchor="middle">live Workflow step</text>
+  <text class="sub" x="350" y="134" text-anchor="middle">backed by a managed</text>
+  <text class="sub" x="350" y="156" text-anchor="middle">llama.cpp server</text>
+
+  <rect class="box" x="480" y="48" width="200" height="124" fill="#fef3c7" />
+  <text class="label" x="580" y="86" text-anchor="middle">Experiments</text>
+  <text class="sub" x="580" y="112" text-anchor="middle">build design, run study,</text>
+  <text class="sub" x="580" y="134" text-anchor="middle">export canonical</text>
+  <text class="sub" x="580" y="156" text-anchor="middle">artifacts</text>
+
+  <rect class="box" x="710" y="48" width="190" height="124" fill="#fee2e2" />
+  <text class="label" x="805" y="86" text-anchor="middle">Analysis</text>
+  <text class="sub" x="805" y="112" text-anchor="middle">load events.csv</text>
+  <text class="sub" x="805" y="134" text-anchor="middle">validate the unified</text>
+  <text class="sub" x="805" y="156" text-anchor="middle">event table</text>
+
+  <path class="arrow" d="M220 110 H248" />
+  <path class="arrow" d="M450 110 H478" />
+  <path class="arrow" d="M680 110 H708" />
+</svg>
