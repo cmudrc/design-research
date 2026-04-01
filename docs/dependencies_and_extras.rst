@@ -18,6 +18,7 @@ The ``dev`` extra installs the local contributor toolchain:
 - ``pytest-cov``
 - ``ruff``
 - ``sphinx``
+- ``sphinx-copybutton``
 - ``twine``
 
 Install it with:

@@ -2,12 +2,10 @@
 
 from __future__ import annotations
 
-import importlib
-import importlib.metadata
-
 import pytest
 
 from design_research import _lazy
+from design_research._version import __version__
 
 
 def test_module_dir_includes_public_and_existing_names() -> None:
@@ -46,19 +44,6 @@ def test_wrapper_dir_exposes_lazy_exports() -> None:
     assert "Citation" in dir(problems)
 
 
-def test_version_module_success_path(monkeypatch: pytest.MonkeyPatch) -> None:
-    """Version module should use package metadata when available."""
-    monkeypatch.setattr(importlib.metadata, "version", lambda name: "9.9.9")
-    module = importlib.reload(importlib.import_module("design_research._version"))
-    assert module.__version__ == "9.9.9"
-
-
-def test_version_module_fallback_path(monkeypatch: pytest.MonkeyPatch) -> None:
-    """Version module should fall back when distribution metadata is missing."""
-
-    def _raise(_: str) -> str:
-        raise importlib.metadata.PackageNotFoundError
-
-    monkeypatch.setattr(importlib.metadata, "version", _raise)
-    module = importlib.reload(importlib.import_module("design_research._version"))
-    assert module.__version__ == "0+unknown"
+def test_version_module_exposes_single_source_of_truth() -> None:
+    """Version module should expose the next release version directly."""
+    assert __version__ == "0.2.0"

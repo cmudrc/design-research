@@ -1,10 +1,10 @@
 [build-system]
-requires = ["setuptools>=77", "wheel"]
+requires = ["setuptools>=82.0.1", "wheel>=0.46.3"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "design-research"
-version = "0.1.1"
+dynamic = ["version"]
 description = "Thin umbrella package for the CMU Design Research Collective ecosystem"
 readme = "README.md"
 requires-python = ">=3.12"
@@ -27,22 +27,22 @@ classifiers = [
 dependencies = [
   "design-research-problems==0.2.1",
   "design-research-agents==0.3.0",
-  "design-research-experiments==0.1.1",
+  "design-research-experiments==0.1.2",
   "design-research-analysis==0.1.1",
 ]
 
 [project.optional-dependencies]
 dev = [
-  "build>=1.2,<2",
-  "mypy>=1.10,<2",
-  "pydata-sphinx-theme>=0.16,<1",
-  "pre-commit>=3.7,<5",
-  "pytest>=8.2,<9",
-  "pytest-cov>=7.0,<8",
-  "ruff>=0.6.0,<1",
-  "sphinx>=7.4,<9",
-  "sphinx-copybutton>=0.5,<1",
-  "twine>=5.1,<7",
+  "build>=1.4.2,<2",
+  "mypy>=1.20.0,<2",
+  "pydata-sphinx-theme>=0.16.1,<1",
+  "pre-commit>=4.5.1,<5",
+  "pytest>=9.0.2,<10",
+  "pytest-cov>=7.1.0,<8",
+  "ruff>=0.15.8,<1",
+  "sphinx>=9.1.0,<10",
+  "sphinx-copybutton>=0.5.2,<1",
+  "twine>=6.2.0,<7",
 ]
 
 [project.urls]
@@ -54,6 +54,9 @@ Issues = "https://github.com/cmudrc/design-research/issues"
 [tool.setuptools]
 package-dir = { "" = "src" }
 include-package-data = true
+
+[tool.setuptools.dynamic]
+version = { attr = "design_research._version.__version__" }
 
 [tool.setuptools.packages.find]
 where = ["src"]
