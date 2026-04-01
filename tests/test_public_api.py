@@ -19,6 +19,7 @@ def test_top_level_submodules_are_importable() -> None:
     assert experiments.__name__ == "design_research.experiments"
     assert analysis.__name__ == "design_research.analysis"
 
+
 def test_top_level_namespace_does_not_flatten_wrapper_symbols() -> None:
     """Keep root imports narrow so wrapper submodules own the stable APIs."""
     assert "Study" not in dr.__all__
