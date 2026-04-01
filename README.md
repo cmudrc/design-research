@@ -1,8 +1,8 @@
 # design-research
 [![CI](https://github.com/cmudrc/design-research/actions/workflows/ci.yml/badge.svg)](https://github.com/cmudrc/design-research/actions/workflows/ci.yml)
-[![Coverage](https://raw.githubusercontent.com/cmudrc/design-research/main/.github/badges/coverage.svg)](https://github.com/cmudrc/design-research/actions/workflows/ci.yml)
-[![Examples Passing](https://raw.githubusercontent.com/cmudrc/design-research/main/.github/badges/examples-passing.svg)](https://github.com/cmudrc/design-research/actions/workflows/examples.yml)
-[![Public API In Examples](https://raw.githubusercontent.com/cmudrc/design-research/main/.github/badges/examples-api-coverage.svg)](https://github.com/cmudrc/design-research/actions/workflows/examples.yml)
+[![Coverage](https://raw.githubusercontent.com/cmudrc/design-research/HEAD/.github/badges/coverage.svg)](https://github.com/cmudrc/design-research/actions/workflows/ci.yml)
+[![Examples Passing](https://raw.githubusercontent.com/cmudrc/design-research/HEAD/.github/badges/examples-passing.svg)](https://github.com/cmudrc/design-research/actions/workflows/examples.yml)
+[![Public API In Examples](https://raw.githubusercontent.com/cmudrc/design-research/HEAD/.github/badges/examples-api-coverage.svg)](https://github.com/cmudrc/design-research/actions/workflows/examples.yml)
 [![Docs](https://github.com/cmudrc/design-research/actions/workflows/docs-pages.yml/badge.svg)](https://github.com/cmudrc/design-research/actions/workflows/docs-pages.yml)
 
 <!-- release-callout:start -->
@@ -137,4 +137,4 @@ Top-level exports include:
 ## Contributing
 
 Contribution workflow and quality gates are documented in
-[CONTRIBUTING.md](https://github.com/cmudrc/design-research/blob/main/CONTRIBUTING.md).
+[CONTRIBUTING.md](https://github.com/cmudrc/design-research/blob/HEAD/CONTRIBUTING.md).
