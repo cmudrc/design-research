@@ -67,6 +67,37 @@ plus the four wrapper submodules. Stable user-facing symbols remain under
 ``design_research.experiments``, and ``design_research.analysis`` rather than a
 flattened root namespace.
 
+Choose This Package When...
+---------------------------
+
+Use the ecosystem by intent, not just by package name.
+
+.. list-table:: Intent-first package selection
+   :header-rows: 1
+
+   * - You want to...
+     - Start here
+     - Why
+   * - Browse canonical benchmarks, prompt packets, or packaged design tasks
+     - ``design-research-problems``
+     - The problems repo is the package-owned catalog and benchmark surface.
+   * - Build agents, tool-using workflows, or execution traces
+     - ``design-research-agents``
+     - The agents repo owns executable participants, workflows, and tool/runtime contracts.
+   * - Define controlled studies, conditions, and repeatable artifact exports
+     - ``design-research-experiments``
+     - The experiments repo owns hypotheses, factors, run orchestration, and export contracts.
+   * - Validate ``events.csv`` and analyze existing study logs
+     - ``design-research-analysis``
+     - The analysis repo owns the unified-table contract and downstream empirical workflows.
+   * - Compose an end-to-end workflow across all four layers with one stable namespace
+     - ``design-research``
+     - The umbrella package keeps the ecosystem discoverable and provides the tested package combination plus shared walkthroughs.
+
+The sibling packages are fully valid independent entry points. The umbrella
+package is the combined-path guide: it is best when you want one shared import
+style, one docs shell, and one compatibility story across the full stack.
+
 Monthly Release Train
 ---------------------
 
@@ -82,3 +113,8 @@ Next Step
 If you want to see the umbrella package drive a real composed workflow, use the
 deterministic bundled examples for the smallest recipe-first entry points and
 continue to :doc:`prompt_framing_study` for the live canonical walkthrough.
+
+If you already know the exact layer you need, jump straight into the published
+docs for the sibling library that owns that behavior and treat
+``design-research`` as the ecosystem map rather than the required starting
+point.

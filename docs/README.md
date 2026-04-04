@@ -38,3 +38,4 @@ When public exports change, update:
 - `docs/api.rst`
 - quickstart/workflow snippets
 - ecosystem framing where the top-level namespace changes
+- `docs/automation_baseline.rst` if workflow ownership or intentional omissions change

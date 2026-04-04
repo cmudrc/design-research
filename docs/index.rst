@@ -55,6 +55,13 @@ the recommended path through the ecosystem.
 - :doc:`typical_workflow`
 - :doc:`philosophy`
 
+Project Links
+-------------
+
+- `PyPI <https://pypi.org/project/design-research/>`_
+- `GitHub repository <https://github.com/cmudrc/design-research>`_
+- `Issue tracker <https://github.com/cmudrc/design-research/issues>`_
+
 Reference
 ---------
 
@@ -63,6 +70,7 @@ documentation workflows.
 
 - :doc:`api`
 - :doc:`dependencies_and_extras`
+- :doc:`automation_baseline`
 
 Integration With The Ecosystem
 ------------------------------
@@ -97,6 +105,7 @@ Start Here
 - :doc:`typical_workflow`
 - :doc:`api`
 - :doc:`philosophy`
+- :doc:`automation_baseline`
 - `CONTRIBUTING.md <https://github.com/cmudrc/design-research/blob/HEAD/CONTRIBUTING.md>`_
 
 .. toctree::
@@ -112,3 +121,4 @@ Start Here
    philosophy
    api
    dependencies_and_extras
+   automation_baseline
