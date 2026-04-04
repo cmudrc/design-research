@@ -8,7 +8,9 @@ The goal is consistency with the module repos without pretending the umbrella
 package should own every repo-specific generator. The umbrella docs are
 deliberately curation-heavy: they route readers to stable entry points,
 cross-library workflows, and compatibility guidance rather than generating a
-page for every example script.
+page for every example script. README milestone callouts are intentionally not
+part of the baseline anymore; release state now lives in GitHub milestones and
+release branches instead of generated README prose.
 
 Shared Baseline
 ---------------
@@ -36,10 +38,6 @@ Shared Baseline
      - ``scripts/generate_examples_metrics.py`` and ``scripts/generate_examples_badges.py``
      - ``examples.yml``
      - The docs and README show the shared examples badge baseline used across the family.
-   * - Release callout upkeep
-     - ``scripts/update_release_readme.py``
-     - ``update-release-readme.yml``
-     - The README release callout stays aligned with the active monthly release train.
 
 Workflow Responsibilities
 -------------------------
@@ -47,7 +45,6 @@ Workflow Responsibilities
 - ``ci.yml`` owns lint, type, test, docstring, docs-consistency, and coverage-gate checks.
 - ``examples.yml`` owns runnable example verification plus example-derived badge metrics.
 - ``docs-pages.yml`` owns published documentation builds.
-- ``update-release-readme.yml`` owns the release-callout refresh path.
 - ``workflow.yml`` remains the broader workflow entry point that ties the maintainer checks together.
 
 Intentional Umbrella-Specific Differences

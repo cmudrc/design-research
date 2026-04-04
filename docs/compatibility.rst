@@ -104,8 +104,8 @@ Monthly Release Train
 Monthly release names coordinate ecosystem alignment work across repositories.
 They are scheduling and documentation markers, not alternate install
 coordinates. Use the version matrix above for tested package combinations, and
-use the current release callout in the README for the active milestone and due
-date.
+use the repository milestone pages or release branches when you need the active
+coordination state.
 
 Next Step
 ---------
