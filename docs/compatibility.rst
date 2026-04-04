@@ -103,8 +103,13 @@ Monthly Release Train
 
 Monthly release names coordinate ecosystem alignment work across repositories.
 They are scheduling and documentation markers, not alternate install
-coordinates. Use the version matrix above for tested package combinations, and
-use the repository milestone pages or release branches when you need the active
+coordinates. Under the current convention, release branches and milestones are
+named for the month the work happens, while the due date typically falls in the
+first week of the following month to allow the drop to settle after the work
+month closes.
+
+Use the version matrix above for tested package combinations, and use the
+repository milestone pages or release branches when you need the active
 coordination state.
 
 Next Step

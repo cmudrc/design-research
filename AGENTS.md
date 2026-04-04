@@ -61,35 +61,37 @@ merging.
 ## Release Naming
 
 - Theme: cartography and wayfinding.
-- Monthly release names are shared across milestone titles, release PR titles,
-  and release branches.
-- Milestone due dates should land about one week after the start of the release
-  month so new versions of sibling libraries have time to land first.
-  - Milestone title / PR title: `{base name} - {Month YYYY}`
-  - Release branch: slugified full title, for example `meridian-map-may-2026`
+- Monthly work-cycle names are shared across milestone titles, release PR
+  titles, and release branches.
+- Name the cycle for the month the work is done, not the later drop month.
+  - Milestone title / PR title: `{base name} - {Work month YYYY}`
+  - Release branch: slugified full title, for example
+    `meridian-map-april-2026`
+- Milestone due dates should land about one week into the following month so
+  new versions of sibling libraries have time to land first.
 - Milestone descriptions must use:
-  - `Tracks {previous month YYYY} work.`
+  - `Work month: {Month YYYY}.`
   - `Theme source: <url>`
 - Release PR bodies must repeat the same `Theme source:` link used on the
-  milestone.
-- Never reuse an exact base name or the same primary subject across any month
-  or any of the design-research repositories unless the affected `AGENTS.md`
-  files are intentionally updated together.
+  milestone and refer to the same work month named in the title.
+- Never reuse an exact base name or the same primary subject across any work
+  month or any of the design-research repositories unless the affected
+  `AGENTS.md` files are intentionally updated together.
 - Before adding a new release name, check the `Release Naming` tables in the
   related repos to avoid repeats.
 
-| Due date | Base name | Source subject |
-| --- | --- | --- |
-| April 8, 2026 | Atlas Alignment | Atlas |
-| May 8, 2026 | Meridian Map | Meridian |
-| June 8, 2026 | Compass Course | Compass |
-| July 8, 2026 | Legend Line | Map legend |
-| August 8, 2026 | Bearing Bridge | Bearing |
-| September 8, 2026 | Surveyor Signal | Surveying |
-| October 8, 2026 | Cartographer Circuit | Cartography |
-| November 8, 2026 | Wayfinder Weave | Wayfinding |
-| December 8, 2026 | Transit Trace | Transit |
-| January 8, 2027 | North Star Nexus | Pole star |
+| Work month | Target drop | Base name | Source subject |
+| --- | --- | --- | --- |
+| March 2026 | April 8, 2026 | Atlas Alignment | Atlas |
+| April 2026 | May 8, 2026 | Meridian Map | Meridian |
+| May 2026 | June 8, 2026 | Compass Course | Compass |
+| June 2026 | July 8, 2026 | Legend Line | Map legend |
+| July 2026 | August 8, 2026 | Bearing Bridge | Bearing |
+| August 2026 | September 8, 2026 | Surveyor Signal | Surveying |
+| September 2026 | October 8, 2026 | Cartographer Circuit | Cartography |
+| October 2026 | November 8, 2026 | Wayfinder Weave | Wayfinding |
+| November 2026 | December 8, 2026 | Transit Trace | Transit |
+| December 2026 | January 8, 2027 | North Star Nexus | Pole star |
 
 ## Keep This File Up To Date
 
