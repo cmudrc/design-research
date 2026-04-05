@@ -52,6 +52,8 @@ def _install_dependency_stubs() -> dict[str, ModuleType]:
     problems.get_problem_as = _fn("get_problem_as")
     problems.list_problems = _fn("list_problems")
     problems.get_ideation_catalog = _fn("get_ideation_catalog")
+    problems_integration = ModuleType("design_research_problems.integration")
+    problems.integration = problems_integration
     problems.__all__ = [
         "__version__",
         "Problem",
@@ -82,6 +84,7 @@ def _install_dependency_stubs() -> dict[str, ModuleType]:
         "get_problem_as",
         "list_problems",
         "get_ideation_catalog",
+        "integration",
     ]
 
     agents = ModuleType("design_research_agents")
@@ -137,6 +140,8 @@ def _install_dependency_stubs() -> dict[str, ModuleType]:
         "RAGPattern",
     ]:
         setattr(agents, symbol, type(symbol, (), {}))
+    agents_integration = ModuleType("design_research_agents.integration")
+    agents.integration = agents_integration
     agents.__all__ = [
         "__version__",
         "DirectLLMCall",
@@ -187,6 +192,7 @@ def _install_dependency_stubs() -> dict[str, ModuleType]:
         "SGLangServerLLMClient",
         "ModelSelector",
         "Tracer",
+        "integration",
     ]
 
     experiments = ModuleType("design_research_experiments")
@@ -449,7 +455,9 @@ def _install_dependency_stubs() -> dict[str, ModuleType]:
 
     stubs = {
         "design_research_problems": problems,
+        "design_research_problems.integration": problems_integration,
         "design_research_agents": agents,
+        "design_research_agents.integration": agents_integration,
         "design_research_experiments": experiments,
         "design_research_analysis": analysis,
         "design_research_analysis.dataset": analysis_dataset,
@@ -485,7 +493,9 @@ def test_wrapper_re_exports_are_reachable_via_stubs(monkeypatch: Any) -> None:
 
     assert problems.get_problem()[0] == "get_problem"
     assert problems.list_problems()[0] == "list_problems"
+    assert problems.integration.__name__ == "design_research_problems.integration"
     assert agents.MultiStepAgent.__name__ == "MultiStepAgent"
+    assert agents.integration.__name__ == "design_research_agents.integration"
     assert agents.CompiledExecution.__name__ == "CompiledExecution"
     assert agents.LlamaCppServerLLMClient.__name__ == "LlamaCppServerLLMClient"
     assert agents.ModelStep.__name__ == "ModelStep"

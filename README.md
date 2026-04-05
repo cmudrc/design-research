@@ -47,13 +47,14 @@ make examples-test
 
 `make run-example` is the live canonical walkthrough. It uses a managed
 `llama.cpp` client, a workflow-backed strategy comparison, canonical exports,
-and downstream analysis helpers. The live workflow path now uses the sibling
-public seams directly: a prompt-built `design_research.agents.Workflow`,
-`design_research.agents.PromptWorkflowAgent`,
-`design_research.agents.SeededRandomBaselineAgent`,
-`design_research.experiments.resolve_problem(...)`, and
-`design_research.experiments.run_study(..., agent_bindings=...)`, plus
-`design_research.analysis.integration`. Install
+and downstream analysis helpers. The tested cross-library path is now
+package-owned seam first:
+`design_research.problems.integration`,
+`design_research.agents.integration`,
+`design_research.experiments`, and
+`design_research.analysis.integration`.
+`design_research.experiments` itself stays the orchestration surface rather than
+adding a symmetry-only `integration` module. Install
 `llama-cpp-python[server]` first. If you want the client to fetch its default
 GGUF model automatically, also install `huggingface-hub`; otherwise set
 `LLAMA_CPP_MODEL` to a specific local GGUF file.
