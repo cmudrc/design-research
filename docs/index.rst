@@ -78,6 +78,10 @@ studying human and AI design behavior.
 Together these libraries support end-to-end design research pipelines, from
 study design through execution and interpretation.
 
+The tested cross-library path uses owner-owned seams in ``problems``,
+``agents``, and ``analysis``, with ``design-research-experiments`` itself
+serving as the orchestration layer.
+
 .. container:: drc-home-ecosystem
 
    .. image:: _static/ecosystem-platform.svg

@@ -41,7 +41,9 @@ def test_wrapper_dir_exposes_lazy_exports() -> None:
     assert "permutation_test" in dir(analysis)
     assert "run_study" in dir(experiments)
     assert "list_problems" in dir(problems)
+    assert "integration" in dir(problems)
     assert "Citation" in dir(problems)
+    assert "integration" in dir(agents)
 
 
 def test_version_module_exposes_single_source_of_truth() -> None:

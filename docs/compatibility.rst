@@ -30,15 +30,20 @@ Tested Package Combination
 These versions match the exact sibling pins in ``pyproject.toml`` and represent
 the tested umbrella combination for the current docs baseline.
 
-The bundled examples and smoke tests intentionally target the April 2026 family
-interop seams directly: ``design_research_experiments.resolve_problem(...)``,
-public ``design_research_agents.SeededRandomBaselineAgent`` and
-``design_research_agents.PromptWorkflowAgent`` participants, a prompt-built
-``design_research_agents.Workflow``, and
-``design_research_analysis.integration``. The shipped example scripts expect
-installed sibling packages; adjacent sibling worktrees are preferred only by
-the family-sync and subprocess example tests so the umbrella package can verify
-current sibling ``main`` APIs during contributor workflows.
+The bundled examples and smoke tests now target the package-owned cross-library
+path explicitly:
+
+- ``design_research_problems.integration``
+- ``design_research_agents.integration``
+- ``design_research_experiments``
+- ``design_research_analysis.integration``
+
+``design_research_experiments`` remains the orchestration surface, so there is
+intentionally no separate ``design_research_experiments.integration`` module.
+The shipped example scripts expect installed sibling packages; adjacent sibling
+worktrees are preferred only by the family-sync and subprocess example tests so
+the umbrella package can verify current sibling ``main`` APIs during
+contributor workflows.
 
 Start Here Vs Go Direct
 -----------------------

@@ -76,6 +76,7 @@ def test_april_family_wrapper_exports_track_local_siblings() -> None:
     assert dr.analysis.__all__ == sibling_analysis.__all__
     assert dr.problems.__all__ == sibling_problems.__all__
     assert dr.agents.Workflow is sibling_agents.Workflow
+    assert dr.agents.integration is sibling_agents.integration
     assert dr.experiments.build_strategy_comparison_study is (
         sibling_experiments.build_strategy_comparison_study
     )
@@ -86,6 +87,7 @@ def test_april_family_wrapper_exports_track_local_siblings() -> None:
     assert dr.analysis.visualization is sibling_analysis.visualization
     assert dr.analysis.__version__ == sibling_analysis.__version__
     assert dr.problems.list_problems is sibling_problems.list_problems
+    assert dr.problems.integration is sibling_problems.integration
     assert dr.problems.__version__ == sibling_problems.__version__
 
 
