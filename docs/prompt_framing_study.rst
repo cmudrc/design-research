@@ -53,7 +53,7 @@ Run It
 
 .. code-block:: bash
 
-   python -m pip install "llama-cpp-python[server]" huggingface-hub
+   python -m pip install "design-research[examples]"
    make run-example
 
 Optionally point the walkthrough at a specific local GGUF file:
@@ -82,8 +82,8 @@ for the live-agent conditions: it expects a real ``llama.cpp`` runtime.
 
 If ``LLAMA_CPP_MODEL`` is not set, the client falls back to its built-in model
 defaults and Hugging Face repo settings. The first run may therefore download a
-model before the walkthrough executes, which is why the setup above includes
-``huggingface-hub``.
+model before the walkthrough executes, which is why the setup above uses
+``design-research[examples]``.
 
 The script is intentionally written in a linear, step-by-step style so it can
 double as training material and as the literal-included documentation example.

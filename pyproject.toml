@@ -44,6 +44,47 @@ dev = [
   "sphinx-copybutton>=0.5.2,<1",
   "twine>=6.2.0,<7",
 ]
+problems_grammar = ["design-research-problems[grammar]==0.2.1"]
+problems_battery = ["design-research-problems[battery]==0.2.1"]
+problems_mcp = ["design-research-problems[mcp]==0.2.1"]
+problems_cad = ["design-research-problems[cad]==0.2.1"]
+problems_solvers = ["design-research-problems[solvers]==0.2.1"]
+problems_pandas = ["design-research-problems[pandas]==0.2.1"]
+problems_all = [
+  "design-research-problems[grammar,battery,mcp,cad,solvers,pandas]==0.2.1",
+]
+agents_azure = ["design-research-agents[azure]==0.3.0"]
+agents_openai = ["design-research-agents[openai]==0.3.0"]
+agents_anthropic = ["design-research-agents[anthropic]==0.3.0"]
+agents_gemini = ["design-research-agents[gemini]==0.3.0"]
+agents_groq = ["design-research-agents[groq]==0.3.0"]
+agents_memory_chroma = ["design-research-agents[memory_chroma]==0.3.0"]
+agents_memory_graph = ["design-research-agents[memory_graph]==0.3.0"]
+agents_llama_cpp = ["design-research-agents[llama_cpp]==0.3.0"]
+agents_transformers = ["design-research-agents[transformers]==0.3.0"]
+agents_mlx = ["design-research-agents[mlx]==0.3.0"]
+agents_vllm = ["design-research-agents[vllm]==0.3.0"]
+agents_sglang = ["design-research-agents[sglang]==0.3.0"]
+agents_local = ["design-research-agents[local]==0.3.0"]
+agents_providers = ["design-research-agents[providers]==0.3.0"]
+agents_full = ["design-research-agents[full]==0.3.0"]
+agents_all = [
+  "design-research-agents[full,memory_chroma,memory_graph]==0.3.0",
+]
+analysis_data = ["design-research-analysis[data]==0.1.1"]
+analysis_seq = ["design-research-analysis[seq]==0.1.1"]
+analysis_embeddings = ["design-research-analysis[embeddings]==0.1.1"]
+analysis_lang = ["design-research-analysis[lang]==0.1.1"]
+analysis_maps = ["design-research-analysis[maps]==0.1.1"]
+analysis_dimred = ["design-research-analysis[dimred]==0.1.1"]
+analysis_stats = ["design-research-analysis[stats]==0.1.1"]
+analysis_all = ["design-research-analysis[all]==0.1.1"]
+examples = ["design-research-agents[llama_cpp]==0.3.0"]
+kitchen_sink = [
+  "design-research-problems[grammar,battery,mcp,cad,solvers,pandas]==0.2.1",
+  "design-research-agents[full,memory_chroma,memory_graph]==0.3.0",
+  "design-research-analysis[all]==0.1.1",
+]
 
 [project.urls]
 Homepage = "https://cmudrc.github.io/design-research/"

@@ -30,7 +30,7 @@ python -m venv .venv
 source .venv/bin/activate
 make dev
 make test
-python -m pip install "llama-cpp-python[server]" huggingface-hub
+python -m pip install "design-research[examples]"
 make run-example
 make examples-test
 ```
@@ -44,9 +44,9 @@ public seams directly: a prompt-built `design_research.agents.Workflow`,
 `design_research.experiments.resolve_problem(...)`, and
 `design_research.experiments.run_study(..., agent_bindings=...)`, plus
 `design_research.analysis.integration`. Install
-`llama-cpp-python[server]` first. If you want the client to fetch its default
-GGUF model automatically, also install `huggingface-hub`; otherwise set
-`LLAMA_CPP_MODEL` to a specific local GGUF file.
+`design-research[examples]` first. It includes the managed `llama.cpp` client
+path and the default GGUF download helper. If you prefer to skip the download
+path, set `LLAMA_CPP_MODEL` to a specific local GGUF file.
 
 `make examples-test` stays deterministic and offline-first by default. It runs
 the two non-live recipe-first examples and skips the live walkthrough unless
@@ -56,7 +56,15 @@ Install from PyPI:
 
 ```bash
 pip install design-research
+pip install "design-research[examples]"
+pip install "design-research[agents_openai]"
+pip install "design-research[problems_all,analysis_all]"
+pip install "design-research[kitchen_sink]"
 ```
+
+The umbrella package now forwards curated sibling-library extras behind
+prefixed names such as `problems_*`, `agents_*`, and `analysis_*`, plus
+aggregate installs like `problems_all`, `agents_all`, and `kitchen_sink`.
 
 Then start from the umbrella namespace:
 

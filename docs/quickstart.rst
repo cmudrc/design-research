@@ -18,7 +18,7 @@ Run the bundled example:
 
 .. code-block:: bash
 
-   python -m pip install "llama-cpp-python[server]" huggingface-hub
+   python -m pip install "design-research[examples]"
    make run-example
    make examples-test
 
@@ -27,9 +27,9 @@ uses a real packaged problem, a live model-backed workflow agent, canonical
 experiment artifacts, and exported event-table validation.
 
 The walkthrough uses a managed ``llama.cpp`` client. Install
-``llama-cpp-python[server]`` before running it. If you want the default GGUF
-download path to work, also install ``huggingface-hub``; otherwise set
-``LLAMA_CPP_MODEL`` to a specific local GGUF file.
+``design-research[examples]`` before running it. That extra includes the
+managed runtime client and the default GGUF download helper. If you want to
+use a specific local GGUF file instead, set ``LLAMA_CPP_MODEL``.
 
 ``make examples-test`` stays deterministic and offline-first by default. It
 exercises the two smaller recipe-first examples and skips the live
