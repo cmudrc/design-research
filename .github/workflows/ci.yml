@@ -24,13 +24,15 @@ jobs:
           python-version: "3.12"
 
       - name: Install dependencies
+        env:
+          FAMILY_BRANCH: ${{ github.head_ref || github.ref_name }}
         run: |
           python -m pip install --upgrade pip
           pip install --upgrade \
-            "design-research-analysis @ git+https://github.com/cmudrc/design-research-analysis.git@main" \
-            "design-research-agents @ git+https://github.com/cmudrc/design-research-agents.git@main" \
-            "design-research-problems @ git+https://github.com/cmudrc/design-research-problems.git@main" \
-            "design-research-experiments @ git+https://github.com/cmudrc/design-research-experiments.git@main"
+            "design-research-analysis @ git+https://github.com/cmudrc/design-research-analysis.git@${FAMILY_BRANCH}" \
+            "design-research-agents @ git+https://github.com/cmudrc/design-research-agents.git@${FAMILY_BRANCH}" \
+            "design-research-problems @ git+https://github.com/cmudrc/design-research-problems.git@${FAMILY_BRANCH}" \
+            "design-research-experiments @ git+https://github.com/cmudrc/design-research-experiments.git@${FAMILY_BRANCH}"
           pip install -e ".[dev]"
 
       - name: Run local CI gate
@@ -60,13 +62,15 @@ jobs:
           cache: pip
 
       - name: Install dependencies
+        env:
+          FAMILY_BRANCH: ${{ github.head_ref || github.ref_name }}
         run: |
           python -m pip install --upgrade pip
           pip install --upgrade \
-            "design-research-analysis @ git+https://github.com/cmudrc/design-research-analysis.git@main" \
-            "design-research-agents @ git+https://github.com/cmudrc/design-research-agents.git@main" \
-            "design-research-problems @ git+https://github.com/cmudrc/design-research-problems.git@main" \
-            "design-research-experiments @ git+https://github.com/cmudrc/design-research-experiments.git@main"
+            "design-research-analysis @ git+https://github.com/cmudrc/design-research-analysis.git@${FAMILY_BRANCH}" \
+            "design-research-agents @ git+https://github.com/cmudrc/design-research-agents.git@${FAMILY_BRANCH}" \
+            "design-research-problems @ git+https://github.com/cmudrc/design-research-problems.git@${FAMILY_BRANCH}" \
+            "design-research-experiments @ git+https://github.com/cmudrc/design-research-experiments.git@${FAMILY_BRANCH}"
           pip install -e ".[dev]"
 
       - name: Generate coverage artifacts
