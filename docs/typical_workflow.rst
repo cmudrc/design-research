@@ -8,7 +8,6 @@ Typical Workflow
    - ``design_research.experiments`` for study definitions and orchestration.
    - ``design_research.analysis`` for downstream analysis and reporting.
 3. Build end-to-end studies by composing these layers without duplicating logic.
-   Start with the deterministic recipe-first examples for the smallest study
-   entry points, then see :doc:`prompt_framing_study` for the canonical live
-   walkthrough.
+   Start with :doc:`canonical_artifact_flow` for the smallest all-layer handoff,
+   then see :doc:`prompt_framing_study` for the live walkthrough.
 4. Keep package-specific details in component repositories.

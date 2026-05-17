@@ -47,10 +47,6 @@ def main() -> None:
     study = _build_study(replicates=int(runtime["replicates"]))
     conditions = dr.experiments.build_design(study)
 
-    # Resolve the packaged problem once so every run pulls from the same
-    # normalized problem packet.
-    problem_registry = {PROBLEM_ID: dr.experiments.resolve_problem(PROBLEM_ID)}
-
     # Start a managed llama.cpp server client for the duration of the study.
     # The context manager handles startup/shutdown around the live run.
     with dr.agents.LlamaCppServerLLMClient(
@@ -110,7 +106,6 @@ def main() -> None:
             study,
             conditions=conditions,
             agent_bindings=agent_bindings,
-            problem_registry=problem_registry,
             checkpoint=False,
             show_progress=False,
         )

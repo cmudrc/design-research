@@ -3,6 +3,9 @@
 The examples in this repository are intentionally small, recipe-first, and
 future-branch oriented.
 
+- `canonical_artifact_flow.py` is the smallest deterministic all-layer handoff:
+  one packaged problem, one public baseline agent, one experiment run path,
+  canonical artifacts, and analysis validation.
 - `student_laptop_design_study.py` is the smallest application-first decision
   study. It runs the packaged student laptop benchmark, prints the chosen
   laptop configuration, and reports the evaluator's observed market metrics.
@@ -28,7 +31,7 @@ defaults to eight replicates per condition; set `PROMPT_STUDY_REPLICATES` to
 run a larger sample.
 
 `make examples-test` stays deterministic and offline-first by default. It runs
-the two non-live examples and skips the live walkthrough unless
+the three non-live examples and skips the live walkthrough unless
 `RUN_LIVE_EXAMPLE=1`.
 
 The examples prefer adjacent sibling worktrees during local development so

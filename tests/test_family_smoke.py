@@ -118,7 +118,6 @@ def test_april_family_interoperability_smoke(tmp_path: Path) -> None:
     run_results = dr.experiments.run_study(
         study,
         conditions=conditions,
-        problem_registry={problem_id: dr.experiments.resolve_problem(problem_id)},
         checkpoint=False,
         show_progress=False,
     )

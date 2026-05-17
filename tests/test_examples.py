@@ -19,6 +19,20 @@ def _run_example(example_name: str, *, tmp_path: Path) -> subprocess.CompletedPr
     )
 
 
+def test_canonical_artifact_flow_example_executes(tmp_path: Path) -> None:
+    """The canonical flow should exercise the full public umbrella handoff."""
+    completed = _run_example("canonical_artifact_flow.py", tmp_path=tmp_path)
+    assert "Canonical artifact flow: canonical_artifact_flow" in completed.stdout
+    assert "Package path: problems -> agents -> experiments -> analysis" in completed.stdout
+    assert "Problem: Decision Problem - Student Laptop Design Under Choice-Based Demand" in (
+        completed.stdout
+    )
+    assert "Agent: SeededRandomBaselineAgent" in completed.stdout
+    assert "Runs: 2 (2 success)" in completed.stdout
+    assert "Mean primary_outcome:" in completed.stdout
+    assert "Event rows valid: True" in completed.stdout
+
+
 def test_student_laptop_design_study_example_executes(tmp_path: Path) -> None:
     """The student laptop study should report real packaged benchmark results."""
     completed = _run_example("student_laptop_design_study.py", tmp_path=tmp_path)

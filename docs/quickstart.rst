@@ -14,7 +14,13 @@ Local development setup:
    make dev
    make test
 
-Run the bundled example:
+Run the deterministic all-layer example:
+
+.. code-block:: bash
+
+   python examples/canonical_artifact_flow.py
+
+Run the live bundled example:
 
 .. code-block:: bash
 
@@ -22,7 +28,7 @@ Run the bundled example:
    make run-example
    make examples-test
 
-``make run-example`` executes the canonical umbrella-level walkthrough that
+``make run-example`` executes the live umbrella-level walkthrough that
 uses a real packaged problem, a live model-backed workflow agent, canonical
 experiment artifacts, and exported event-table validation.
 
@@ -32,7 +38,7 @@ download path to work, also install ``huggingface-hub``; otherwise set
 ``LLAMA_CPP_MODEL`` to a specific local GGUF file.
 
 ``make examples-test`` stays deterministic and offline-first by default. It
-exercises the two smaller recipe-first examples and skips the live
+exercises the three smaller recipe-first examples and skips the live
 walkthrough unless ``RUN_LIVE_EXAMPLE=1``.
 
 Build the docs:

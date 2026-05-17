@@ -64,10 +64,6 @@ def main() -> None:
     results = dr.experiments.run_study(
         study,
         conditions=conditions,
-        # Resolve the packaged problem once up front. The April-family path is
-        # that packaged problems flow straight through the umbrella without any
-        # hand-built `ProblemPacket` boilerplate in the example itself.
-        problem_registry={PROBLEM_ID: dr.experiments.resolve_problem(PROBLEM_ID)},
         checkpoint=False,
         show_progress=False,
     )
@@ -83,7 +79,9 @@ def main() -> None:
 
     # Sanity-check that the unified event export is structurally valid before we
     # tell readers to trust the generated artifacts.
-    validation_report = validate_exported_events(artifact_paths)
+    validation_report = dr.analysis.integration.validate_experiment_events(
+        artifact_paths["events.csv"]
+    )
 
     # Write one human-readable markdown summary next to the raw CSV artifacts.
     summary_path = dr.experiments.write_markdown_report(
@@ -132,7 +130,7 @@ def main() -> None:
     for line in chosen_design_lines:
         print(f"- {line}")
     print("Observed results:")
-    print(f"- market_share_proxy={float(evaluator_metrics.get('market_share_proxy', 0.0)):.4f}")
+    print(f"- predicted_share={float(evaluator_metrics.get('predicted_share', 0.0)):.4f}")
     print(
         f"- expected_demand_units={float(evaluator_metrics.get('expected_demand_units', 0.0)):.0f}"
     )
@@ -140,19 +138,7 @@ def main() -> None:
     print(f"- primary_outcome={float(run_result.metrics.get('primary_outcome', 0.0)):.4f}")
     print("Event rows valid:", validation_report.is_valid, f"(rows={validation_report.n_rows})")
     print("Summary report:", summary_path.name)
-    print("Artifacts:", artifact_names(artifact_paths))
-
-
-def artifact_names(artifact_paths: Mapping[str, Path]) -> str:
-    """Return exported artifact filenames in stable sorted order."""
-    return ", ".join(sorted(path.name for path in artifact_paths.values()))
-
-
-def validate_exported_events(
-    artifact_paths: Mapping[str, Path],
-) -> object:
-    """Validate the exported canonical event table through the analysis layer."""
-    return dr.analysis.integration.validate_experiment_events(artifact_paths["events.csv"])
+    print("Artifacts directory:", artifact_paths["events.csv"].parent)
 
 
 if __name__ == "__main__":

@@ -38,8 +38,8 @@ together and when to drop into the more specialized repos directly.
    .. note::
 
       **Start with** :doc:`compatibility` to choose between the umbrella package
-      and direct sibling installs, then follow :doc:`prompt_framing_study` for
-      the canonical real-agent workflow example built from the umbrella namespace.
+      and direct sibling installs, then run :doc:`canonical_artifact_flow` for
+      the deterministic all-layer handoff.
 
 Guides
 ------
@@ -48,6 +48,7 @@ Use these pages to understand the umbrella package, the shared namespace, and
 the recommended path through the ecosystem.
 
 - :doc:`compatibility`
+- :doc:`canonical_artifact_flow`
 - :doc:`prompt_framing_study`
 - :doc:`quickstart`
 - :doc:`installation`
@@ -90,6 +91,7 @@ Start Here
 ----------
 
 - :doc:`compatibility`
+- :doc:`canonical_artifact_flow`
 - :doc:`prompt_framing_study`
 - :doc:`quickstart`
 - :doc:`installation`
@@ -104,6 +106,7 @@ Start Here
    :hidden:
 
    compatibility
+   canonical_artifact_flow
    prompt_framing_study
    quickstart
    installation
