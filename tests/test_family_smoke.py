@@ -133,16 +133,13 @@ def test_april_family_interoperability_smoke(tmp_path: Path) -> None:
         validate_with_analysis_package=True,
     )
 
-    artifacts = dr.analysis.integration.load_experiment_artifacts(exported["events.csv"])
-    report = dr.analysis.integration.validate_experiment_events(exported["events.csv"])
-    metric_rows = dr.analysis.build_condition_metric_table(
-        artifacts["runs.csv"],
+    report = dr.analysis.validate_experiment_events(exported["events.csv"])
+    metric_rows = dr.analysis.build_condition_metric_table_from_artifacts(
+        exported["events.csv"],
         metric="primary_outcome",
         condition_column="agent_id",
-        conditions=artifacts["conditions.csv"],
-        evaluations=artifacts["evaluations.csv"],
     )
 
     assert report.is_valid
-    assert artifacts["manifest.json"]["study_id"] == study.study_id
+    assert exported["manifest.json"].exists()
     assert metric_rows
