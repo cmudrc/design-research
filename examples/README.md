@@ -34,7 +34,7 @@ make examples-test
 `examples/prompt_framing_study.py`. Install `llama-cpp-python[server]` first.
 If you want the default model download path, also install `huggingface-hub`;
 otherwise set `LLAMA_CPP_MODEL` to a specific local GGUF file. The live study
-defaults to eight replicates per condition; set `PROMPT_STUDY_REPLICATES` to
+defaults to 50 replicates per condition; set `PROMPT_STUDY_REPLICATES` to
 run a larger sample.
 
 `make examples-test` stays deterministic and offline-first by default. It runs

@@ -159,22 +159,22 @@ def _agent_run(
 
     score = _score_events(events, agent_id=agent_id)
 
-    # Return the standard agent result shape expected by experiments: output,
-    # metrics, event log, and metadata.
-    return {
-        "output": {"text": f"{agent_id} final concept score {score:.3f}"},
-        "metrics": {
+    # Let experiments build the standard custom-agent payload so readers do not
+    # have to memorize the raw return keys.
+    return dr.experiments.agent_result(
+        f"{agent_id} final concept score {score:.3f}",
+        metrics={
             PRIMARY_METRIC: score,
             "input_tokens": 180 + ACTION_COUNT,
             "output_tokens": 90 + (2 * ACTION_COUNT),
         },
-        "events": events,
-        "metadata": {
+        events=events,
+        metadata={
             "agent_kind": "scripted",
             "model_name": agent_id,
             "pattern_name": "long-process-trace",
         },
-    }
+    )
 
 
 def _score_events(events: list[Mapping[str, object]], *, agent_id: str) -> float:

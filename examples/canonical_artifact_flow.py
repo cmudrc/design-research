@@ -59,16 +59,13 @@ def main() -> None:
         validate_with_analysis_package=True,
     )
 
-    # Load and validate the exported event table through design-research-analysis
-    # so the example demonstrates the artifact contract, not private objects.
-    loaded = dr.analysis.integration.load_experiment_artifacts(artifacts["events.csv"])
-    event_report = dr.analysis.integration.validate_experiment_events(artifacts["events.csv"])
-    metric_rows = dr.analysis.build_condition_metric_table(
-        loaded["runs.csv"],
+    # Validate the exported event table and build the metric summary directly
+    # from artifacts, without asking the user to load the CSV tables.
+    event_report = dr.analysis.validate_experiment_events(artifacts["events.csv"])
+    metric_rows = dr.analysis.build_condition_metric_table_from_artifacts(
+        artifacts["events.csv"],
         metric=PRIMARY_METRIC,
         condition_column="agent_id",
-        conditions=loaded["conditions.csv"],
-        evaluations=loaded["evaluations.csv"],
     )
 
     # Reporting helpers live with experiments because they know the study shape,

@@ -93,9 +93,7 @@ def main() -> None:
 
     # Check that the event export is internally consistent before reporting
     # success back to the reader.
-    validation_report = dr.analysis.integration.validate_experiment_events(
-        artifact_paths["events.csv"]
-    )
+    validation_report = dr.analysis.validate_experiment_events(artifact_paths["events.csv"])
 
     # Write a lightweight markdown summary next to those exported artifacts.
     summary_path = dr.experiments.write_markdown_report(

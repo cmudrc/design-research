@@ -183,23 +183,23 @@ def _ideation_agent(
         {"event_type": "select", "text": "select final concept"},
     ]
 
-    # Keep the result payload canonical: final output, metrics, events, and
-    # model metadata. That is enough for experiments and analysis to compose.
-    return {
-        "output": {"text": f"{model_name} concept for {problem_packet.problem_id}"},
-        "metrics": {
+    # Let experiments build the standard custom-agent payload so this example
+    # stays focused on the DOE, not return-shape plumbing.
+    return dr.experiments.agent_result(
+        f"{model_name} concept for {problem_packet.problem_id}",
+        metrics={
             PRIMARY_METRIC: score,
             "input_tokens": 260 + int(size_b * 6),
             "output_tokens": 120 + int(size_b * 3),
             "cost_usd": round(size_b * 0.0005, 5),
         },
-        "events": events,
-        "metadata": {
+        events=events,
+        metadata={
             "agent_kind": "scripted",
             "model_name": model_name,
             "pattern_name": "partial-factorial-ideation",
         },
-    }
+    )
 
 
 def _task_terms(coefficients: dict[str, float]) -> str:

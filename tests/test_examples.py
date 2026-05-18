@@ -97,3 +97,15 @@ def test_prompt_framing_walkthrough_uses_public_prompt_workflow_agent() -> None:
     assert "build_json_prompt_workflow" in source
     assert "PromptWorkflowAgent" in source
     assert "agent_bindings" in source
+
+
+def test_examples_stay_on_public_artifact_helpers() -> None:
+    """Tutorial examples should not ask users to load raw analysis tables."""
+    combined_source = "\n".join(
+        path.read_text(encoding="utf-8") for path in sorted(EXAMPLES_DIR.glob("*.py"))
+    )
+
+    assert "analysis.integration" not in combined_source
+    assert "load_experiment_artifacts" not in combined_source
+    assert "build_condition_metric_table(" not in combined_source
+    assert "agent_result(" in combined_source

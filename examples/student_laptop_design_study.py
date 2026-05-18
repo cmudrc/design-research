@@ -79,9 +79,7 @@ def main() -> None:
 
     # Sanity-check that the unified event export is structurally valid before we
     # tell readers to trust the generated artifacts.
-    validation_report = dr.analysis.integration.validate_experiment_events(
-        artifact_paths["events.csv"]
-    )
+    validation_report = dr.analysis.validate_experiment_events(artifact_paths["events.csv"])
 
     # Write one human-readable markdown summary next to the raw CSV artifacts.
     summary_path = dr.experiments.write_markdown_report(

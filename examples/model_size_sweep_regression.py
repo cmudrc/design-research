@@ -123,23 +123,23 @@ def _sweep_agent(
         {"event_type": "select", "text": "select strongest safety-lock concept"},
     ]
 
-    # Experiments records this standard result shape and analysis later recovers
-    # the metrics and condition labels from exported artifacts.
-    return {
-        "output": {"text": f"{size_b:g}b concept set"},
-        "metrics": {
+    # Let experiments build the standard custom-agent payload. Analysis later
+    # recovers these metrics and condition labels from exported artifacts.
+    return dr.experiments.agent_result(
+        f"{size_b:g}b concept set",
+        metrics={
             PRIMARY_METRIC: score,
             "input_tokens": 220 + int(size_b * 8),
             "output_tokens": 90 + int(size_b * 5),
             "cost_usd": round(size_b * 0.0004, 5),
         },
-        "events": events,
-        "metadata": {
+        events=events,
+        metadata={
             "agent_kind": "scripted",
             "model_name": f"scripted-open-class-{size_b:g}b",
             "pattern_name": "model-size-sweep",
         },
-    }
+    )
 
 
 def _observed_tiers(rows: list[dict[str, object]]) -> list[str]:
