@@ -84,6 +84,7 @@ def _sweep_agent(
     problem_packet: dr.experiments.ProblemPacket,
     seed: int,
 ) -> dict[str, object]:
+    """Generate one deterministic ideation result for a model-size condition."""
     size_b = float(condition.factor_assignments["model_size_b"])
     rng = random.Random(seed)
     noise = rng.uniform(-0.015, 0.015)
@@ -115,6 +116,7 @@ def _sweep_agent(
 
 
 def _observed_tiers(rows: list[dict[str, object]]) -> list[str]:
+    """Return the sorted model-size tiers observed in artifact-derived rows."""
     tiers = sorted({float(row["model_size_b"]) for row in rows})
     return [f"{tier:g}b" for tier in tiers]
 

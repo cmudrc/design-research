@@ -118,6 +118,7 @@ def _agent_run(
     problem_packet: dr.experiments.ProblemPacket,
     seed: int,
 ) -> dict[str, object]:
+    """Generate one deterministic long agent trace for a treatment condition."""
     agent_id = str(condition.factor_assignments["agent_id"])
     rng = random.Random(seed)
     action = "inspect"
@@ -152,6 +153,7 @@ def _agent_run(
 
 
 def _score_events(events: list[Mapping[str, object]], *, agent_id: str) -> float:
+    """Compute a simple outcome from the trace structure and treatment."""
     actions = [str(event["event_type"]) for event in events]
     deliberate_moves = (
         actions.count("retrieve") + actions.count("critique") + actions.count("revise")
@@ -162,6 +164,7 @@ def _score_events(events: list[Mapping[str, object]], *, agent_id: str) -> float
 
 
 def _means_by_condition(rows: list[dict[str, object]]) -> dict[str, float]:
+    """Summarize the artifact-derived condition metric rows."""
     grouped: dict[str, list[float]] = {}
     for row in rows:
         grouped.setdefault(str(row["condition"]), []).append(float(row["value"]))

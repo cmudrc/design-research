@@ -81,6 +81,7 @@ def main() -> None:
 
 
 def _study() -> dr.experiments.Study:
+    """Build the ideation study definition for the partial factorial design."""
     return dr.experiments.Study(
         study_id=STUDY_ID,
         title="Partial Factorial Ideation Regression",
@@ -112,6 +113,7 @@ def _study() -> dr.experiments.Study:
 
 
 def _partial_factorial_conditions() -> list[dr.experiments.Condition]:
+    """Materialize the explicit partial factorial condition matrix."""
     conditions = []
     for index, (model_key, task_key) in enumerate(PARTIAL_ROWS, start=1):
         model_name, model_size_b, model_family = MODEL_LEVELS[model_key]
@@ -139,6 +141,7 @@ def _ideation_agent(
     problem_packet: dr.experiments.ProblemPacket,
     seed: int,
 ) -> dict[str, object]:
+    """Generate one deterministic ideation run for a model-task condition."""
     size_b = float(condition.factor_assignments["model_size_b"])
     model_name = str(condition.factor_assignments["model_name"])
     task_family = str(condition.factor_assignments["task_family"])
@@ -174,6 +177,7 @@ def _ideation_agent(
 
 
 def _task_terms(coefficients: dict[str, float]) -> str:
+    """Format the categorical task-family coefficient names."""
     terms = sorted(name for name in coefficients if name.startswith("task_family["))
     return ", ".join(terms)
 
