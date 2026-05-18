@@ -12,6 +12,13 @@ future-branch oriented.
 - `pump_and_battery_design_portfolio.py` is the packaged engineering portfolio
   example. It runs real pump and battery optimization benchmarks, reports the
   observed objective and feasibility results, and previews a second recipe.
+- `long_agent_markov_comparison.py` runs long scripted agent traces under two
+  treatments and compares their exported process traces as Markov-chain
+  transition matrices.
+- `model_size_sweep_regression.py` sweeps model sizes within one model class and
+  fits a regression directly from canonical experiment artifacts.
+- `partial_factorial_ideation_regression.py` samples a larger model-by-task
+  ideation design and fits a linear model without user-facing table plumbing.
 - `prompt_framing_study.py` is the canonical live walkthrough. It keeps the
   managed `llama.cpp` runtime, workflow-backed strategy arms, pairwise
   condition comparisons, and markdown reporting.
@@ -31,7 +38,7 @@ defaults to eight replicates per condition; set `PROMPT_STUDY_REPLICATES` to
 run a larger sample.
 
 `make examples-test` stays deterministic and offline-first by default. It runs
-the three non-live examples and skips the live walkthrough unless
+the six non-live examples and skips the live walkthrough unless
 `RUN_LIVE_EXAMPLE=1`.
 
 The examples prefer adjacent sibling worktrees during local development so

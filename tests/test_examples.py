@@ -54,6 +54,39 @@ def test_pump_and_battery_design_portfolio_example_executes(tmp_path: Path) -> N
     assert "Event rows valid: True" in completed.stdout
 
 
+def test_long_agent_markov_comparison_example_executes(tmp_path: Path) -> None:
+    """The long-process example should compare condition-specific Markov chains."""
+    completed = _run_example("long_agent_markov_comparison.py", tmp_path=tmp_path)
+    assert "Long agent Markov comparison: long_agent_markov_comparison" in completed.stdout
+    assert "Actions per run: 30" in completed.stdout
+    assert "Runs: 20" in completed.stdout
+    assert "Event rows valid: True" in completed.stdout
+    assert "Transition matrix delta:" in completed.stdout
+
+
+def test_model_size_sweep_regression_example_executes(tmp_path: Path) -> None:
+    """The model-size example should regress outcomes from artifacts."""
+    completed = _run_example("model_size_sweep_regression.py", tmp_path=tmp_path)
+    assert "Model size sweep regression: model_size_sweep_regression" in completed.stdout
+    assert "Model class: scripted-open-class" in completed.stdout
+    assert "Runs: 20" in completed.stdout
+    assert "Regression samples: 20" in completed.stdout
+    assert "Coefficient model_size_b:" in completed.stdout
+
+
+def test_partial_factorial_ideation_regression_example_executes(tmp_path: Path) -> None:
+    """The partial-factorial example should fit a linear model from artifacts."""
+    completed = _run_example("partial_factorial_ideation_regression.py", tmp_path=tmp_path)
+    assert (
+        "Partial factorial ideation regression: partial_factorial_ideation_regression"
+        in completed.stdout
+    )
+    assert "Conditions: 12" in completed.stdout
+    assert "Runs: 24" in completed.stdout
+    assert "Regression samples: 24" in completed.stdout
+    assert "Model size coefficient:" in completed.stdout
+
+
 def test_prompt_framing_walkthrough_uses_public_prompt_workflow_agent() -> None:
     """The live walkthrough should use the sibling-owned prompt workflow agent."""
     source = (EXAMPLES_DIR / "prompt_framing_study.py").read_text(encoding="utf-8")
