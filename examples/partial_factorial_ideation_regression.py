@@ -44,8 +44,13 @@ PARTIAL_ROWS = (
 
 def main() -> None:
     """Run a larger ideation DOE without touching the exported tables directly."""
+    # Build the study separately from the condition matrix so the tutorial can
+    # show both pieces of a custom design of experiments.
     study = _study()
     conditions = _partial_factorial_conditions()
+
+    # The scripted agent keeps execution offline and deterministic, but it still
+    # returns the same result shape expected from a live ideation agent.
     results = dr.experiments.run_study(
         study,
         conditions=conditions,
@@ -53,6 +58,9 @@ def main() -> None:
         checkpoint=False,
         show_progress=False,
     )
+
+    # Persist the standard artifacts before analysis. This keeps the example
+    # aligned with a reproducible workflow where tables can be inspected later.
     artifacts = dr.experiments.export_analysis_tables(
         study,
         conditions=conditions,
@@ -61,6 +69,8 @@ def main() -> None:
         validate_with_analysis_package=True,
     )
 
+    # Fit a linear model from artifacts with both a numeric predictor and a
+    # categorical task-family predictor. No user code touches the CSV tables.
     regression = dr.analysis.fit_regression_from_artifacts(
         artifacts["events.csv"],
         outcome=PRIMARY_METRIC,
@@ -69,6 +79,8 @@ def main() -> None:
     )
     validation = dr.analysis.validate_experiment_events(artifacts["events.csv"])
 
+    # Print the regression headline and validation status; the detailed rows stay
+    # in the generated artifacts.
     print("Partial factorial ideation regression:", study.study_id)
     print("Conditions:", len(conditions))
     print("Runs:", len(results))
@@ -82,6 +94,8 @@ def main() -> None:
 
 def _study() -> dr.experiments.Study:
     """Build the ideation study definition for the partial factorial design."""
+    # The factor definitions describe the design space even though this example
+    # samples only a partial matrix below.
     return dr.experiments.Study(
         study_id=STUDY_ID,
         title="Partial Factorial Ideation Regression",
@@ -115,6 +129,9 @@ def _study() -> dr.experiments.Study:
 def _partial_factorial_conditions() -> list[dr.experiments.Condition]:
     """Materialize the explicit partial factorial condition matrix."""
     conditions = []
+
+    # Spell out the partial factorial rows rather than generating a full cross
+    # product. This is the pattern to use when the DOE is intentionally sparse.
     for index, (model_key, task_key) in enumerate(PARTIAL_ROWS, start=1):
         model_name, model_size_b, model_family = MODEL_LEVELS[model_key]
         problem_id, task_family, _ = TASK_LEVELS[task_key]
@@ -145,6 +162,9 @@ def _ideation_agent(
     size_b = float(condition.factor_assignments["model_size_b"])
     model_name = str(condition.factor_assignments["model_name"])
     task_family = str(condition.factor_assignments["task_family"])
+
+    # Each task family has a small deterministic offset so the regression has
+    # categorical terms worth estimating.
     task_bonus = next(
         bonus
         for problem_id, family, bonus in TASK_LEVELS.values()
@@ -152,6 +172,9 @@ def _ideation_agent(
     )
     rng = random.Random(seed)
     score = 0.48 + (0.010 * size_b) + task_bonus + rng.uniform(-0.02, 0.02)
+
+    # The event sequence resembles a lightweight ideation workflow. Analysis can
+    # read these rows later without knowing how the scripted agent was written.
     events = [
         {"event_type": "inspect", "text": problem_packet.brief[:90]},
         {"event_type": "analogize", "text": f"look for {task_family} analogies"},
@@ -159,6 +182,9 @@ def _ideation_agent(
         {"event_type": "critique", "text": "score novelty and feasibility"},
         {"event_type": "select", "text": "select final concept"},
     ]
+
+    # Keep the result payload canonical: final output, metrics, events, and
+    # model metadata. That is enough for experiments and analysis to compose.
     return {
         "output": {"text": f"{model_name} concept for {problem_packet.problem_id}"},
         "metrics": {

@@ -16,7 +16,12 @@ PRIMARY_METRIC = "primary_outcome"
 
 def main() -> None:
     """Run one packaged problem through the public umbrella stack."""
+    # Start with a packaged benchmark from design-research-problems. The umbrella
+    # import keeps the example focused on the workflow instead of package wiring.
     problem = dr.problems.get_problem(PROBLEM_ID)
+
+    # Build the smallest useful study: one problem, one public agent, and two
+    # deterministic replicates so the analysis layer has real rows to consume.
     study = dr.experiments.build_strategy_comparison_study(
         dr.experiments.StrategyComparisonConfig(
             study_id=STUDY_ID,
@@ -34,6 +39,8 @@ def main() -> None:
         )
     )
 
+    # Materialize the abstract recipe into condition rows, then execute those
+    # rows through design-research-experiments.
     conditions = dr.experiments.build_design(study)
     results = dr.experiments.run_study(
         study,
@@ -41,6 +48,9 @@ def main() -> None:
         checkpoint=False,
         show_progress=False,
     )
+
+    # Export canonical analysis tables. This is the main ecosystem handoff:
+    # experiments writes artifacts that analysis can read directly.
     artifacts = dr.experiments.export_analysis_tables(
         study,
         conditions=conditions,
@@ -49,6 +59,8 @@ def main() -> None:
         validate_with_analysis_package=True,
     )
 
+    # Load and validate the exported event table through design-research-analysis
+    # so the example demonstrates the artifact contract, not private objects.
     loaded = dr.analysis.integration.load_experiment_artifacts(artifacts["events.csv"])
     event_report = dr.analysis.integration.validate_experiment_events(artifacts["events.csv"])
     metric_rows = dr.analysis.build_condition_metric_table(
@@ -58,6 +70,9 @@ def main() -> None:
         conditions=loaded["conditions.csv"],
         evaluations=loaded["evaluations.csv"],
     )
+
+    # Reporting helpers live with experiments because they know the study shape,
+    # while analysis owns the statistical and tabular transforms.
     summary_path = dr.experiments.write_markdown_report(
         study.output_dir,
         "canonical_artifact_flow_summary.md",
@@ -67,6 +82,8 @@ def main() -> None:
     values = [float(row["value"]) for row in metric_rows]
     successes = sum(result.status.value == "success" for result in results)
 
+    # Keep terminal output compact: enough to confirm the packages worked
+    # together and point readers at the generated artifacts.
     print("Canonical artifact flow:", study.study_id)
     print("Package path: problems -> agents -> experiments -> analysis")
     print("Problem:", problem.metadata.title)

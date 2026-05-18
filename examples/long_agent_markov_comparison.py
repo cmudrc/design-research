@@ -39,7 +39,12 @@ TRANSITIONS = {
 
 def main() -> None:
     """Run two agent treatments, then compare their transition matrices."""
+    # The problem package supplies the real design-task context. The agents below
+    # stay scripted so the example can focus on process traces and analysis.
     problem = dr.problems.get_problem(PROBLEM_ID)
+
+    # Both treatments get the same action vocabulary and run budget. Only the
+    # transition tendencies differ, which makes the Markov comparison meaningful.
     study = dr.experiments.Study(
         study_id=STUDY_ID,
         title="Long Agent Markov Comparison",
@@ -61,6 +66,9 @@ def main() -> None:
         run_budget=dr.experiments.RunBudget(replicates=10, parallelism=1, max_runs=20),
         output_dir=OUTPUT_DIR,
     )
+
+    # Build the condition table and bind each agent id to the same callable. The
+    # callable reads the condition to choose the scripted transition policy.
     conditions = dr.experiments.build_design(study)
     results = dr.experiments.run_study(
         study,
@@ -69,6 +77,9 @@ def main() -> None:
         checkpoint=False,
         show_progress=False,
     )
+
+    # Export the run history as canonical artifacts. From this point on, the
+    # analysis code works from files rather than the in-memory run objects.
     artifacts = dr.experiments.export_analysis_tables(
         study,
         conditions=conditions,
@@ -77,6 +88,8 @@ def main() -> None:
         validate_with_analysis_package=True,
     )
 
+    # Fit one Markov chain per treatment from event sequences, then compare the
+    # transition matrices directly from the same event artifact.
     chains = dr.analysis.fit_markov_chains_from_artifacts(
         artifacts["events.csv"],
         condition_column="agent_id",
@@ -89,6 +102,9 @@ def main() -> None:
         right_condition=BASELINE_AGENT,
         session_column="run_id",
     )
+
+    # Outcome metrics use the same artifact-first path, so process analysis and
+    # score summaries come from a single exported contract.
     metric_rows = dr.analysis.build_condition_metric_table_from_artifacts(
         artifacts["events.csv"],
         metric=PRIMARY_METRIC,
@@ -97,6 +113,9 @@ def main() -> None:
     validation = dr.analysis.validate_experiment_events(artifacts["events.csv"])
 
     means = _means_by_condition(metric_rows)
+
+    # The printout is intentionally brief: headline process comparison, outcome
+    # means, and the artifact directory for deeper inspection.
     print("Long agent Markov comparison:", study.study_id)
     print("Problem:", problem.metadata.title)
     print("Actions per run:", ACTION_COUNT)
@@ -123,6 +142,9 @@ def _agent_run(
     rng = random.Random(seed)
     action = "inspect"
     events = []
+
+    # Emit a long sequence of canonical events. Each event type is also a Markov
+    # state, which lets analysis reconstruct transition counts without adapters.
     for step in range(1, ACTION_COUNT + 1):
         action = rng.choice(TRANSITIONS[agent_id][action])
         events.append(
@@ -136,6 +158,9 @@ def _agent_run(
         )
 
     score = _score_events(events, agent_id=agent_id)
+
+    # Return the standard agent result shape expected by experiments: output,
+    # metrics, event log, and metadata.
     return {
         "output": {"text": f"{agent_id} final concept score {score:.3f}"},
         "metrics": {

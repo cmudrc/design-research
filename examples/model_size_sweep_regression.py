@@ -18,7 +18,12 @@ MODEL_SIZES_B = (1.5, 3.0, 7.0, 14.0)
 
 def main() -> None:
     """Run a deterministic model-size sweep and fit an artifact-first regression."""
+    # Use one packaged ideation task so model size is the factor being swept,
+    # rather than mixing model effects with task effects.
     problem = dr.problems.get_problem(PROBLEM_ID)
+
+    # The study factor is numeric because the downstream regression should treat
+    # model size as a continuous predictor.
     study = dr.experiments.Study(
         study_id=STUDY_ID,
         title="Model Size Sweep Regression",
@@ -38,6 +43,9 @@ def main() -> None:
         run_budget=dr.experiments.RunBudget(replicates=5, parallelism=1, max_runs=20),
         output_dir=OUTPUT_DIR,
     )
+
+    # The custom binding keeps the run deterministic while still exercising the
+    # same experiments contract used by live model-backed agents.
     conditions = dr.experiments.build_design(study)
     results = dr.experiments.run_study(
         study,
@@ -46,6 +54,9 @@ def main() -> None:
         checkpoint=False,
         show_progress=False,
     )
+
+    # Export first, then analyze. That mirrors the standard workflow where
+    # analysis consumes saved study artifacts rather than private Python objects.
     artifacts = dr.experiments.export_analysis_tables(
         study,
         conditions=conditions,
@@ -54,11 +65,16 @@ def main() -> None:
         validate_with_analysis_package=True,
     )
 
+    # Fit the regression directly from the event artifact. The helper reconstructs
+    # run metrics and condition columns from the canonical tables.
     regression = dr.analysis.fit_regression_from_artifacts(
         artifacts["events.csv"],
         outcome=PRIMARY_METRIC,
         predictors=("model_size_b",),
     )
+
+    # Build a run-level metric table for a simple sanity check of the observed
+    # size tiers that actually reached the artifact layer.
     run_rows = dr.analysis.build_run_metric_table_from_artifacts(
         artifacts["events.csv"],
         metrics=PRIMARY_METRIC,
@@ -66,6 +82,8 @@ def main() -> None:
     )
     validation = dr.analysis.validate_experiment_events(artifacts["events.csv"])
 
+    # Report the regression headline and the generated artifact location, not
+    # every row, so the example stays script-like.
     print("Model size sweep regression:", study.study_id)
     print("Problem:", problem.metadata.title)
     print("Model class:", "scripted-open-class")
@@ -87,8 +105,14 @@ def _sweep_agent(
     """Generate one deterministic ideation result for a model-size condition."""
     size_b = float(condition.factor_assignments["model_size_b"])
     rng = random.Random(seed)
+
+    # Create a monotonic but noisy score so the regression has an interpretable
+    # effect to recover without relying on networked model calls.
     noise = rng.uniform(-0.015, 0.015)
     score = 0.52 + (0.08 * math.log2(size_b + 1.0)) + noise
+
+    # These events are intentionally ordinary design-process moves. They make the
+    # artifact look like a real run while keeping the example deterministic.
     events = [
         {
             "event_type": "inspect",
@@ -98,6 +122,9 @@ def _sweep_agent(
         {"event_type": "ideate", "text": f"draft concepts with {size_b:g}b model"},
         {"event_type": "select", "text": "select strongest safety-lock concept"},
     ]
+
+    # Experiments records this standard result shape and analysis later recovers
+    # the metrics and condition labels from exported artifacts.
     return {
         "output": {"text": f"{size_b:g}b concept set"},
         "metrics": {
