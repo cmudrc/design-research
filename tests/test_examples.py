@@ -92,5 +92,8 @@ def test_prompt_framing_walkthrough_uses_public_prompt_workflow_agent() -> None:
     source = (EXAMPLES_DIR / "prompt_framing_study.py").read_text(encoding="utf-8")
     assert "_future_stack" not in source
     assert "_workspace_bootstrap" not in source
+    assert "build_json_model_workflow" not in source
+    assert "read_csv_rows" not in source
+    assert "build_json_prompt_workflow" in source
     assert "PromptWorkflowAgent" in source
     assert "agent_bindings" in source

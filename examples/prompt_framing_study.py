@@ -2,9 +2,7 @@
 
 from __future__ import annotations
 
-import csv
 import importlib.util
-import json
 import os
 from pathlib import Path
 
@@ -63,40 +61,24 @@ def main() -> None:
         agent_bindings = {
             # The neutral condition uses the live model but keeps the instruction
             # framing generic.
-            "neutral_prompt": lambda _condition: dr.agents.PromptWorkflowAgent(
-                workflow=build_json_model_workflow(
-                    llm_client=llm_client,
-                    candidate_schema=candidate_schema,
-                    study_id=STUDY_ID,
-                    problem_id=PROBLEM_ID,
-                    fallback_model_name=str(runtime["model_name"]),
-                    fallback_provider=str(runtime["provider_name"]),
-                ),
-                prompt_builder=lambda problem_packet, _run_spec, _condition: _strategy_prompt(
-                    problem_packet,
-                    instruction=(
-                        "Condition: neutral prompt. Choose the best overall candidate using the "
-                        "packaged demand and feasibility information."
-                    ),
+            "neutral_prompt": _prompt_agent_binding(
+                llm_client=llm_client,
+                candidate_schema=candidate_schema,
+                runtime=runtime,
+                instruction=(
+                    "Condition: neutral prompt. Choose the best overall candidate using the "
+                    "packaged demand and feasibility information."
                 ),
             ),
             # The profit-focused condition swaps only the framing instruction so
             # the study isolates prompt strategy rather than model identity.
-            "profit_focus_prompt": lambda _condition: dr.agents.PromptWorkflowAgent(
-                workflow=build_json_model_workflow(
-                    llm_client=llm_client,
-                    candidate_schema=candidate_schema,
-                    study_id=STUDY_ID,
-                    problem_id=PROBLEM_ID,
-                    fallback_model_name=str(runtime["model_name"]),
-                    fallback_provider=str(runtime["provider_name"]),
-                ),
-                prompt_builder=lambda problem_packet, _run_spec, _condition: _strategy_prompt(
-                    problem_packet,
-                    instruction=(
-                        "Condition: profit-focus prompt. Prioritize choices that maximize "
-                        "market share proxy and expected demand."
-                    ),
+            "profit_focus_prompt": _prompt_agent_binding(
+                llm_client=llm_client,
+                candidate_schema=candidate_schema,
+                runtime=runtime,
+                instruction=(
+                    "Condition: profit-focus prompt. Prioritize choices that maximize "
+                    "market share proxy and expected demand."
                 ),
             ),
         }
@@ -119,38 +101,29 @@ def main() -> None:
         output_dir=OUTPUT_DIR,
     )
 
-    # Load only the CSVs we need for the walkthrough's reporting and statistical
-    # comparison steps.
-    exported_rows = load_analysis_exports(
-        artifact_paths,
-        names=("conditions.csv", "runs.csv", "evaluations.csv"),
-    )
-
     # Confirm that the event-level export is structurally valid before building
     # downstream tables from it.
-    validation_report = validate_exported_events(artifact_paths)
+    validation_report = dr.analysis.validate_experiment_events(artifact_paths["events.csv"])
 
     # Build one condition-by-metric table for the primary outcome we care about
-    # and another for a secondary business-facing metric.
-    primary_metric_rows = dr.analysis.build_condition_metric_table(
-        exported_rows["runs.csv"],
+    # and another for a secondary business-facing metric, without hand-loading CSVs.
+    primary_metric_rows = dr.analysis.build_condition_metric_table_from_artifacts(
+        artifact_paths["events.csv"],
         metric="market_share_proxy",
         condition_column="agent_id",
-        conditions=exported_rows["conditions.csv"],
-        evaluations=exported_rows["evaluations.csv"],
     )
-    demand_metric_rows = dr.analysis.build_condition_metric_table(
-        exported_rows["runs.csv"],
+    demand_metric_rows = dr.analysis.build_condition_metric_table_from_artifacts(
+        artifact_paths["events.csv"],
         metric="expected_demand_units",
         condition_column="agent_id",
-        conditions=exported_rows["conditions.csv"],
-        evaluations=exported_rows["evaluations.csv"],
     )
 
     # Compare the strategy pairs using the analysis package's pairwise
     # permutation test helper.
-    comparison_report = dr.analysis.compare_condition_pairs(
-        primary_metric_rows,
+    comparison_report = dr.analysis.compare_condition_pairs_from_artifacts(
+        artifact_paths["events.csv"],
+        metric="market_share_proxy",
+        condition_column="agent_id",
         condition_pairs=PAIRWISE_COMPARISONS,
         alternative="greater",
         alpha=SIGNIFICANCE_ALPHA,
@@ -261,26 +234,6 @@ def _strategy_prompt(problem_packet: object, *, instruction: str) -> str:
     )
 
 
-def read_csv_rows(path: Path) -> list[dict[str, str]]:
-    """Read one exported CSV table into a list of row dictionaries."""
-    with path.open("r", encoding="utf-8", newline="") as file_obj:
-        return list(csv.DictReader(file_obj))
-
-
-def load_analysis_exports(
-    artifact_paths: dict[str, Path],
-    *,
-    names: tuple[str, ...],
-) -> dict[str, list[dict[str, str]]]:
-    """Load selected exported CSV artifacts into memory."""
-    return {name: read_csv_rows(artifact_paths[name]) for name in names}
-
-
-def validate_exported_events(artifact_paths: dict[str, Path]) -> object:
-    """Validate the exported canonical event table through the analysis layer."""
-    return dr.analysis.integration.validate_experiment_events(artifact_paths["events.csv"])
-
-
 def artifact_names(artifact_paths: dict[str, Path]) -> str:
     """Return exported artifact filenames in stable sorted order."""
     return ", ".join(sorted(path.name for path in artifact_paths.values()))
@@ -367,97 +320,33 @@ def llama_cpp_runtime_config(*, default_replicates: int) -> dict[str, object]:
     }
 
 
-def build_json_model_workflow(
+def _prompt_agent_binding(
     *,
     llm_client: object,
     candidate_schema: dict[str, object],
-    study_id: str,
-    problem_id: str,
-    fallback_model_name: str,
-    fallback_provider: str,
+    runtime: dict[str, object],
+    instruction: str,
 ) -> object:
-    """Build one reusable prompt-mode workflow that returns structured JSON."""
+    """Build one condition-scoped prompt workflow agent binding."""
 
-    def request_builder(context: dict[str, object]) -> object:
-        """Build one structured LLM request from the workflow context."""
-        return dr.agents.LLMRequest(
-            messages=[
-                dr.agents.LLMMessage(
-                    role="system",
-                    content=(
-                        "You are a careful study participant. Return valid JSON only and match "
-                        "the requested schema exactly."
-                    ),
-                ),
-                dr.agents.LLMMessage(role="user", content=str(context["prompt"])),
-            ],
-            temperature=0.0,
-            max_tokens=400,
-            response_schema=candidate_schema,
-            metadata={"study_id": study_id, "problem_id": problem_id},
+    def _binding(_condition: object) -> object:
+        """Return one prompt workflow agent for a concrete experiment condition."""
+        return dr.agents.PromptWorkflowAgent(
+            workflow=dr.agents.build_json_prompt_workflow(
+                llm_client=llm_client,
+                response_schema=candidate_schema,
+                request_metadata={"study_id": STUDY_ID, "problem_id": PROBLEM_ID},
+                default_request_id_prefix=STUDY_ID,
+                fallback_model_name=str(runtime["model_name"]),
+                fallback_provider=str(runtime["provider_name"]),
+            ),
+            prompt_builder=lambda problem_packet, _run_spec, _condition: _strategy_prompt(
+                problem_packet,
+                instruction=instruction,
+            ),
         )
 
-    def response_parser(response: object, _context: dict[str, object]) -> dict[str, object]:
-        """Parse one model response into workflow output, metrics, and events."""
-        model_text = strip_markdown_fences(str(getattr(response, "text", "")).strip())
-        candidate = json.loads(model_text)
-        if not isinstance(candidate, dict):
-            raise RuntimeError("Expected the live workflow to return one JSON object candidate.")
-        provider = str(getattr(response, "provider", "") or fallback_provider)
-        model_name = str(getattr(response, "model", "") or fallback_model_name)
-        return {
-            "final_output": candidate,
-            "metrics": usage_metrics(getattr(response, "usage", None)),
-            "events": [
-                {
-                    "event_type": "model_response",
-                    "actor_id": "agent",
-                    "text": model_text,
-                    "meta_json": {"provider": provider, "model_name": model_name},
-                }
-            ],
-        }
-
-    return dr.agents.Workflow(
-        steps=(
-            dr.agents.ModelStep(
-                step_id="select_candidate",
-                llm_client=llm_client,
-                request_builder=request_builder,
-                response_parser=response_parser,
-            ),
-        ),
-        output_schema=candidate_schema,
-        default_request_id_prefix=study_id,
-    )
-
-
-def strip_markdown_fences(text: str) -> str:
-    """Strip one optional fenced-code wrapper from a model response."""
-    if not text.startswith("```"):
-        return text
-    lines = text.splitlines()
-    if lines and lines[0].startswith("```"):
-        lines = lines[1:]
-    if lines and lines[-1].startswith("```"):
-        lines = lines[:-1]
-    return "\n".join(lines).strip()
-
-
-def usage_metrics(usage: object) -> dict[str, object]:
-    """Normalize usage payloads into canonical metric names."""
-    metrics: dict[str, object] = {"cost_usd": 0.0}
-    if isinstance(usage, dict):
-        prompt_tokens = usage.get("prompt_tokens")
-        completion_tokens = usage.get("completion_tokens")
-    else:
-        prompt_tokens = getattr(usage, "prompt_tokens", None)
-        completion_tokens = getattr(usage, "completion_tokens", None)
-    if isinstance(prompt_tokens, int):
-        metrics["input_tokens"] = prompt_tokens
-    if isinstance(completion_tokens, int):
-        metrics["output_tokens"] = completion_tokens
-    return metrics
+    return _binding
 
 
 if __name__ == "__main__":
