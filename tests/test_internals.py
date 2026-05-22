@@ -46,4 +46,4 @@ def test_wrapper_dir_exposes_lazy_exports() -> None:
 
 def test_version_module_exposes_single_source_of_truth() -> None:
     """Version module should expose the next release version directly."""
-    assert __version__ == "0.3.0"
+    assert __version__ == "0.3.1"
