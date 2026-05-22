@@ -30,13 +30,13 @@ def test_generate_examples_metrics_matches_default_execution_policy() -> None:
     inventory = metrics["inventory"]
     public_api = metrics["public_api"]
 
-    assert examples["passed"] == 2
-    assert examples["total"] == 2
-    assert examples["available"] == 3
+    assert examples["passed"] == 6
+    assert examples["total"] == 6
+    assert examples["available"] == 7
     assert examples["skipped"] == 1
     assert examples["run_live_example_enabled"] is False
-    assert inventory["example_file_count"] == 3
-    assert inventory["default_example_count"] == 2
+    assert inventory["example_file_count"] == 7
+    assert inventory["default_example_count"] == 6
     assert inventory["opt_in_example_count"] == 1
     assert inventory["opt_in_examples"] == ["examples/prompt_framing_study.py"]
     assert public_api["covered_exports"] == 4
@@ -51,10 +51,10 @@ def test_generate_examples_metrics_includes_live_walkthrough_when_enabled() -> N
     examples = metrics["examples"]
     inventory = metrics["inventory"]
 
-    assert examples["passed"] == 3
-    assert examples["total"] == 3
-    assert examples["available"] == 3
+    assert examples["passed"] == 7
+    assert examples["total"] == 7
+    assert examples["available"] == 7
     assert examples["skipped"] == 0
     assert examples["run_live_example_enabled"] is True
-    assert inventory["default_example_count"] == 2
+    assert inventory["default_example_count"] == 6
     assert inventory["opt_in_example_count"] == 1

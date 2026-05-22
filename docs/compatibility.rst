@@ -31,14 +31,15 @@ These versions match the exact sibling pins in ``pyproject.toml`` and represent
 the tested umbrella combination for the current docs baseline.
 
 The bundled examples and smoke tests intentionally target the April 2026 family
-interop seams directly: ``design_research_experiments.resolve_problem(...)``,
-public ``design_research_agents.SeededRandomBaselineAgent`` and
-``design_research_agents.PromptWorkflowAgent`` participants, a prompt-built
-``design_research_agents.Workflow``, and
-``design_research_analysis.integration``. The shipped example scripts expect
-installed sibling packages; adjacent sibling worktrees are preferred only by
-the family-sync and subprocess example tests so the umbrella package can verify
-current sibling ``main`` APIs during contributor workflows.
+interop seams directly. :doc:`canonical_artifact_flow` is the no-network smoke
+path: it resolves a packaged problem, runs the public seeded baseline agent,
+exports canonical experiment artifacts, and validates them with
+``design_research_analysis.integration``. The live walkthrough adds
+``PromptWorkflowAgent`` and a prompt-built ``Workflow`` on top of that same
+artifact contract. The shipped example scripts expect installed sibling
+packages; adjacent sibling worktrees are preferred only by the family-sync and
+subprocess example tests so the umbrella package can verify current sibling
+``main`` APIs during contributor workflows.
 
 Start Here Vs Go Direct
 -----------------------
@@ -79,6 +80,6 @@ date.
 Next Step
 ---------
 
-If you want to see the umbrella package drive a real composed workflow, use the
-deterministic bundled examples for the smallest recipe-first entry points and
-continue to :doc:`prompt_framing_study` for the live canonical walkthrough.
+If you want to see the umbrella package drive a real composed workflow, start
+with :doc:`canonical_artifact_flow` and continue to :doc:`prompt_framing_study`
+for the live walkthrough.

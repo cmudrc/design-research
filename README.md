@@ -37,18 +37,22 @@ python -m venv .venv
 source .venv/bin/activate
 make dev
 make test
+python examples/canonical_artifact_flow.py
 python -m pip install "llama-cpp-python[server]" huggingface-hub
 make run-example
 make examples-test
 ```
 
-`make run-example` is the live canonical walkthrough. It uses a managed
+`examples/canonical_artifact_flow.py` is the deterministic compatibility smoke
+path: a packaged problem, public baseline agent, experiment artifacts, and
+analysis validation through the umbrella namespace.
+
+`make run-example` is the live walkthrough. It uses a managed
 `llama.cpp` client, a workflow-backed strategy comparison, canonical exports,
 and downstream analysis helpers. The live workflow path now uses the sibling
 public seams directly: a prompt-built `design_research.agents.Workflow`,
 `design_research.agents.PromptWorkflowAgent`,
 `design_research.agents.SeededRandomBaselineAgent`,
-`design_research.experiments.resolve_problem(...)`, and
 `design_research.experiments.run_study(..., agent_bindings=...)`, plus
 `design_research.analysis.integration`. Install
 `llama-cpp-python[server]` first. If you want the client to fetch its default
@@ -56,7 +60,7 @@ GGUF model automatically, also install `huggingface-hub`; otherwise set
 `LLAMA_CPP_MODEL` to a specific local GGUF file.
 
 `make examples-test` stays deterministic and offline-first by default. It runs
-the two non-live recipe-first examples and skips the live walkthrough unless
+the three non-live recipe-first examples and skips the live walkthrough unless
 `RUN_LIVE_EXAMPLE=1`.
 
 Install from PyPI:
@@ -93,7 +97,8 @@ Choose your entry point based on how much of the ecosystem you need:
 - Start with `design-research` when you want one stable namespace and one set of docs across problems, agents, experiments, and analysis.
 - Install a sibling package directly when you only need one layer or want package-specific internals; direct sibling use is fully supported.
 - See [Compatibility and Start Here](https://cmudrc.github.io/design-research/compatibility.html) for the tested package combination and install guidance.
-- See [Prompt-Framing Study Walkthrough](https://cmudrc.github.io/design-research/prompt_framing_study.html) for the canonical live composed workflow, and the bundled deterministic examples for the smaller recipe-first entry points.
+- See [Canonical Artifact Flow](https://cmudrc.github.io/design-research/canonical_artifact_flow.html) for the deterministic all-layer handoff.
+- See [Prompt-Framing Study Walkthrough](https://cmudrc.github.io/design-research/prompt_framing_study.html) for the live composed workflow.
 
 ## Ecosystem Integration
 

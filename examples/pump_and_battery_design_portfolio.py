@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-from collections.abc import Mapping
 from pathlib import Path
 
 import design_research as dr
@@ -80,12 +79,6 @@ def main() -> None:
     results = dr.experiments.run_study(
         primary_study,
         conditions=conditions,
-        # Resolve each packaged problem through the experiments wrapper so the
-        # study sees normalized problem packets with real evaluator behavior.
-        problem_registry={
-            problem_id: dr.experiments.resolve_problem(problem_id)
-            for problem_id in BENCHMARK_PROBLEM_IDS
-        },
         checkpoint=False,
         show_progress=False,
     )
@@ -100,7 +93,7 @@ def main() -> None:
 
     # Check that the event export is internally consistent before reporting
     # success back to the reader.
-    validation_report = validate_exported_events(artifact_paths)
+    validation_report = dr.analysis.validate_experiment_events(artifact_paths["events.csv"])
 
     # Write a lightweight markdown summary next to those exported artifacts.
     summary_path = dr.experiments.write_markdown_report(
@@ -137,19 +130,7 @@ def main() -> None:
         )
     print("Event rows valid:", validation_report.is_valid, f"(rows={validation_report.n_rows})")
     print("Summary report:", summary_path.name)
-    print("Artifacts:", artifact_names(artifact_paths))
-
-
-def artifact_names(artifact_paths: Mapping[str, Path]) -> str:
-    """Return exported artifact filenames in stable sorted order."""
-    return ", ".join(sorted(path.name for path in artifact_paths.values()))
-
-
-def validate_exported_events(
-    artifact_paths: Mapping[str, Path],
-) -> object:
-    """Validate the exported canonical event table through the analysis layer."""
-    return dr.analysis.integration.validate_experiment_events(artifact_paths["events.csv"])
+    print("Artifacts directory:", artifact_paths["events.csv"].parent)
 
 
 if __name__ == "__main__":

@@ -19,9 +19,6 @@ What This Covers
 ----------------
 
 - resolves a real packaged problem through ``design_research.problems``
-- resolves that problem through the sibling-owned
-  ``design_research.experiments.resolve_problem`` interop API so packaged
-  evaluations normalize cleanly into experiment rows
 - builds the study from
   ``design_research.experiments.build_strategy_comparison_study`` with a
   recipe-first benchmark bundle containing a random baseline, a neutral
