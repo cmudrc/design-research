@@ -20,17 +20,17 @@ Tested Package Combination
      - ``design-research-experiments``
      - ``design-research-analysis``
      - Monthly release context
-   * - ``0.1.1``
-     - ``0.2.1``
+   * - ``0.3.0``
      - ``0.3.0``
-     - ``0.1.1``
-     - ``0.1.1``
-     - ``Atlas Alignment - April 2026``
+     - ``0.4.0``
+     - ``0.2.0``
+     - ``0.2.0``
+     - ``Compass Course - May 2026``
 
 These versions match the exact sibling pins in ``pyproject.toml`` and represent
 the tested umbrella combination for the current docs baseline.
 
-The bundled examples and smoke tests intentionally target the April 2026 family
+The bundled examples and smoke tests intentionally target the May 2026 family
 interop seams directly. :doc:`canonical_artifact_flow` is the no-network smoke
 path: it resolves a packaged problem, runs the public seeded baseline agent,
 exports canonical experiment artifacts, and validates them with

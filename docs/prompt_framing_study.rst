@@ -3,7 +3,7 @@ Prompt Strategy Comparison Walkthrough
 
 This walkthrough demonstrates the umbrella package doing real work with a live
 model-backed agent while following the comparison-study recipe/reporting APIs
-landing on the April 2026 sibling-library branches. It uses a real packaged
+published across the May 2026 sibling-library releases. It uses a real packaged
 problem from ``design_research.problems``, a managed
 prompt-mode ``design_research.agents.Workflow``,
 ``design_research.agents.PromptWorkflowAgent``, the
@@ -32,10 +32,10 @@ What This Covers
   ``runs.csv`` and ``evaluations.csv`` tables via
   ``build_condition_metric_table`` and ``compare_condition_pairs``
 
-Branch Alignment
-----------------
+Package Alignment
+-----------------
 
-This local walkthrough intentionally tracks the April 2026 release-branch APIs
+This local walkthrough intentionally tracks the May 2026 released package APIs
 from ``design-research-agents``, ``design-research-experiments``, and
 ``design-research-analysis``. If you run it against older releases of those
 sibling packages, it will fail fast with a clear upgrade message instead of

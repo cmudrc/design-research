@@ -326,7 +326,7 @@ def _install_dependency_stubs() -> dict[str, ModuleType]:
         "UnifiedTableValidationReport",
     ]:
         setattr(analysis, symbol, type(symbol, (), {}))
-    analysis.__version__ = "0.1.1"
+    analysis.__version__ = "0.2.0"
     analysis.dataset = analysis_dataset
     analysis.embedding_maps = analysis_embedding_maps
     analysis.integration = analysis_integration
@@ -504,7 +504,7 @@ def test_wrapper_re_exports_are_reachable_via_stubs(monkeypatch: Any) -> None:
     assert experiments.RunBudget.__name__ == "RunBudget"
     assert experiments.StrategyComparisonConfig.__name__ == "StrategyComparisonConfig"
     assert experiments.Study.__name__ == "Study"
-    assert analysis.__version__ == "0.1.1"
+    assert analysis.__version__ == "0.2.0"
     assert analysis.build_condition_metric_table()[0] == "build_condition_metric_table"
     assert analysis.compare_condition_pairs()[0] == "compare_condition_pairs"
     assert analysis.ComparisonResult.__name__ == "ComparisonResult"

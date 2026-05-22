@@ -7,9 +7,9 @@
 
 <!-- release-callout:start -->
 > [!IMPORTANT]
-> Current monthly release: [Meridian Map - April 2026](https://github.com/cmudrc/design-research/milestone/2)  
-> Due: May 8, 2026  
-> Tracks: April 2026 work
+> Current monthly release: [Compass Course - May 2026](https://github.com/cmudrc/design-research/milestone/3)  
+> Due: June 8, 2026  
+> Tracks: May 2026 work
 <!-- release-callout:end -->
 
 `design-research` is the umbrella entry-point package in the cmudrc design

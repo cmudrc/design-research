@@ -25,10 +25,10 @@ classifiers = [
   "Typing :: Typed",
 ]
 dependencies = [
-  "design-research-problems==0.2.1",
-  "design-research-agents==0.3.0",
-  "design-research-experiments==0.1.2",
-  "design-research-analysis==0.1.1",
+  "design-research-problems==0.3.0",
+  "design-research-agents==0.4.0",
+  "design-research-experiments==0.2.0",
+  "design-research-analysis==0.2.0",
 ]
 
 [project.optional-dependencies]
