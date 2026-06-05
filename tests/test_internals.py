@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from types import SimpleNamespace
+
 import pytest
 
 from design_research import _lazy
@@ -12,6 +14,21 @@ def test_module_dir_includes_public_and_existing_names() -> None:
     """module_dir should merge globals and public names without duplicates."""
     names = _lazy.module_dir({"alpha": object(), "beta": object()}, ["beta", "gamma"])
     assert names == ["alpha", "beta", "gamma"]
+
+
+def test_public_module_exports_falls_back_to_non_private_names(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Modules without __all__ should export visible attributes only."""
+    module = SimpleNamespace(alpha=object(), beta=object(), _private=object())
+    monkeypatch.setattr(_lazy, "import_module", lambda _module_path: module)
+
+    exports = _lazy.public_module_exports("example.module")
+
+    assert exports == {
+        "alpha": "example.module:alpha",
+        "beta": "example.module:beta",
+    }
 
 
 def test_resolve_lazy_export_raises_attribute_error_for_unknown_name() -> None:
