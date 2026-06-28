@@ -10,6 +10,10 @@ make dev
 
 The preferred maintainer interpreter is set in `.python-version` (`3.12`).
 
+Opening the project in VS Code? Start with `docs/vscode_start.rst` for the
+PyPI install path, source checkout path, interpreter selection, and first
+example.
+
 Before cutting a release, run:
 
 ```bash
