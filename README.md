@@ -5,13 +5,6 @@
 [![Public API In Examples](https://raw.githubusercontent.com/cmudrc/design-research/HEAD/.github/badges/examples-api-coverage.svg)](https://github.com/cmudrc/design-research/actions/workflows/examples.yml)
 [![Docs](https://github.com/cmudrc/design-research/actions/workflows/docs-pages.yml/badge.svg)](https://github.com/cmudrc/design-research/actions/workflows/docs-pages.yml)
 
-<!-- release-callout:start -->
-> [!IMPORTANT]
-> Current monthly release: [Compass Course - May 2026](https://github.com/cmudrc/design-research/milestone/3)  
-> Due: June 8, 2026  
-> Tracks: May 2026 work
-<!-- release-callout:end -->
-
 `design-research` is the umbrella entry-point package in the cmudrc design
 research ecosystem.
 
@@ -90,6 +83,10 @@ the four wrapper submodules. Reach the stable user-facing APIs through
 `design_research.experiments`, and `design_research.analysis` rather than a
 flattened root namespace.
 
+For a VS Code-oriented path that starts from PyPI and then shows the repository
+example workflow, see
+[Run An Example In VS Code](https://cmudrc.github.io/design-research/vscode_start.html).
+
 ## Start Here
 
 Choose your entry point based on how much of the ecosystem you need:
@@ -97,6 +94,7 @@ Choose your entry point based on how much of the ecosystem you need:
 - Start with `design-research` when you want one stable namespace and one set of docs across problems, agents, experiments, and analysis.
 - Install a sibling package directly when you only need one layer or want package-specific internals; direct sibling use is fully supported.
 - See [Compatibility and Start Here](https://cmudrc.github.io/design-research/compatibility.html) for the tested package combination and install guidance.
+- See [Run An Example In VS Code](https://cmudrc.github.io/design-research/vscode_start.html) for a PyPI install path and source checkout example path.
 - See [Canonical Artifact Flow](https://cmudrc.github.io/design-research/canonical_artifact_flow.html) for the deterministic all-layer handoff.
 - See [Prompt-Framing Study Walkthrough](https://cmudrc.github.io/design-research/prompt_framing_study.html) for the live composed workflow.
 

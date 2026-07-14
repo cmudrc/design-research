@@ -58,38 +58,19 @@ merging.
 - Treat this package as an umbrella wrapper; do not duplicate implementation
   logic from sibling repositories.
 
-## Release Naming
+## Release Planning
 
-- Theme: cartography and wayfinding.
-- Monthly release names are shared across milestone titles, release PR titles,
-  and release branches.
-- Milestone due dates should land about one week after the start of the release
-  month so new versions of sibling libraries have time to land first.
-  - Milestone title / PR title: `{base name} - {Month YYYY}`
-  - Release branch: slugified full title, for example `meridian-map-may-2026`
-- Milestone descriptions must use:
-  - `Tracks {previous month YYYY} work.`
-  - `Theme source: <url>`
-- Release PR bodies must repeat the same `Theme source:` link used on the
-  milestone.
-- Never reuse an exact base name or the same primary subject across any month
-  or any of the design-research repositories unless the affected `AGENTS.md`
-  files are intentionally updated together.
-- Before adding a new release name, check the `Release Naming` tables in the
-  related repos to avoid repeats.
-
-| Due date | Base name | Source subject |
-| --- | --- | --- |
-| April 8, 2026 | Atlas Alignment | Atlas |
-| May 8, 2026 | Meridian Map | Meridian |
-| June 8, 2026 | Compass Course | Compass |
-| July 8, 2026 | Legend Line | Map legend |
-| August 8, 2026 | Bearing Bridge | Bearing |
-| September 8, 2026 | Surveyor Signal | Surveying |
-| October 8, 2026 | Cartographer Circuit | Cartography |
-| November 8, 2026 | Wayfinder Weave | Wayfinding |
-| December 8, 2026 | Transit Trace | Transit |
-| January 8, 2027 | North Star Nexus | Pole star |
+- Do not create monthly milestone naming tables, themed release PR names, or
+  calendar release branches as default maintenance.
+- Prefer small issue/PR-scoped planning and package version releases driven by
+  user-facing changes.
+- Use GitHub milestones only for explicit, short-lived initiatives with an
+  active owner; they are optional scheduling aids, not release gates.
+- Name release branches and release PRs for the version or concrete change set
+  they contain.
+- When publishing, update package metadata, docs, examples, and GitHub
+  Releases/PyPI notes as needed. Do not add README callouts that point to
+  monthly milestones.
 
 ## Keep This File Up To Date
 

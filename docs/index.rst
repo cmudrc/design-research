@@ -50,6 +50,7 @@ the recommended path through the ecosystem.
 - :doc:`compatibility`
 - :doc:`canonical_artifact_flow`
 - :doc:`prompt_framing_study`
+- :doc:`vscode_start`
 - :doc:`quickstart`
 - :doc:`installation`
 - :doc:`concepts`
@@ -93,6 +94,7 @@ Start Here
 - :doc:`compatibility`
 - :doc:`canonical_artifact_flow`
 - :doc:`prompt_framing_study`
+- :doc:`vscode_start`
 - :doc:`quickstart`
 - :doc:`installation`
 - :doc:`concepts`
@@ -108,6 +110,7 @@ Start Here
    compatibility
    canonical_artifact_flow
    prompt_framing_study
+   vscode_start
    quickstart
    installation
    concepts
