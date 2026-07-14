@@ -44,6 +44,12 @@ make run-example
 make examples-test
 ```
 
+On a coordinated pre-release branch, maintainers should run
+`make dev-release-candidates` before `make ci`. This installs the exact reviewed
+component commits recorded in `requirements/release-candidates.txt`; normal
+users and `main` continue to install the exact published versions declared in
+`pyproject.toml`.
+
 `examples/canonical_artifact_flow.py` is the deterministic compatibility smoke
 path: a packaged problem, public baseline agent, experiment artifacts, and
 analysis validation through the umbrella namespace.

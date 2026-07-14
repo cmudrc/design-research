@@ -8,7 +8,7 @@ BUILD ?= $(PYTHON) -m build
 TWINE ?= $(PYTHON) -m twine
 COVERAGE_MIN ?= 95
 
-.PHONY: help check-python dev install-dev \
+.PHONY: help check-python dev dev-release-candidates install-dev \
 	lint fmt fmt-check type test qa coverage docstrings-check \
 	run-example examples-test examples-coverage examples-metrics \
 	docs docs-build docs-check docs-linkcheck \
@@ -17,6 +17,7 @@ COVERAGE_MIN ?= 95
 help:
 	@echo "Common targets:"
 	@echo "  dev              Install the project in editable mode with dev dependencies."
+	@echo "  dev-release-candidates Install reviewed component source commits for pre-release CI."
 	@echo "  test             Run the pytest suite."
 	@echo "  qa               Run lint, fmt-check, type, and test."
 	@echo "  run-example      Execute the live llama.cpp strategy-comparison study example."
@@ -31,6 +32,11 @@ check-python:
 
 dev:
 	$(PIP) install --upgrade pip setuptools wheel
+	$(PIP) install -e ".[dev]"
+
+dev-release-candidates:
+	$(PIP) install --upgrade pip setuptools wheel
+	$(PIP) install -r requirements/release-candidates.txt
 	$(PIP) install -e ".[dev]"
 
 install-dev: dev

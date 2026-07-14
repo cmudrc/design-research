@@ -14,6 +14,27 @@ Opening the project in VS Code? Start with `docs/vscode_start.rst` for the
 PyPI install path, source checkout path, interpreter selection, and first
 example.
 
+### Unpublished Component Releases
+
+The umbrella package keeps exact component version pins in `pyproject.toml`.
+Those pins are the user-facing contract and must resolve from PyPI before this
+umbrella release is published.
+
+While a coordinated component release is still under review, install the exact
+reviewed source commits with:
+
+```bash
+make dev-release-candidates
+```
+
+`requirements/release-candidates.txt` is a maintainer-only integration matrix.
+Each entry pins an immutable component commit so Umbrella pull-request CI tests
+one reproducible stack before those versions exist on PyPI. Update an entry only
+after the corresponding component commit has passed its own quality gates, and
+confirm that the package version at that commit matches the exact dependency in
+`pyproject.toml`. Normal development from `main`, user installation, package
+builds, and releases continue to use the published dependencies.
+
 Before cutting a release, run:
 
 ```bash
@@ -33,6 +54,9 @@ make test
 make docs-check
 make docs
 ```
+
+For an Umbrella release-candidate branch, run `make dev-release-candidates`
+before these checks so the local environment matches pull-request CI.
 
 If the example or walkthrough docs changed, also run:
 
