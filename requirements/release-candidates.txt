@@ -4,7 +4,7 @@
 # from PyPI until the component releases are published. Keep each commit aligned
 # with the corresponding reviewed release branch. Normal user and main-branch
 # installs must continue to resolve the published versions from pyproject.toml.
-design-research-problems @ git+https://github.com/cmudrc/design-research-problems.git@4847e204ca18648b2945f3e7438949e07ef02173
+design-research-problems @ git+https://github.com/cmudrc/design-research-problems.git@6a1a5af83c57c1b24b806abd09658bca3926952c
 design-research-agents @ git+https://github.com/cmudrc/design-research-agents.git@12c7ce4752e3c7e5138ee803f53e8ee6e746b366
 design-research-experiments @ git+https://github.com/cmudrc/design-research-experiments.git@1ed12ab388e9386220dc387abb72eb169ad8f987
 design-research-analysis @ git+https://github.com/cmudrc/design-research-analysis.git@f3714be39f943b6e11f609fe9bffab90eec38054
