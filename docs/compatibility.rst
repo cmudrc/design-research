@@ -19,13 +19,11 @@ Tested Package Combination
      - ``design-research-agents``
      - ``design-research-experiments``
      - ``design-research-analysis``
-     - Monthly release context
    * - ``0.3.0``
      - ``0.3.0``
      - ``0.4.0``
      - ``0.2.0``
      - ``0.2.0``
-     - ``Compass Course - May 2026``
 
 These versions match the exact sibling pins in ``pyproject.toml`` and represent
 the tested umbrella combination for the current docs baseline.
@@ -68,14 +66,13 @@ plus the four wrapper submodules. Stable user-facing symbols remain under
 ``design_research.experiments``, and ``design_research.analysis`` rather than a
 flattened root namespace.
 
-Monthly Release Train
----------------------
+Release Planning
+----------------
 
-Monthly release names coordinate ecosystem alignment work across repositories.
-They are scheduling and documentation markers, not alternate install
-coordinates. Use the version matrix above for tested package combinations, and
-use the current release callout in the README for the active milestone and due
-date.
+The ecosystem no longer uses monthly milestone names as the default release
+coordination mechanism. Use the version matrix above for tested package
+combinations, and use GitHub Releases or PyPI versions for published package
+state.
 
 Next Step
 ---------

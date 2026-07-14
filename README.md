@@ -5,13 +5,6 @@
 [![Public API In Examples](https://raw.githubusercontent.com/cmudrc/design-research/HEAD/.github/badges/examples-api-coverage.svg)](https://github.com/cmudrc/design-research/actions/workflows/examples.yml)
 [![Docs](https://github.com/cmudrc/design-research/actions/workflows/docs-pages.yml/badge.svg)](https://github.com/cmudrc/design-research/actions/workflows/docs-pages.yml)
 
-<!-- release-callout:start -->
-> [!IMPORTANT]
-> Current monthly release: [Compass Course - May 2026](https://github.com/cmudrc/design-research/milestone/3)  
-> Due: June 8, 2026  
-> Tracks: May 2026 work
-<!-- release-callout:end -->
-
 `design-research` is the umbrella entry-point package in the cmudrc design
 research ecosystem.
 
