@@ -6,7 +6,7 @@ MYPY ?= $(PYTHON) -m mypy
 SPHINX ?= $(PYTHON) -m sphinx
 BUILD ?= $(PYTHON) -m build
 TWINE ?= $(PYTHON) -m twine
-COVERAGE_MIN ?= 90
+COVERAGE_MIN ?= 95
 
 .PHONY: help check-python dev install-dev \
 	lint fmt fmt-check type test qa coverage docstrings-check \
@@ -21,7 +21,7 @@ help:
 	@echo "  qa               Run lint, fmt-check, type, and test."
 	@echo "  run-example      Execute the live llama.cpp strategy-comparison study example."
 	@echo "  examples-test    Execute all bundled example scripts."
-	@echo "  examples-coverage Check public API coverage across examples."
+	@echo "  examples-coverage Require every public API export to appear in an example."
 	@echo "  examples-metrics Generate example and public-API badge artifacts."
 	@echo "  docs             Build the HTML docs."
 	@echo "  ci               Run the main local CI checks."
@@ -66,8 +66,8 @@ run-example: check-python
 examples-test: check-python
 	$(PYTHON) scripts/run_examples.py
 
-examples-coverage: check-python
-	$(PYTHON) scripts/check_example_api_coverage.py --minimum 90
+examples-coverage: check-python examples-metrics
+	$(PYTHON) scripts/check_example_api_coverage.py --minimum 100
 
 examples-metrics: check-python examples-test
 	$(PYTHON) scripts/generate_examples_metrics.py

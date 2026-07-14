@@ -52,7 +52,7 @@ merging.
 
 - Keep tests deterministic and offline by default.
 - Let the canonical walkthrough fail fast when the `llama.cpp` runtime is missing rather than silently falling back.
-- Keep total line coverage at or above 90% in CI and local release work.
+- Keep total line coverage at or above 95% in CI and local release work.
 - Update tests, docs, and examples alongside behavior changes.
 - Avoid broad dependency growth in the base install.
 - Treat this package as an umbrella wrapper; do not duplicate implementation

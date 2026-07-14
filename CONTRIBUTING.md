@@ -50,14 +50,17 @@ GGUF file. `make examples-test` skips that walkthrough unless
 
 ## Coverage Policy
 
-`design-research` follows the family-wide baseline of at least 90% total line
+`design-research` follows the family-wide baseline of at least 95% total line
 coverage in CI.
 
-- Treat 90% as a strict floor for this repository, not a soft target.
+- Treat 95% as a strict floor for this repository, not a soft target.
 - Keep new family repositories at the same baseline unless the shared policy is
   intentionally changed across the ecosystem.
 - `make ci` enforces this floor through the coverage gate, so coverage-impacting
   changes should be validated there before merge.
+- `make examples-test` executes the checked-in runnable examples.
+- `make examples-coverage` requires every curated top-level `__all__` export
+  to appear in at least one runnable example.
 
 Optional but useful:
 
