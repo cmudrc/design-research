@@ -26,11 +26,6 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install --upgrade \
-            "design-research-analysis==0.2.0" \
-            "design-research-agents==0.4.0" \
-            "design-research-problems==0.3.0" \
-            "design-research-experiments==0.2.0"
           pip install -e ".[dev]"
 
       - name: Run local CI gate
@@ -62,11 +57,6 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install --upgrade \
-            "design-research-analysis==0.2.0" \
-            "design-research-agents==0.4.0" \
-            "design-research-problems==0.3.0" \
-            "design-research-experiments==0.2.0"
           pip install -e ".[dev]"
 
       - name: Generate coverage artifacts

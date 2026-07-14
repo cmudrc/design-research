@@ -17,13 +17,14 @@ def public_module_exports(module_path: str) -> dict[str, str]:
     module = import_module(module_path)
     public_names = getattr(module, "__all__", None)
     if public_names is None:
-        public_names = [name for name in dir(module) if not name.startswith("_")]
-        return {
-            str(name): f"{module_path}:{name}"
-            for name in public_names
-            if isinstance(name, str) and not name.startswith("_")
-        }
-    return {str(name): f"{module_path}:{name}" for name in public_names if isinstance(name, str)}
+        raise AttributeError(f"Sibling module {module_path!r} must define an explicit __all__.")
+    if not isinstance(public_names, (list, tuple)):
+        raise TypeError(f"Sibling module {module_path!r} must define __all__ as a list or tuple.")
+    if any(not isinstance(name, str) or not name for name in public_names):
+        raise TypeError(f"Sibling module {module_path!r} contains an invalid __all__ entry.")
+    if len(set(public_names)) != len(public_names):
+        raise ValueError(f"Sibling module {module_path!r} contains duplicate __all__ entries.")
+    return {name: f"{module_path}:{name}" for name in public_names}
 
 
 def resolve_lazy_export(module_name: str, exports: dict[str, str], name: str) -> object:

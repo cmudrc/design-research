@@ -25,10 +25,10 @@ classifiers = [
   "Typing :: Typed",
 ]
 dependencies = [
-  "design-research-problems==0.3.0",
-  "design-research-agents==0.4.0",
-  "design-research-experiments==0.2.0",
-  "design-research-analysis==0.2.0",
+  "design-research-problems==0.4.0",
+  "design-research-agents==0.5.0",
+  "design-research-experiments==0.2.1",
+  "design-research-analysis==0.3.0",
 ]
 
 [project.optional-dependencies]
@@ -62,7 +62,7 @@ version = { attr = "design_research._version.__version__" }
 where = ["src"]
 
 [tool.setuptools.package-data]
-design_research = ["py.typed"]
+design_research = ["py.typed", "*.pyi"]
 
 [tool.pytest.ini_options]
 addopts = "-q"
@@ -87,6 +87,7 @@ convention = "google"
 
 [tool.ruff.lint.per-file-ignores]
 "tests/*.py" = ["D"]
+"src/design_research/*.pyi" = ["F403"]
 
 [tool.mypy]
 packages = ["design_research"]

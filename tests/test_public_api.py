@@ -34,4 +34,4 @@ def test_top_level_namespace_does_not_flatten_wrapper_symbols() -> None:
 
 def test_package_version_is_exposed_from_the_top_level() -> None:
     """Expose package metadata without requiring installed distribution metadata."""
-    assert dr.__version__ == "0.3.0"
+    assert dr.__version__ == "0.4.0"

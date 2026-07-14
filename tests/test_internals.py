@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from types import SimpleNamespace
+
 import pytest
 
 from design_research import _lazy
@@ -18,6 +20,30 @@ def test_resolve_lazy_export_raises_attribute_error_for_unknown_name() -> None:
     """Unknown export names should raise an AttributeError."""
     with pytest.raises(AttributeError):
         _lazy.resolve_lazy_export("design_research.problems", {}, "missing")
+
+
+def test_public_module_exports_requires_explicit_all(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Sibling wrappers should fail instead of broadening an accidental API."""
+    monkeypatch.setattr(_lazy, "import_module", lambda _name: SimpleNamespace())
+
+    with pytest.raises(AttributeError, match="must define an explicit __all__"):
+        _lazy.public_module_exports("example")
+
+
+@pytest.mark.parametrize("public_names", ["name", ["valid", 3], ["duplicate", "duplicate"]])
+def test_public_module_exports_rejects_invalid_all(
+    public_names: object,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Require a unique sequence of non-empty string export names."""
+    monkeypatch.setattr(
+        _lazy,
+        "import_module",
+        lambda _name: SimpleNamespace(__all__=public_names),
+    )
+
+    with pytest.raises((TypeError, ValueError)):
+        _lazy.public_module_exports("example")
 
 
 def test_wrapper_dir_exposes_lazy_exports() -> None:
@@ -46,4 +72,4 @@ def test_wrapper_dir_exposes_lazy_exports() -> None:
 
 def test_version_module_exposes_single_source_of_truth() -> None:
     """Version module should expose the next release version directly."""
-    assert __version__ == "0.3.0"
+    assert __version__ == "0.4.0"
