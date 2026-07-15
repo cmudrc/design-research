@@ -28,6 +28,12 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Install Pandoc
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes pandoc
+          pandoc --version
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
