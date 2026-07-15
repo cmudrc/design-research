@@ -2,9 +2,9 @@
 #
 # This file exists because the exact versions in pyproject.toml are not available
 # from PyPI until the component releases are published. Keep each commit aligned
-# with the corresponding reviewed release branch. Normal user and main-branch
-# installs must continue to resolve the published versions from pyproject.toml.
-design-research-problems @ git+https://github.com/cmudrc/design-research-problems.git@e32b3aa28ce5ed50e62abb6df0d57a1ab8ba2dd1
-design-research-agents @ git+https://github.com/cmudrc/design-research-agents.git@8d994c511221cc139455aab738bcc224cb3172da
-design-research-experiments @ git+https://github.com/cmudrc/design-research-experiments.git@6e873bd051f9d34de2bb97a03632bb95286c6f7b
-design-research-analysis @ git+https://github.com/cmudrc/design-research-analysis.git@b61b471eb44fbb530e799a0ee01c09b2a7139157
+# with the corresponding reviewed commit on the component's main branch. Normal
+# user and main-branch installs must resolve published versions from pyproject.toml.
+design-research-problems @ git+https://github.com/cmudrc/design-research-problems.git@89d6140e44638d200b3d2062a0700966c2a61ed2
+design-research-agents @ git+https://github.com/cmudrc/design-research-agents.git@1880b398b66077472317fea07aa8b84e4d7db350
+design-research-experiments @ git+https://github.com/cmudrc/design-research-experiments.git@22a56efdfa0d4004d9df312d69537e9e1590a24c
+design-research-analysis @ git+https://github.com/cmudrc/design-research-analysis.git@11a3b711cf109764322d0ddf3172926070d4c146

@@ -33,8 +33,10 @@ immutable source commits listed in ``requirements/release-candidates.txt``.
 That file is a maintainer integration aid, not an alternate user installation
 path or a replacement for the version matrix. Each source commit must declare
 the same package version shown above and pass its component repository's own
-quality gates. Main-branch CI and normal ``pip install design-research`` usage
-continue to resolve the exact published versions from ``pyproject.toml``.
+quality gates. ``make release-candidates-check`` also verifies that the matrix
+contains one immutable commit for every exact component dependency. Main-branch
+CI and normal ``pip install design-research`` usage continue to resolve the
+exact published versions from ``pyproject.toml``.
 
 The bundled examples and smoke tests intentionally target this pinned family
 through public integration points. :doc:`canonical_artifact_flow` is the no-network smoke

@@ -27,6 +27,10 @@ reviewed source commits with:
 make dev-release-candidates
 ```
 
+The target refreshes component packages even when the candidate version is
+unchanged, so moving from a reviewed branch commit to its squash commit cannot
+leave an older source build in the environment.
+
 `requirements/release-candidates.txt` is a maintainer-only integration matrix.
 Each entry pins an immutable component commit so Umbrella pull-request CI tests
 one reproducible stack before those versions exist on PyPI. Update an entry only
@@ -35,11 +39,27 @@ confirm that the package version at that commit matches the exact dependency in
 `pyproject.toml`. Normal development from `main`, user installation, package
 builds, and releases continue to use the published dependencies.
 
+Run `make release-candidates-check` after editing either file. The check rejects
+branch and tag references, duplicate packages, repository mismatches, and any
+component dependency without exactly one immutable source commit.
+
+## Release Publishing
+
 Before cutting a release, run:
 
 ```bash
 make release-check
 ```
+
+The GitHub `Publish` workflow builds and validates distributions before any
+upload:
+
+- Publishing a GitHub Release tagged `v{package-version}` publishes to PyPI.
+- A manual workflow run is build-only by default.
+- A recovery publish requires selecting the release tag and explicitly setting
+  `publish=true`; publishing from a branch is rejected.
+- Every publishing path rejects a tag that differs from the version in
+  `src/design_research/_version.py`.
 
 ## Local Quality Checks
 

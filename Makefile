@@ -8,7 +8,7 @@ BUILD ?= $(PYTHON) -m build
 TWINE ?= $(PYTHON) -m twine
 COVERAGE_MIN ?= 95
 
-.PHONY: help check-python dev dev-release-candidates install-dev \
+.PHONY: help check-python dev dev-release-candidates release-candidates-check install-dev \
 	lint fmt fmt-check type test qa coverage docstrings-check \
 	run-example examples-test examples-coverage examples-metrics \
 	docs docs-build docs-check docs-linkcheck \
@@ -18,6 +18,7 @@ help:
 	@echo "Common targets:"
 	@echo "  dev              Install the project in editable mode with dev dependencies."
 	@echo "  dev-release-candidates Install reviewed component source commits for pre-release CI."
+	@echo "  release-candidates-check Validate immutable component pins against project dependencies."
 	@echo "  test             Run the pytest suite."
 	@echo "  qa               Run lint, fmt-check, type, and test."
 	@echo "  run-example      Execute the live llama.cpp strategy-comparison study example."
@@ -36,8 +37,11 @@ dev:
 
 dev-release-candidates:
 	$(PIP) install --upgrade pip setuptools wheel
-	$(PIP) install -r requirements/release-candidates.txt
+	$(PIP) install --force-reinstall --no-deps -r requirements/release-candidates.txt
 	$(PIP) install -e ".[dev]"
+
+release-candidates-check: check-python
+	$(PYTHON) scripts/check_release_candidates.py
 
 install-dev: dev
 
@@ -95,7 +99,7 @@ release-check: check-python
 	$(BUILD)
 	$(TWINE) check dist/*
 
-ci: qa coverage docstrings-check docs-check examples-test examples-coverage release-check
+ci: release-candidates-check qa coverage docstrings-check docs-check examples-test examples-coverage release-check
 
 clean:
 	rm -rf .coverage .mypy_cache .pytest_cache .ruff_cache artifacts build dist docs/_build

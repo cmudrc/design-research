@@ -1,7 +1,7 @@
 # Examples
 
 The examples in this repository are intentionally small, recipe-first, and
-future-branch oriented.
+offline-first unless a live runtime is central to the lesson.
 
 - `canonical_artifact_flow.py` is the smallest deterministic all-layer handoff:
   one packaged problem, one public baseline agent, one experiment run path,
@@ -41,9 +41,7 @@ run a larger sample.
 the six non-live examples and skips the live walkthrough unless
 `RUN_LIVE_EXAMPLE=1`.
 
-The examples prefer adjacent sibling worktrees during local development so
-they can use the future recipe/workflow/reporting APIs before the pinned PyPI
-versions catch up. Keep the sibling repos next to this repo or set
-`DESIGN_RESEARCH_WORKSPACE_ROOT=/path/to/your/workspace`. You can also point a
-single example layer at a different checkout with repo-specific overrides such
-as `DESIGN_RESEARCH_AGENTS_ROOT` or `DESIGN_RESEARCH_EXPERIMENTS_ROOT`.
+Examples use the installed component packages. During a coordinated pre-release,
+maintainers can install the exact reviewed component commits with
+`make dev-release-candidates`; normal users should install the published
+umbrella package and its exact component dependencies.

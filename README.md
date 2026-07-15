@@ -48,7 +48,8 @@ On a coordinated pre-release branch, maintainers should run
 `make dev-release-candidates` before `make ci`. This installs the exact reviewed
 component commits recorded in `requirements/release-candidates.txt`; normal
 users and `main` continue to install the exact published versions declared in
-`pyproject.toml`.
+`pyproject.toml`. Run `make release-candidates-check` after changing either
+file.
 
 `examples/canonical_artifact_flow.py` is the deterministic compatibility smoke
 path: a packaged problem, public baseline agent, experiment artifacts, and
@@ -67,7 +68,7 @@ GGUF model automatically, also install `huggingface-hub`; otherwise set
 `LLAMA_CPP_MODEL` to a specific local GGUF file.
 
 `make examples-test` stays deterministic and offline-first by default. It runs
-the three non-live recipe-first examples and skips the live walkthrough unless
+all non-live recipe-first examples and skips the live walkthrough unless
 `RUN_LIVE_EXAMPLE=1`.
 
 Install from PyPI:
