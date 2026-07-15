@@ -2,12 +2,24 @@
 
 from __future__ import annotations
 
+import json
 import subprocess
 from pathlib import Path
+from typing import Any
 
+import pytest
 from tests._subprocess_support import REPO_ROOT, run_python_script, subprocess_env
 
 EXAMPLES_DIR = REPO_ROOT / "examples"
+TUTORIALS_DIR = EXAMPLES_DIR / "tutorials"
+TUTORIAL_NOTEBOOKS = (
+    "problems_text_map.ipynb",
+    "problems_truss_grammar.ipynb",
+    "agents_propose_critic.ipynb",
+    "agents_workflow.ipynb",
+    "experiments_monty_hall.ipynb",
+    "analysis_reliability.ipynb",
+)
 
 
 def _run_example(example_name: str, *, tmp_path: Path) -> subprocess.CompletedProcess[str]:
@@ -16,6 +28,37 @@ def _run_example(example_name: str, *, tmp_path: Path) -> subprocess.CompletedPr
         EXAMPLES_DIR / example_name,
         cwd=tmp_path,
         env=subprocess_env(workspace_root=REPO_ROOT.parent),
+    )
+
+
+def _load_notebook(notebook_name: str) -> dict[str, Any]:
+    """Load a committed tutorial notebook without requiring Jupyter at test time."""
+    return json.loads((TUTORIALS_DIR / notebook_name).read_text(encoding="utf-8"))
+
+
+def _notebook_output_text(notebook_name: str) -> str:
+    """Collect stored text outputs from a committed tutorial notebook."""
+    notebook = _load_notebook(notebook_name)
+    output_parts: list[str] = []
+    for cell in notebook["cells"]:
+        for output in cell.get("outputs", []):
+            text = output.get("text")
+            if text is None:
+                text = output.get("data", {}).get("text/plain")
+            if isinstance(text, list):
+                output_parts.extend(text)
+            elif isinstance(text, str):
+                output_parts.append(text)
+    return "".join(output_parts)
+
+
+def _notebook_has_png(notebook_name: str) -> bool:
+    """Return whether a notebook contains a stored PNG display result."""
+    notebook = _load_notebook(notebook_name)
+    return any(
+        "image/png" in output.get("data", {})
+        for cell in notebook["cells"]
+        for output in cell.get("outputs", [])
     )
 
 
@@ -85,6 +128,75 @@ def test_partial_factorial_ideation_regression_example_executes(tmp_path: Path) 
     assert "Runs: 24" in completed.stdout
     assert "Regression samples: 24" in completed.stdout
     assert "Model size coefficient:" in completed.stdout
+
+
+@pytest.mark.parametrize("notebook_name", TUTORIAL_NOTEBOOKS)
+def test_tutorial_notebook_commits_results_for_every_step(notebook_name: str) -> None:
+    """Every tutorial code cell should have a committed execution result."""
+    notebook = _load_notebook(notebook_name)
+    code_cells = [cell for cell in notebook["cells"] if cell["cell_type"] == "code"]
+
+    assert code_cells
+    assert notebook["metadata"]["nbsphinx"]["execute"] == "never"
+    assert all(cell["execution_count"] is not None for cell in code_cells)
+    assert all(cell["outputs"] for cell in code_cells)
+
+
+def test_problems_text_map_tutorial_records_catalog_projection() -> None:
+    """The text-problem tutorial should retain its catalog and projection results."""
+    output = _notebook_output_text("problems_text_map.ipynb")
+    assert "Packaged text problems: 126" in output
+    assert "TF-IDF matrix: 126 problems x 508 features" in output
+    assert "Projection shape: (126, 2)" in output
+    assert "Bicycle Safety Lock neighborhood:" in output
+    assert _notebook_has_png("problems_text_map.ipynb")
+
+
+def test_problems_truss_grammar_tutorial_records_manual_rule_application() -> None:
+    """The truss tutorial should retain its manual grammar walkthrough."""
+    output = _notebook_output_text("problems_truss_grammar.ipynb")
+    assert "Seed state: 3 joints, 0 members" in output
+    assert "Rule counts: {'add_joint': 3, 'add_member': 3}" in output
+    assert "Final state: 3 joints, 3 members" in output
+    assert "Seed members remain: 0" in output
+    assert _notebook_has_png("problems_truss_grammar.ipynb")
+
+
+def test_agents_propose_critic_tutorial_records_llm_result() -> None:
+    """The simple Agents tutorial should retain an approved LLM-backed result."""
+    output = _notebook_output_text("agents_propose_critic.ipynb")
+    assert "Model: qwen3:8b" in output
+    assert "Success: True" in output
+    assert "Termination: approved" in output
+    assert "Approved: True" in output
+    assert "tradeoff" in output
+
+
+def test_agents_workflow_tutorial_records_deterministic_result() -> None:
+    """The advanced Agents tutorial should retain its dependency-graph result."""
+    output = _notebook_output_text("agents_workflow.ipynb")
+    assert "Handlers: scale_scores -> summarize_scores" in output
+    assert "Workflow success: True" in output
+    assert "Execution order: scale_scores -> summarize_scores" in output
+    assert "Mean: 5.0" in output
+
+
+def test_experiments_monty_hall_tutorial_records_simulation_result() -> None:
+    """The Experiments tutorial should retain its seeded Monty Hall result."""
+    output = _notebook_output_text("experiments_monty_hall.ipynb")
+    assert "Study valid: True" in output
+    assert "stay: 35/100 = 0.35" in output
+    assert "switch: 65/100 = 0.65" in output
+    assert "Observed lift: 0.30" in output
+
+
+def test_analysis_reliability_tutorial_records_all_metrics() -> None:
+    """The Analysis tutorial should retain all nominal IRR results."""
+    output = _notebook_output_text("analysis_reliability.ipynb")
+    assert "cohen_kappa: coefficient=0.500" in output
+    assert "fleiss_kappa: coefficient=0.583" in output
+    assert "krippendorff_alpha: coefficient=0.667" in output
+    assert "missing=1" in output
 
 
 def test_prompt_framing_walkthrough_uses_public_prompt_workflow_agent() -> None:

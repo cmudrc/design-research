@@ -1,60 +1,228 @@
-"""Tests for example inventory and metrics tooling."""
+"""Tests for example execution evidence, inventory, and metrics tooling."""
 
 from __future__ import annotations
 
+import importlib
 import json
+import subprocess
+from pathlib import Path
+from types import ModuleType
 
+import nbformat
+import pytest
+from pytest import MonkeyPatch
 from tests._subprocess_support import REPO_ROOT, run_python_script, subprocess_env
 
-METRICS_SCRIPT = REPO_ROOT / "scripts" / "generate_examples_metrics.py"
+SCRIPTS_DIR = REPO_ROOT / "scripts"
+METRICS_SCRIPT = SCRIPTS_DIR / "generate_examples_metrics.py"
+RESULTS_PATH = REPO_ROOT / "artifacts" / "examples" / "example_results.json"
 METRICS_PATH = REPO_ROOT / "artifacts" / "examples" / "examples_metrics.json"
+OLLAMA_ENV = "RUN_OLLAMA_EXAMPLES"
+LLAMA_CPP_ENV = "RUN_LLAMA_CPP_EXAMPLES"
+OPT_IN_BY_NAME = {
+    "agents_propose_critic.ipynb": OLLAMA_ENV,
+    "prompt_framing_study.py": LLAMA_CPP_ENV,
+}
 
 
-def _run_metrics(*, run_live_example: bool) -> dict[str, object]:
+def _discover_example_paths() -> tuple[Path, ...]:
+    """Return the example inventory using the production discovery rules."""
+    discovered: list[Path] = []
+    for pattern in ("*.py", "*.ipynb"):
+        for path in sorted((REPO_ROOT / "examples").rglob(pattern)):
+            relative_parts = path.relative_to(REPO_ROOT / "examples").parts
+            if "__pycache__" in relative_parts or any(
+                part.startswith("_") for part in relative_parts
+            ):
+                continue
+            discovered.append(path)
+    return tuple(sorted(discovered))
+
+
+def _write_evidence(
+    *,
+    ollama: bool = False,
+    llama_cpp: bool = False,
+    failed_path: Path | None = None,
+) -> None:
+    """Write internally consistent execution evidence for one selection state."""
+    selection = {OLLAMA_ENV: ollama, LLAMA_CPP_ENV: llama_cpp}
+    results: list[dict[str, object]] = []
+    for path in _discover_example_paths():
+        relative_path = str(path.relative_to(REPO_ROOT))
+        opt_in_environment = OPT_IN_BY_NAME.get(path.name)
+        selected = opt_in_environment is None or selection[opt_in_environment]
+        if not selected:
+            results.append(
+                {
+                    "path": relative_path,
+                    "status": "skipped",
+                    "reason": f"{opt_in_environment}=1 was not selected",
+                }
+            )
+        elif path == failed_path:
+            results.append({"path": relative_path, "status": "failed", "returncode": 1})
+        else:
+            results.append({"path": relative_path, "status": "passed", "returncode": 0})
+
+    RESULTS_PATH.parent.mkdir(parents=True, exist_ok=True)
+    RESULTS_PATH.write_text(
+        json.dumps({"schema_version": 1, "selection": selection, "results": results}),
+        encoding="utf-8",
+    )
+
+
+def _run_metrics(*, ollama: bool = False, llama_cpp: bool = False) -> dict[str, object]:
     """Generate example metrics and return the parsed artifact."""
     run_python_script(
         METRICS_SCRIPT,
         cwd=REPO_ROOT,
         env=subprocess_env(
-            updates={"RUN_LIVE_EXAMPLE": "1" if run_live_example else None},
+            updates={
+                OLLAMA_ENV: "1" if ollama else None,
+                LLAMA_CPP_ENV: "1" if llama_cpp else None,
+            },
         ),
     )
     return json.loads(METRICS_PATH.read_text(encoding="utf-8"))
 
 
+def _load_script_module(monkeypatch: MonkeyPatch, name: str) -> ModuleType:
+    """Import one script module after exposing the scripts directory."""
+    monkeypatch.syspath_prepend(str(SCRIPTS_DIR))
+    return importlib.import_module(name)
+
+
+def test_execute_examples_records_pass_failure_and_skip(monkeypatch: MonkeyPatch) -> None:
+    """The runner should retain evidence for every discovered example."""
+    support = _load_script_module(monkeypatch, "_example_support")
+    runner = _load_script_module(monkeypatch, "run_examples")
+    monkeypatch.delenv(OLLAMA_ENV, raising=False)
+    monkeypatch.delenv(LLAMA_CPP_ENV, raising=False)
+    examples = support.discover_examples()
+    offline_examples = support.default_examples(examples)
+    selected_examples = (
+        offline_examples[0],
+        offline_examples[1],
+        *support.opt_in_examples(examples),
+    )
+
+    def command_runner(command: list[str], **_kwargs: object) -> subprocess.CompletedProcess[str]:
+        returncode = 1 if str(offline_examples[1]) in command else 0
+        return subprocess.CompletedProcess(command, returncode)
+
+    results = runner.execute_examples(
+        selected_examples,
+        env={},
+        command_runner=command_runner,
+    )
+
+    assert [result["status"] for result in results] == [
+        "passed",
+        "failed",
+        "skipped",
+        "skipped",
+    ]
+    assert results[1]["returncode"] == 1
+    assert all("reason" in result for result in results[2:])
+
+
 def test_generate_examples_metrics_matches_default_execution_policy() -> None:
-    """Default metrics should reflect the deterministic example tier."""
-    metrics = _run_metrics(run_live_example=False)
+    """Default metrics should reflect saved deterministic execution evidence."""
+    _write_evidence()
+    metrics = _run_metrics()
 
     examples = metrics["examples"]
     inventory = metrics["inventory"]
     public_api = metrics["public_api"]
 
-    assert examples["passed"] == 6
-    assert examples["total"] == 6
-    assert examples["available"] == 7
-    assert examples["skipped"] == 1
-    assert examples["run_live_example_enabled"] is False
-    assert inventory["example_file_count"] == 7
-    assert inventory["default_example_count"] == 6
-    assert inventory["opt_in_example_count"] == 1
-    assert inventory["opt_in_examples"] == ["examples/prompt_framing_study.py"]
-    assert public_api["covered_exports"] == 4
-    assert public_api["total_exports"] == 4
-    assert public_api["coverage_percent"] == 100.0
+    assert examples["passed"] == inventory["default_example_count"]
+    assert examples["failed"] == 0
+    assert examples["total"] == inventory["default_example_count"]
+    assert examples["available"] == inventory["example_file_count"]
+    assert examples["skipped"] == inventory["opt_in_example_count"]
+    assert examples["selection"] == {OLLAMA_ENV: False, LLAMA_CPP_ENV: False}
+    assert inventory["opt_in_example_count"] == 2
+    assert inventory["opt_in_examples"] == [
+        "examples/prompt_framing_study.py",
+        "examples/tutorials/agents_propose_critic.ipynb",
+    ]
+    assert inventory["example_file_count"] == (
+        inventory["default_example_count"] + inventory["opt_in_example_count"]
+    )
+    assert public_api == {
+        "covered_exports": 4,
+        "total_exports": 4,
+        "coverage_percent": 100.0,
+    }
 
 
-def test_generate_examples_metrics_includes_live_walkthrough_when_enabled() -> None:
-    """Opting into the live walkthrough should update the active example count."""
-    metrics = _run_metrics(run_live_example=True)
-
+@pytest.mark.parametrize(
+    ("ollama", "llama_cpp"),
+    [(True, False), (False, True), (True, True)],
+)
+def test_generate_examples_metrics_selects_live_runtimes_independently(
+    *, ollama: bool, llama_cpp: bool
+) -> None:
+    """Each live runtime should add only its independently selected example."""
+    _write_evidence(ollama=ollama, llama_cpp=llama_cpp)
+    metrics = _run_metrics(ollama=ollama, llama_cpp=llama_cpp)
     examples = metrics["examples"]
     inventory = metrics["inventory"]
+    selected_count = int(ollama) + int(llama_cpp)
 
-    assert examples["passed"] == 7
-    assert examples["total"] == 7
-    assert examples["available"] == 7
-    assert examples["skipped"] == 0
-    assert examples["run_live_example_enabled"] is True
-    assert inventory["default_example_count"] == 6
-    assert inventory["opt_in_example_count"] == 1
+    assert examples["passed"] == inventory["default_example_count"] + selected_count
+    assert examples["failed"] == 0
+    assert examples["skipped"] == inventory["opt_in_example_count"] - selected_count
+    assert examples["selection"] == {OLLAMA_ENV: ollama, LLAMA_CPP_ENV: llama_cpp}
+
+
+def test_generate_examples_metrics_reports_failed_execution() -> None:
+    """A failed example should reduce the evidence-backed pass rate."""
+    failed_path = next(
+        path for path in _discover_example_paths() if path.name not in OPT_IN_BY_NAME
+    )
+    _write_evidence(failed_path=failed_path)
+    metrics = _run_metrics()
+    examples = metrics["examples"]
+
+    assert examples["failed"] == 1
+    assert examples["passed"] == examples["total"] - 1
+    assert examples["pass_percent"] < 100.0
+
+
+def test_generate_examples_metrics_rejects_stale_selection_evidence() -> None:
+    """Metrics should reject evidence produced under another live selection."""
+    _write_evidence()
+    with pytest.raises(subprocess.CalledProcessError):
+        _run_metrics(ollama=True)
+
+
+def test_notebook_freshness_detects_source_and_output_drift(
+    monkeypatch: MonkeyPatch,
+) -> None:
+    """Freshness stamps should bind both notebook inputs and displayed results."""
+    freshness = _load_script_module(monkeypatch, "_notebook_freshness")
+    notebook = nbformat.v4.new_notebook(
+        cells=[
+            nbformat.v4.new_code_cell(
+                "print('original')",
+                execution_count=1,
+                outputs=[nbformat.v4.new_output("stream", name="stdout", text="original\n")],
+            )
+        ]
+    )
+
+    freshness.stamp_notebook(notebook)
+    assert freshness.validate_notebook(notebook) == []
+
+    notebook.cells[0].source = "print('changed')"
+    assert freshness.validate_notebook(notebook) == [
+        "source changed after the saved outputs were recorded"
+    ]
+
+    freshness.stamp_notebook(notebook)
+    notebook.cells[0].outputs[0].text = "changed\n"
+    assert freshness.validate_notebook(notebook) == [
+        "saved outputs changed after freshness metadata was recorded"
+    ]

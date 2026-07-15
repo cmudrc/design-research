@@ -1,7 +1,19 @@
 # Examples
 
 The examples in this repository are intentionally small, recipe-first, and
-future-branch oriented.
+offline-first unless a live runtime is central to the lesson.
+
+Focused, result-bearing Jupyter tutorials live in `examples/tutorials/`:
+
+- `problems_text_map.ipynb` maps packaged word problems with TF-IDF and t-SNE.
+- `problems_truss_grammar.ipynb` applies planar-truss grammar rules by hand.
+- `agents_propose_critic.ipynb` refines a rationale with Ollama and the existing
+  propose/critic pattern; it is opt-in because it requires a local model.
+- `agents_workflow.ipynb` builds a deterministic two-step workflow.
+- `experiments_monty_hall.ipynb` compares stay and switch strategies.
+- `analysis_reliability.ipynb` estimates agreement among protocol coders.
+
+The remaining examples compose two or more libraries:
 
 - `canonical_artifact_flow.py` is the smallest deterministic all-layer handoff:
   one packaged problem, one public baseline agent, one experiment run path,
@@ -38,12 +50,21 @@ defaults to 50 replicates per condition; set `PROMPT_STUDY_REPLICATES` to
 run a larger sample.
 
 `make examples-test` stays deterministic and offline-first by default. It runs
-the six non-live examples and skips the live walkthrough unless
-`RUN_LIVE_EXAMPLE=1`.
+all offline examples. Set `RUN_OLLAMA_EXAMPLES=1` for the propose/critic
+notebook or `RUN_LLAMA_CPP_EXAMPLES=1` for the managed llama.cpp walkthrough.
+The selectors are independent.
 
-The examples prefer adjacent sibling worktrees during local development so
-they can use the future recipe/workflow/reporting APIs before the pinned PyPI
-versions catch up. Keep the sibling repos next to this repo or set
-`DESIGN_RESEARCH_WORKSPACE_ROOT=/path/to/your/workspace`. You can also point a
-single example layer at a different checkout with repo-specific overrides such
-as `DESIGN_RESEARCH_AGENTS_ROOT` or `DESIGN_RESEARCH_EXPERIMENTS_ROOT`.
+Every run writes one pass, fail, or skip record per discovered example to
+`artifacts/examples/example_results.json`. `make examples-coverage` consumes
+that evidence and rejects records from a different live-runtime selection or
+example inventory. It also requires every curated umbrella export to appear in
+at least one example.
+
+Focused notebooks retain their displayed results. `make notebooks-check`
+verifies source and output hashes without execution; `make notebooks-refresh`
+reruns the offline notebooks and updates both outputs and hashes. The
+Ollama-backed notebook is refreshed explicitly only when its local model is
+available.
+
+Examples use the exact published component versions pinned by the umbrella
+package.

@@ -11,8 +11,12 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 EXAMPLES_ROOT = REPO_ROOT / "examples"
 PUBLIC_API_INIT = REPO_ROOT / "src" / "design_research" / "__init__.py"
 PACKAGE_NAME = "design_research"
-RUN_LIVE_EXAMPLE_ENV = "RUN_LIVE_EXAMPLE"
-OPT_IN_EXAMPLE_NAMES = frozenset({"prompt_framing_study.py"})
+RUN_OLLAMA_EXAMPLES_ENV = "RUN_OLLAMA_EXAMPLES"
+RUN_LLAMA_CPP_EXAMPLES_ENV = "RUN_LLAMA_CPP_EXAMPLES"
+OPT_IN_EXAMPLE_ENVS = {
+    "agents_propose_critic.ipynb": RUN_OLLAMA_EXAMPLES_ENV,
+    "prompt_framing_study.py": RUN_LLAMA_CPP_EXAMPLES_ENV,
+}
 
 
 def discover_examples() -> tuple[Path, ...]:
@@ -31,24 +35,41 @@ def discover_examples() -> tuple[Path, ...]:
 
 def default_examples(examples: tuple[Path, ...]) -> tuple[Path, ...]:
     """Return examples exercised by the default offline-focused checks."""
-    return tuple(path for path in examples if path.name not in OPT_IN_EXAMPLE_NAMES)
+    return tuple(path for path in examples if path.name not in OPT_IN_EXAMPLE_ENVS)
 
 
 def opt_in_examples(examples: tuple[Path, ...]) -> tuple[Path, ...]:
     """Return examples that require explicit opt-in to execute."""
-    return tuple(path for path in examples if path.name in OPT_IN_EXAMPLE_NAMES)
+    return tuple(path for path in examples if path.name in OPT_IN_EXAMPLE_ENVS)
 
 
-def run_live_example_enabled() -> bool:
-    """Return whether opt-in live examples should run in the current environment."""
-    return os.getenv(RUN_LIVE_EXAMPLE_ENV, "").strip() == "1"
+def opt_in_environment(path: Path) -> str | None:
+    """Return the environment variable selecting one live example, if any."""
+    return OPT_IN_EXAMPLE_ENVS.get(path.name)
+
+
+def environment_enabled(name: str) -> bool:
+    """Return whether one example-selection environment variable is enabled."""
+    return os.getenv(name, "").strip() == "1"
+
+
+def example_enabled(path: Path) -> bool:
+    """Return whether one example is selected in the current environment."""
+    environment = opt_in_environment(path)
+    return environment is None or environment_enabled(environment)
+
+
+def selection_state() -> dict[str, bool]:
+    """Return the current independent live-runtime selections."""
+    return {
+        RUN_OLLAMA_EXAMPLES_ENV: environment_enabled(RUN_OLLAMA_EXAMPLES_ENV),
+        RUN_LLAMA_CPP_EXAMPLES_ENV: environment_enabled(RUN_LLAMA_CPP_EXAMPLES_ENV),
+    }
 
 
 def active_examples(examples: tuple[Path, ...]) -> tuple[Path, ...]:
     """Return examples that should run for the current execution mode."""
-    if run_live_example_enabled():
-        return examples
-    return default_examples(examples)
+    return tuple(path for path in examples if example_enabled(path))
 
 
 def example_path_text(path: Path) -> str:

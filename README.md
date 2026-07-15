@@ -2,7 +2,7 @@
 [![CI](https://github.com/cmudrc/design-research/actions/workflows/ci.yml/badge.svg)](https://github.com/cmudrc/design-research/actions/workflows/ci.yml)
 [![Coverage](https://raw.githubusercontent.com/cmudrc/design-research/HEAD/.github/badges/coverage.svg)](https://github.com/cmudrc/design-research/actions/workflows/ci.yml)
 [![Examples Passing](https://raw.githubusercontent.com/cmudrc/design-research/HEAD/.github/badges/examples-passing.svg)](https://github.com/cmudrc/design-research/actions/workflows/examples.yml)
-[![Public API In Examples](https://raw.githubusercontent.com/cmudrc/design-research/HEAD/.github/badges/examples-api-coverage.svg)](https://github.com/cmudrc/design-research/actions/workflows/examples.yml)
+[![API in Examples](https://raw.githubusercontent.com/cmudrc/design-research/HEAD/.github/badges/examples-api-coverage.svg)](https://github.com/cmudrc/design-research/actions/workflows/examples.yml)
 [![Docs](https://github.com/cmudrc/design-research/actions/workflows/docs-pages.yml/badge.svg)](https://github.com/cmudrc/design-research/actions/workflows/docs-pages.yml)
 
 `design-research` is the umbrella entry-point package in the cmudrc design
@@ -10,6 +10,14 @@ research ecosystem.
 
 It provides a thin, submodule-first namespace over the ecosystem's
 specialized component libraries.
+
+## Quality Signals
+
+- **Coverage** reports total line coverage for the default deterministic test suite; CI requires at least 95%.
+- **Examples Passing** reports per-file pass/fail evidence from checked-in scripts and notebooks in the examples workflow.
+- **API in Examples** reports curated top-level `__all__` exports referenced by runnable examples. `N/N` means every supported top-level export appears in at least one example, and CI requires 100%.
+
+Run `make coverage`, `make examples-test`, and `make examples-coverage` to reproduce these checks locally. `make examples-test` writes the evidence used by the badges to `artifacts/examples/example_results.json`; metrics reject missing, stale, or incomplete evidence. `make notebooks-check` separately verifies that every focused notebook's saved outputs match its source.
 
 ## Overview
 
@@ -36,9 +44,18 @@ make run-example
 make examples-test
 ```
 
+The umbrella installs the exact published component versions declared in
+`pyproject.toml`. Update those pins and the compatibility matrix together, then
+run `make ci` against the same packages users receive from PyPI.
+
 `examples/canonical_artifact_flow.py` is the deterministic compatibility smoke
 path: a packaged problem, public baseline agent, experiment artifacts, and
 analysis validation through the umbrella namespace.
+
+The documentation includes a progressive tutorial series with executable,
+result-bearing Jupyter notebooks for Problems, Agents, Experiments, and
+Analysis, followed by composed benchmark, process-comparison, and
+partial-factorial studies. The focused notebooks live in `examples/tutorials/`.
 
 `make run-example` is the live walkthrough. It uses a managed
 `llama.cpp` client, a workflow-backed strategy comparison, canonical exports,
@@ -53,8 +70,10 @@ GGUF model automatically, also install `huggingface-hub`; otherwise set
 `LLAMA_CPP_MODEL` to a specific local GGUF file.
 
 `make examples-test` stays deterministic and offline-first by default. It runs
-the three non-live recipe-first examples and skips the live walkthrough unless
-`RUN_LIVE_EXAMPLE=1`.
+all offline recipe-first examples. Set `RUN_OLLAMA_EXAMPLES=1` for the
+propose/critic notebook or `RUN_LLAMA_CPP_EXAMPLES=1` for the managed
+llama.cpp walkthrough. The selectors are independent; enabling one does not
+run the other.
 
 Install from PyPI:
 

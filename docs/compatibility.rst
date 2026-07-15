@@ -19,25 +19,30 @@ Tested Package Combination
      - ``design-research-agents``
      - ``design-research-experiments``
      - ``design-research-analysis``
-   * - ``0.3.0``
-     - ``0.3.0``
+   * - ``0.4.0``
      - ``0.4.0``
-     - ``0.2.0``
-     - ``0.2.0``
+     - ``0.6.0``
+     - ``0.3.0``
+     - ``0.3.1``
 
 These versions match the exact sibling pins in ``pyproject.toml`` and represent
 the tested umbrella combination for the current docs baseline.
 
-The bundled examples and smoke tests intentionally target the May 2026 family
-interop seams directly. :doc:`canonical_artifact_flow` is the no-network smoke
+Pull-request CI and normal ``pip install design-research`` usage resolve these
+exact published versions from ``pyproject.toml``. Component changes are
+released and validated in their owning repositories before the umbrella pin is
+advanced, so the matrix above describes the same package family users install.
+
+The bundled examples and smoke tests intentionally target this pinned family
+through public integration points. :doc:`canonical_artifact_flow` is the no-network smoke
 path: it resolves a packaged problem, runs the public seeded baseline agent,
 exports canonical experiment artifacts, and validates them with
 ``design_research_analysis.integration``. The live walkthrough adds
 ``PromptWorkflowAgent`` and a prompt-built ``Workflow`` on top of that same
 artifact contract. The shipped example scripts expect installed sibling
-packages; adjacent sibling worktrees are preferred only by the family-sync and
-subprocess example tests so the umbrella package can verify current sibling
-``main`` APIs during contributor workflows.
+packages. The family smoke test uses those installed pins by default. Contributors
+can opt into source worktrees with the documented ``DESIGN_RESEARCH_*_SRC`` or
+``DESIGN_RESEARCH_*_ROOT`` environment overrides.
 
 Start Here Vs Go Direct
 -----------------------

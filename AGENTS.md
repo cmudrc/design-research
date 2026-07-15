@@ -30,7 +30,7 @@ merging.
   - `make docs`
 - If the example changed:
   - `make run-example` (install `llama-cpp-python[server]`; also install `huggingface-hub` unless `LLAMA_CPP_MODEL` points at a local GGUF file)
-  - `make examples-test` (skips the live walkthrough unless `RUN_LIVE_EXAMPLE=1`)
+  - `make examples-test` (live examples require their runtime-specific opt-in variable)
 - Pre-merge baseline:
   - `make ci`
 - Pre-publish baseline:
@@ -52,7 +52,7 @@ merging.
 
 - Keep tests deterministic and offline by default.
 - Let the canonical walkthrough fail fast when the `llama.cpp` runtime is missing rather than silently falling back.
-- Keep total line coverage at or above 90% in CI and local release work.
+- Keep total line coverage at or above 95% in CI and local release work.
 - Update tests, docs, and examples alongside behavior changes.
 - Avoid broad dependency growth in the base install.
 - Treat this package as an umbrella wrapper; do not duplicate implementation

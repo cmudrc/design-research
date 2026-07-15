@@ -14,11 +14,33 @@ Opening the project in VS Code? Start with `docs/vscode_start.rst` for the
 PyPI install path, source checkout path, interpreter selection, and first
 example.
 
+### Component Versions
+
+The umbrella package keeps exact component version pins in `pyproject.toml`.
+Those pins are the user-facing contract and must resolve from PyPI before this
+umbrella release is published.
+
+Release and validate component changes in their owning repositories first.
+Then update the corresponding pin and `docs/compatibility.rst` together and run
+`make dev` so local checks exercise the same published packages users receive.
+
+## Release Publishing
+
 Before cutting a release, run:
 
 ```bash
 make release-check
 ```
+
+The GitHub `Publish` workflow builds and validates distributions before any
+upload:
+
+- Publishing a GitHub Release tagged `v{package-version}` publishes to PyPI.
+- A manual workflow run is build-only by default.
+- A recovery publish requires selecting the release tag and explicitly setting
+  `publish=true`; publishing from a branch is rejected.
+- Every publishing path rejects a tag that differs from the version in
+  `src/design_research/_version.py`.
 
 ## Local Quality Checks
 
@@ -30,6 +52,8 @@ make lint
 make type
 make docstrings-check
 make test
+make notebooks-type
+make notebooks-check
 make docs-check
 make docs
 ```
@@ -45,19 +69,33 @@ make examples-test
 `llama.cpp` client. Install `llama-cpp-python[server]` before running it. If
 you want to use the default GGUF download path, also install
 `huggingface-hub`; otherwise set `LLAMA_CPP_MODEL` to point at a specific local
-GGUF file. `make examples-test` skips that walkthrough unless
-`RUN_LIVE_EXAMPLE=1`, which keeps the default local and CI loop offline-safe.
+GGUF file. Set `RUN_LLAMA_CPP_EXAMPLES=1` to include that walkthrough in
+`make examples-test`. Set `RUN_OLLAMA_EXAMPLES=1` independently for the
+Ollama-backed propose/critic notebook. Both remain opt-in so the default local
+and CI loop stays offline-safe.
+
+`make examples-test` records one result per discovered file in
+`artifacts/examples/example_results.json`; badge generation rejects evidence
+from a different selection or inventory. When notebook source or displayed
+results change, use `make notebooks-refresh` for the offline set. Refresh the
+Ollama notebook with its runtime available, then run `make notebooks-check` so
+source and output hashes remain synchronized.
 
 ## Coverage Policy
 
-`design-research` follows the family-wide baseline of at least 90% total line
+`design-research` follows the family-wide baseline of at least 95% total line
 coverage in CI.
 
-- Treat 90% as a strict floor for this repository, not a soft target.
+- Treat 95% as a strict floor for this repository, not a soft target.
 - Keep new family repositories at the same baseline unless the shared policy is
   intentionally changed across the ecosystem.
 - `make ci` enforces this floor through the coverage gate, so coverage-impacting
   changes should be validated there before merge.
+- `make examples-test` executes the checked-in runnable examples.
+- `make examples-coverage` requires every curated top-level `__all__` export
+  to appear in at least one runnable example.
+- `make notebooks-type` strictly checks the Python code in every focused
+  tutorial, including live notebooks that default CI does not execute.
 
 Optional but useful:
 

@@ -28,6 +28,6 @@ Install it with:
    pip install -e ".[dev]"
 
 Maintainer workflows target Python ``3.12`` from ``.python-version``.
-CI enforces a strict 90% total line coverage floor through ``make coverage`` and
+CI enforces a strict 95% total line coverage floor through ``make coverage`` and
 ``make ci``.
 Release packaging validation is exposed via ``make release-check``.

@@ -1,47 +1,57 @@
-"""Deterministic cross-library smoke coverage for the April family branches."""
+"""Deterministic cross-library smoke coverage for the pinned package family."""
 
 from __future__ import annotations
 
 import importlib
+import json
 import os
 import sys
 from pathlib import Path
 
 import pytest
 
-REPO_ROOT = Path(__file__).resolve().parents[1]
-WORKSPACE_ROOT = REPO_ROOT.parent
 SIBLING_REPOS = (
     "design-research-problems",
     "design-research-agents",
     "design-research-experiments",
     "design-research-analysis",
 )
+EXPECTED_VERSIONS = {
+    "design_research_problems": "0.4.0",
+    "design_research_agents": "0.6.0",
+    "design_research_experiments": "0.3.0",
+    "design_research_analysis": "0.3.1",
+}
 
 
-def _resolve_repo_root(repo_name: str) -> Path:
-    """Resolve one sibling repo root from repo-specific env overrides when present."""
+def _source_override(repo_name: str) -> Path | None:
+    """Resolve an explicitly configured sibling source directory."""
     repo_key = repo_name.removeprefix("design-research-").replace("-", "_").upper()
     src_override = os.getenv(f"DESIGN_RESEARCH_{repo_key}_SRC", "").strip()
-    if src_override:
-        return Path(src_override).expanduser().resolve().parent
-
     root_override = os.getenv(f"DESIGN_RESEARCH_{repo_key}_ROOT", "").strip()
-    if root_override:
-        return Path(root_override).expanduser().resolve()
+    if src_override and root_override:
+        raise RuntimeError(
+            f"Set only one of DESIGN_RESEARCH_{repo_key}_SRC or DESIGN_RESEARCH_{repo_key}_ROOT."
+        )
+    if not src_override and not root_override:
+        return None
 
-    return WORKSPACE_ROOT / repo_name
+    src_path = (
+        Path(src_override).expanduser().resolve()
+        if src_override
+        else Path(root_override).expanduser().resolve() / "src"
+    )
+    if not src_path.is_dir():
+        raise RuntimeError(f"Configured source directory does not exist: {src_path}")
+    return src_path
 
 
-def _bootstrap_april_family() -> object:
-    """Prefer adjacent sibling worktrees for the April family smoke test."""
-    repo_roots = {repo_name: _resolve_repo_root(repo_name) for repo_name in SIBLING_REPOS}
-    missing = [repo_name for repo_name, repo_root in repo_roots.items() if not repo_root.exists()]
-    if missing:
-        pytest.skip("Missing sibling worktrees: " + ", ".join(sorted(missing)))
-
+def _bootstrap_family() -> object:
+    """Load installed family packages, applying explicit source overrides only."""
     for repo_name in reversed(SIBLING_REPOS):
-        src_path = repo_roots[repo_name] / "src"
+        src_path = _source_override(repo_name)
+        if src_path is None:
+            continue
         src_text = str(src_path)
         if src_text not in sys.path:
             sys.path.insert(0, src_text)
@@ -63,14 +73,48 @@ def _bootstrap_april_family() -> object:
     return importlib.import_module("design_research")
 
 
-def test_april_family_wrapper_exports_track_local_siblings() -> None:
-    """Keep the umbrella wrappers aligned with adjacent sibling public exports."""
-    dr = _bootstrap_april_family()
+def test_source_override_accepts_root_directory(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Translate an explicit repository root into its source directory."""
+    src_path = tmp_path / "src"
+    src_path.mkdir()
+    monkeypatch.setenv("DESIGN_RESEARCH_PROBLEMS_ROOT", str(tmp_path))
+
+    assert _source_override("design-research-problems") == src_path
+
+
+def test_source_override_rejects_ambiguous_configuration(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Fail when both supported overrides are set for one sibling."""
+    monkeypatch.setenv("DESIGN_RESEARCH_AGENTS_ROOT", str(tmp_path))
+    monkeypatch.setenv("DESIGN_RESEARCH_AGENTS_SRC", str(tmp_path / "src"))
+
+    with pytest.raises(RuntimeError, match="Set only one"):
+        _source_override("design-research-agents")
+
+
+def test_family_wrapper_exports_track_pinned_siblings() -> None:
+    """Keep umbrella wrappers aligned with the installed sibling public APIs."""
+    dr = _bootstrap_family()
     sibling_agents = importlib.import_module("design_research_agents")
     sibling_experiments = importlib.import_module("design_research_experiments")
     sibling_analysis = importlib.import_module("design_research_analysis")
     sibling_problems = importlib.import_module("design_research_problems")
 
+    assert dr.__version__ == "0.4.0"
+    assert {
+        module.__name__: module.__version__
+        for module in (
+            sibling_problems,
+            sibling_agents,
+            sibling_experiments,
+            sibling_analysis,
+        )
+    } == EXPECTED_VERSIONS
     assert dr.agents.__all__ == sibling_agents.__all__
     assert dr.experiments.__all__ == sibling_experiments.__all__
     assert dr.analysis.__all__ == sibling_analysis.__all__
@@ -87,19 +131,25 @@ def test_april_family_wrapper_exports_track_local_siblings() -> None:
     assert dr.analysis.__version__ == sibling_analysis.__version__
     assert dr.problems.list_problems is sibling_problems.list_problems
     assert dr.problems.__version__ == sibling_problems.__version__
+    assert dr.problems.search_problem_summaries is sibling_problems.search_problem_summaries
+    assert dr.analysis.compute_interrater_reliability is (
+        sibling_analysis.compute_interrater_reliability
+    )
+    assert callable(dr.agents.MCPServerConfig.python_module)
+    assert dr.experiments.__version__ == sibling_experiments.__version__
 
 
-def test_april_family_interoperability_smoke(tmp_path: Path) -> None:
+def test_family_interoperability_smoke(tmp_path: Path) -> None:
     """Run one packaged problem through the family stack and validate the artifact handoff."""
-    dr = _bootstrap_april_family()
+    dr = _bootstrap_family()
     problem_id = "gmpb_default_dynamic_min"
     baseline_agent_id = "SeededRandomBaselineAgent"
 
     study = dr.experiments.Study(
-        study_id="umbrella-april-family-smoke",
-        title="Umbrella April family smoke",
+        study_id="umbrella-family-smoke",
+        title="Umbrella family smoke",
         description="Exercise packaged problems, agents, experiments, and analysis together.",
-        output_dir=tmp_path / "umbrella-april-family-smoke",
+        output_dir=tmp_path / "umbrella-family-smoke",
         problem_ids=(problem_id,),
         agent_specs=(baseline_agent_id,),
         outcomes=(
@@ -112,7 +162,6 @@ def test_april_family_interoperability_smoke(tmp_path: Path) -> None:
             ),
         ),
         run_budget=dr.experiments.RunBudget(replicates=1, parallelism=1, max_runs=1),
-        primary_outcomes=("primary_outcome",),
     )
     conditions = dr.experiments.build_design(study)
     run_results = dr.experiments.run_study(
@@ -142,4 +191,6 @@ def test_april_family_interoperability_smoke(tmp_path: Path) -> None:
 
     assert report.is_valid
     assert exported["manifest.json"].exists()
+    manifest = json.loads(exported["manifest.json"].read_text(encoding="utf-8"))
+    assert manifest["schema_version"] == "0.2.0"
     assert metric_rows
