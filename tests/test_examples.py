@@ -87,6 +87,43 @@ def test_partial_factorial_ideation_regression_example_executes(tmp_path: Path) 
     assert "Model size coefficient:" in completed.stdout
 
 
+def test_problems_catalog_tutorial_executes(tmp_path: Path) -> None:
+    """The Problems tutorial should select and inspect packaged problems."""
+    completed = _run_example("tutorials/problems_catalog.py", tmp_path=tmp_path)
+    assert "Selected problem: decision_laptop_design_profit_maximization" in completed.stdout
+    assert "Problem kind: decision" in completed.stdout
+    assert "Optimization problem: planar_truss_span_mass_min" in completed.stdout
+    assert "Decision variables: 15" in completed.stdout
+
+
+def test_agents_workflow_tutorial_executes(tmp_path: Path) -> None:
+    """The Agents tutorial should run a deterministic dependency graph."""
+    completed = _run_example("tutorials/agents_workflow.py", tmp_path=tmp_path)
+    assert "Workflow success: True" in completed.stdout
+    assert "Execution order: scale_scores -> summarize_scores" in completed.stdout
+    assert "Scaled score mean: 5.0" in completed.stdout
+
+
+def test_experiments_factorial_tutorial_executes(tmp_path: Path) -> None:
+    """The Experiments tutorial should materialize a valid 2x2 design."""
+    completed = _run_example("tutorials/experiments_factorial.py", tmp_path=tmp_path)
+    assert "Study valid: True" in completed.stdout
+    assert "Conditions: 4" in completed.stdout
+    assert "Planned runs: 12" in completed.stdout
+    assert "Study definition: artifacts/tutorials/experiments_factorial/study.json" in (
+        completed.stdout
+    )
+
+
+def test_analysis_reliability_tutorial_executes(tmp_path: Path) -> None:
+    """The Analysis tutorial should report all supported nominal IRR metrics."""
+    completed = _run_example("tutorials/analysis_reliability.py", tmp_path=tmp_path)
+    assert "cohen_kappa coefficient=" in completed.stdout
+    assert "fleiss_kappa coefficient=" in completed.stdout
+    assert "krippendorff_alpha coefficient=" in completed.stdout
+    assert "missing=1" in completed.stdout
+
+
 def test_prompt_framing_walkthrough_uses_public_prompt_workflow_agent() -> None:
     """The live walkthrough should use the sibling-owned prompt workflow agent."""
     source = (EXAMPLES_DIR / "prompt_framing_study.py").read_text(encoding="utf-8")

@@ -3,6 +3,15 @@
 The examples in this repository are intentionally small, recipe-first, and
 offline-first unless a live runtime is central to the lesson.
 
+Focused component tutorials live in `examples/tutorials/`:
+
+- `problems_catalog.py` searches and inspects packaged design problems.
+- `agents_workflow.py` runs a deterministic two-step agent workflow.
+- `experiments_factorial.py` materializes and serializes a 2x2 study design.
+- `analysis_reliability.py` estimates agreement among protocol coders.
+
+The remaining examples compose two or more libraries:
+
 - `canonical_artifact_flow.py` is the smallest deterministic all-layer handoff:
   one packaged problem, one public baseline agent, one experiment run path,
   canonical artifacts, and analysis validation.
@@ -38,7 +47,7 @@ defaults to 50 replicates per condition; set `PROMPT_STUDY_REPLICATES` to
 run a larger sample.
 
 `make examples-test` stays deterministic and offline-first by default. It runs
-the six non-live examples and skips the live walkthrough unless
+all non-live examples and skips the live walkthrough unless
 `RUN_LIVE_EXAMPLE=1`.
 
 Examples use the installed component packages. During a coordinated pre-release,

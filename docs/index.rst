@@ -52,8 +52,22 @@ to reproduce these checks locally.
    .. note::
 
       **Start with** :doc:`compatibility` to choose between the umbrella package
-      and direct sibling installs, then run :doc:`canonical_artifact_flow` for
-      the deterministic all-layer handoff.
+      and direct sibling installs, then follow :doc:`tutorials/index` from one
+      library through the deterministic all-layer handoff.
+
+Tutorial Series
+---------------
+
+Start with one component or follow the complete progression from task selection
+through study execution and analysis.
+
+- :doc:`tutorials/problems_catalog`
+- :doc:`tutorials/agents_workflow`
+- :doc:`tutorials/experiments_factorial`
+- :doc:`tutorials/analysis_reliability`
+- :doc:`tutorials/full_stack_study`
+- :doc:`tutorials/process_comparison`
+- :doc:`tutorials/factorial_analysis`
 
 Guides
 ------
@@ -62,6 +76,7 @@ Use these pages to understand the umbrella package, the shared namespace, and
 the recommended path through the ecosystem.
 
 - :doc:`compatibility`
+- :doc:`tutorials/index`
 - :doc:`canonical_artifact_flow`
 - :doc:`prompt_framing_study`
 - :doc:`vscode_start`
@@ -122,6 +137,7 @@ Start Here
    :hidden:
 
    compatibility
+   tutorials/index
    canonical_artifact_flow
    prompt_framing_study
    vscode_start

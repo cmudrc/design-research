@@ -55,6 +55,11 @@ file.
 path: a packaged problem, public baseline agent, experiment artifacts, and
 analysis validation through the umbrella namespace.
 
+The documentation includes a progressive tutorial series with focused lessons
+for Problems, Agents, Experiments, and Analysis, followed by composed benchmark,
+process-comparison, and partial-factorial studies. The runnable focused examples
+live in `examples/tutorials/`.
+
 `make run-example` is the live walkthrough. It uses a managed
 `llama.cpp` client, a workflow-backed strategy comparison, canonical exports,
 and downstream analysis helpers. The live workflow path now uses the sibling
