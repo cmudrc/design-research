@@ -26,9 +26,9 @@ classifiers = [
 ]
 dependencies = [
   "design-research-problems==0.4.0",
-  "design-research-agents==0.5.0",
-  "design-research-experiments==0.2.1",
-  "design-research-analysis==0.3.0",
+  "design-research-agents==0.6.0",
+  "design-research-experiments==0.3.0",
+  "design-research-analysis==0.3.1",
 ]
 
 [project.optional-dependencies]
@@ -106,16 +106,3 @@ warn_redundant_casts = true
 warn_unused_ignores = true
 warn_return_any = true
 strict_equality = true
-
-[[tool.mypy.overrides]]
-module = [
-  "design_research_problems",
-  "design_research_problems.*",
-  "design_research_agents",
-  "design_research_agents.*",
-  "design_research_experiments",
-  "design_research_experiments.*",
-  "design_research_analysis",
-  "design_research_analysis.*",
-]
-ignore_missing_imports = true

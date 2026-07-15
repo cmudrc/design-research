@@ -37,9 +37,9 @@ The walkthrough uses a managed ``llama.cpp`` client. Install
 download path to work, also install ``huggingface-hub``; otherwise set
 ``LLAMA_CPP_MODEL`` to a specific local GGUF file.
 
-``make examples-test`` stays deterministic and offline-first by default. It
-exercises the three smaller recipe-first examples and skips the live
-walkthrough unless ``RUN_LIVE_EXAMPLE=1``.
+``make examples-test`` stays deterministic and offline-first by default. Set
+``RUN_OLLAMA_EXAMPLES=1`` to include the propose/critic notebook or
+``RUN_LLAMA_CPP_EXAMPLES=1`` to include the managed llama.cpp walkthrough.
 
 Build the docs:
 

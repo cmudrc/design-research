@@ -38,14 +38,15 @@ Quality Signals
 
 - ``Coverage`` reports total line coverage for the default deterministic test
   suite; CI requires at least 95%.
-- ``Examples Passing`` reports checked-in example scripts that execute
-  successfully in the examples workflow.
+- ``Examples Passing`` reports per-file pass/fail evidence from checked-in
+  scripts and notebooks in the examples workflow.
 - ``API in Examples`` reports curated top-level ``__all__`` exports referenced
   by runnable examples. ``N/N`` means every supported top-level export appears
   in at least one example, and CI requires 100%.
 
 Run ``make coverage``, ``make examples-test``, and ``make examples-coverage``
-to reproduce these checks locally.
+to reproduce these checks locally. ``make notebooks-check`` verifies that the
+focused notebooks' displayed results still match their source.
 
 .. container:: drc-home-callout
 

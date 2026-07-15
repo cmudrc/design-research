@@ -14,10 +14,10 @@ specialized component libraries.
 ## Quality Signals
 
 - **Coverage** reports total line coverage for the default deterministic test suite; CI requires at least 95%.
-- **Examples Passing** reports checked-in examples and notebooks that execute successfully in the examples workflow.
+- **Examples Passing** reports per-file pass/fail evidence from checked-in scripts and notebooks in the examples workflow.
 - **API in Examples** reports curated top-level `__all__` exports referenced by runnable examples. `N/N` means every supported top-level export appears in at least one example, and CI requires 100%.
 
-Run `make coverage`, `make examples-test`, and `make examples-coverage` to reproduce these checks locally.
+Run `make coverage`, `make examples-test`, and `make examples-coverage` to reproduce these checks locally. `make examples-test` writes the evidence used by the badges to `artifacts/examples/example_results.json`; metrics reject missing, stale, or incomplete evidence. `make notebooks-check` separately verifies that every focused notebook's saved outputs match its source.
 
 ## Overview
 
@@ -44,12 +44,9 @@ make run-example
 make examples-test
 ```
 
-On a coordinated pre-release branch, maintainers should run
-`make dev-release-candidates` before `make ci`. This installs the exact reviewed
-component commits recorded in `requirements/release-candidates.txt`; normal
-users and `main` continue to install the exact published versions declared in
-`pyproject.toml`. Run `make release-candidates-check` after changing either
-file.
+The umbrella installs the exact published component versions declared in
+`pyproject.toml`. Update those pins and the compatibility matrix together, then
+run `make ci` against the same packages users receive from PyPI.
 
 `examples/canonical_artifact_flow.py` is the deterministic compatibility smoke
 path: a packaged problem, public baseline agent, experiment artifacts, and
@@ -73,8 +70,10 @@ GGUF model automatically, also install `huggingface-hub`; otherwise set
 `LLAMA_CPP_MODEL` to a specific local GGUF file.
 
 `make examples-test` stays deterministic and offline-first by default. It runs
-all non-live recipe-first examples and skips model-backed examples unless
-`RUN_LIVE_EXAMPLE=1`.
+all offline recipe-first examples. Set `RUN_OLLAMA_EXAMPLES=1` for the
+propose/critic notebook or `RUN_LLAMA_CPP_EXAMPLES=1` for the managed
+llama.cpp walkthrough. The selectors are independent; enabling one does not
+run the other.
 
 Install from PyPI:
 

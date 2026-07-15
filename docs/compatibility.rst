@@ -21,22 +21,17 @@ Tested Package Combination
      - ``design-research-analysis``
    * - ``0.4.0``
      - ``0.4.0``
-     - ``0.5.0``
-     - ``0.2.1``
+     - ``0.6.0``
      - ``0.3.0``
+     - ``0.3.1``
 
 These versions match the exact sibling pins in ``pyproject.toml`` and represent
 the tested umbrella combination for the current docs baseline.
 
-Before all four versions are published, Umbrella pull-request CI installs the
-immutable source commits listed in ``requirements/release-candidates.txt``.
-That file is a maintainer integration aid, not an alternate user installation
-path or a replacement for the version matrix. Each source commit must declare
-the same package version shown above and pass its component repository's own
-quality gates. ``make release-candidates-check`` also verifies that the matrix
-contains one immutable commit for every exact component dependency. Main-branch
-CI and normal ``pip install design-research`` usage continue to resolve the
-exact published versions from ``pyproject.toml``.
+Pull-request CI and normal ``pip install design-research`` usage resolve these
+exact published versions from ``pyproject.toml``. Component changes are
+released and validated in their owning repositories before the umbrella pin is
+advanced, so the matrix above describes the same package family users install.
 
 The bundled examples and smoke tests intentionally target this pinned family
 through public integration points. :doc:`canonical_artifact_flow` is the no-network smoke

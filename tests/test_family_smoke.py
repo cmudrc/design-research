@@ -18,9 +18,9 @@ SIBLING_REPOS = (
 )
 EXPECTED_VERSIONS = {
     "design_research_problems": "0.4.0",
-    "design_research_agents": "0.5.0",
-    "design_research_experiments": "0.2.1",
-    "design_research_analysis": "0.3.0",
+    "design_research_agents": "0.6.0",
+    "design_research_experiments": "0.3.0",
+    "design_research_analysis": "0.3.1",
 }
 
 
@@ -162,7 +162,6 @@ def test_family_interoperability_smoke(tmp_path: Path) -> None:
             ),
         ),
         run_budget=dr.experiments.RunBudget(replicates=1, parallelism=1, max_runs=1),
-        primary_outcomes=("primary_outcome",),
     )
     conditions = dr.experiments.build_design(study)
     run_results = dr.experiments.run_study(
@@ -193,5 +192,5 @@ def test_family_interoperability_smoke(tmp_path: Path) -> None:
     assert report.is_valid
     assert exported["manifest.json"].exists()
     manifest = json.loads(exported["manifest.json"].read_text(encoding="utf-8"))
-    assert manifest["schema_version"] == "0.1.0"
+    assert manifest["schema_version"] == "0.2.0"
     assert metric_rows

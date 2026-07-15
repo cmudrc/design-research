@@ -50,10 +50,21 @@ defaults to 50 replicates per condition; set `PROMPT_STUDY_REPLICATES` to
 run a larger sample.
 
 `make examples-test` stays deterministic and offline-first by default. It runs
-all non-live examples and skips model-backed examples unless
-`RUN_LIVE_EXAMPLE=1`.
+all offline examples. Set `RUN_OLLAMA_EXAMPLES=1` for the propose/critic
+notebook or `RUN_LLAMA_CPP_EXAMPLES=1` for the managed llama.cpp walkthrough.
+The selectors are independent.
 
-Examples use the installed component packages. During a coordinated pre-release,
-maintainers can install the exact reviewed component commits with
-`make dev-release-candidates`; normal users should install the published
-umbrella package and its exact component dependencies.
+Every run writes one pass, fail, or skip record per discovered example to
+`artifacts/examples/example_results.json`. `make examples-coverage` consumes
+that evidence and rejects records from a different live-runtime selection or
+example inventory. It also requires every curated umbrella export to appear in
+at least one example.
+
+Focused notebooks retain their displayed results. `make notebooks-check`
+verifies source and output hashes without execution; `make notebooks-refresh`
+reruns the offline notebooks and updates both outputs and hashes. The
+Ollama-backed notebook is refreshed explicitly only when its local model is
+available.
+
+Examples use the exact published component versions pinned by the umbrella
+package.

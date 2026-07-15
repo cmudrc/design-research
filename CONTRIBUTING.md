@@ -14,34 +14,15 @@ Opening the project in VS Code? Start with `docs/vscode_start.rst` for the
 PyPI install path, source checkout path, interpreter selection, and first
 example.
 
-### Unpublished Component Releases
+### Component Versions
 
 The umbrella package keeps exact component version pins in `pyproject.toml`.
 Those pins are the user-facing contract and must resolve from PyPI before this
 umbrella release is published.
 
-While a coordinated component release is still under review, install the exact
-reviewed source commits with:
-
-```bash
-make dev-release-candidates
-```
-
-The target refreshes component packages even when the candidate version is
-unchanged, so moving from a reviewed branch commit to its squash commit cannot
-leave an older source build in the environment.
-
-`requirements/release-candidates.txt` is a maintainer-only integration matrix.
-Each entry pins an immutable component commit so Umbrella pull-request CI tests
-one reproducible stack before those versions exist on PyPI. Update an entry only
-after the corresponding component commit has passed its own quality gates, and
-confirm that the package version at that commit matches the exact dependency in
-`pyproject.toml`. Normal development from `main`, user installation, package
-builds, and releases continue to use the published dependencies.
-
-Run `make release-candidates-check` after editing either file. The check rejects
-branch and tag references, duplicate packages, repository mismatches, and any
-component dependency without exactly one immutable source commit.
+Release and validate component changes in their owning repositories first.
+Then update the corresponding pin and `docs/compatibility.rst` together and run
+`make dev` so local checks exercise the same published packages users receive.
 
 ## Release Publishing
 
@@ -71,12 +52,11 @@ make lint
 make type
 make docstrings-check
 make test
+make notebooks-type
+make notebooks-check
 make docs-check
 make docs
 ```
-
-For an Umbrella release-candidate branch, run `make dev-release-candidates`
-before these checks so the local environment matches pull-request CI.
 
 If the example or walkthrough docs changed, also run:
 
@@ -89,8 +69,17 @@ make examples-test
 `llama.cpp` client. Install `llama-cpp-python[server]` before running it. If
 you want to use the default GGUF download path, also install
 `huggingface-hub`; otherwise set `LLAMA_CPP_MODEL` to point at a specific local
-GGUF file. `make examples-test` skips that walkthrough unless
-`RUN_LIVE_EXAMPLE=1`, which keeps the default local and CI loop offline-safe.
+GGUF file. Set `RUN_LLAMA_CPP_EXAMPLES=1` to include that walkthrough in
+`make examples-test`. Set `RUN_OLLAMA_EXAMPLES=1` independently for the
+Ollama-backed propose/critic notebook. Both remain opt-in so the default local
+and CI loop stays offline-safe.
+
+`make examples-test` records one result per discovered file in
+`artifacts/examples/example_results.json`; badge generation rejects evidence
+from a different selection or inventory. When notebook source or displayed
+results change, use `make notebooks-refresh` for the offline set. Refresh the
+Ollama notebook with its runtime available, then run `make notebooks-check` so
+source and output hashes remain synchronized.
 
 ## Coverage Policy
 
@@ -105,6 +94,8 @@ coverage in CI.
 - `make examples-test` executes the checked-in runnable examples.
 - `make examples-coverage` requires every curated top-level `__all__` export
   to appear in at least one runnable example.
+- `make notebooks-type` strictly checks the Python code in every focused
+  tutorial, including live notebooks that default CI does not execute.
 
 Optional but useful:
 

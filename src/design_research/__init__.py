@@ -18,7 +18,44 @@ traceable evidence, end-to-end process rigor, practical constraints, and
 collaborative impact.
 """
 
-from . import agents, analysis, experiments, problems
+from __future__ import annotations
+
+from importlib import import_module
+from types import ModuleType
+from typing import Final
+
 from ._version import __version__
 
 __all__ = ["__version__", "agents", "analysis", "experiments", "problems"]
+
+_COMPONENTS: Final[dict[str, str]] = {
+    "agents": "design_research.agents",
+    "analysis": "design_research.analysis",
+    "experiments": "design_research.experiments",
+    "problems": "design_research.problems",
+}
+
+
+def __getattr__(name: str) -> ModuleType:
+    """Import one component wrapper on first access.
+
+    Args:
+        name: Root attribute requested by the caller.
+
+    Returns:
+        Imported component wrapper module.
+
+    Raises:
+        AttributeError: If ``name`` is not a public component.
+    """
+    module_path = _COMPONENTS.get(name)
+    if module_path is None:
+        raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+    module = import_module(module_path)
+    globals()[name] = module
+    return module
+
+
+def __dir__() -> list[str]:
+    """Return root attributes including deferred component names."""
+    return sorted(set(globals()) | set(__all__))

@@ -68,9 +68,12 @@ Recommended Order
    should replace the deterministic agent.
 
 All runnable files live under ``examples/``. ``make examples-test`` executes
-the complete offline set. Run the propose/critic notebook from VS Code after
-starting Ollama; ``make run-example`` runs the separate opt-in ``llama.cpp``
-walkthrough.
+the complete offline set. Set ``RUN_OLLAMA_EXAMPLES=1`` to include the
+propose/critic notebook after starting Ollama. Set
+``RUN_LLAMA_CPP_EXAMPLES=1`` for the separate managed ``llama.cpp``
+walkthrough; the two selections are independent. ``make notebooks-check``
+verifies that every focused notebook page still shows results corresponding to
+its committed source.
 
 .. toctree::
    :maxdepth: 1
