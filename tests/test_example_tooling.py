@@ -35,8 +35,11 @@ def test_generate_examples_metrics_matches_default_execution_policy() -> None:
     assert examples["available"] == inventory["example_file_count"]
     assert examples["skipped"] == inventory["opt_in_example_count"]
     assert examples["run_live_example_enabled"] is False
-    assert inventory["opt_in_example_count"] == 1
-    assert inventory["opt_in_examples"] == ["examples/prompt_framing_study.py"]
+    assert inventory["opt_in_example_count"] == 2
+    assert inventory["opt_in_examples"] == [
+        "examples/prompt_framing_study.py",
+        "examples/tutorials/agents_propose_critic.ipynb",
+    ]
     assert inventory["example_file_count"] == (
         inventory["default_example_count"] + inventory["opt_in_example_count"]
     )
@@ -57,4 +60,4 @@ def test_generate_examples_metrics_includes_live_walkthrough_when_enabled() -> N
     assert examples["available"] == inventory["example_file_count"]
     assert examples["skipped"] == 0
     assert examples["run_live_example_enabled"] is True
-    assert inventory["opt_in_example_count"] == 1
+    assert inventory["opt_in_example_count"] == 2

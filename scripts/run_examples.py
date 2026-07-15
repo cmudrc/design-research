@@ -5,6 +5,7 @@ from __future__ import annotations
 import os
 import subprocess
 import sys
+from pathlib import Path
 
 from _example_support import (
     REPO_ROOT,
@@ -42,13 +43,25 @@ def main() -> int:
             )
             continue
         print(f"Running {example_path}", flush=True)
+        command = _example_command(example)
         subprocess.run(
-            [sys.executable, str(example)],
+            command,
             cwd=REPO_ROOT,
             check=True,
             env=env,
         )
     return 0
+
+
+def _example_command(example: Path) -> list[str]:
+    """Return the interpreter command for one script or notebook example."""
+    if example.suffix == ".ipynb":
+        return [
+            sys.executable,
+            str(REPO_ROOT / "scripts" / "run_notebooks.py"),
+            str(example),
+        ]
+    return [sys.executable, str(example)]
 
 
 if __name__ == "__main__":

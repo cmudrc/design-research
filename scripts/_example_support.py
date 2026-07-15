@@ -12,7 +12,12 @@ EXAMPLES_ROOT = REPO_ROOT / "examples"
 PUBLIC_API_INIT = REPO_ROOT / "src" / "design_research" / "__init__.py"
 PACKAGE_NAME = "design_research"
 RUN_LIVE_EXAMPLE_ENV = "RUN_LIVE_EXAMPLE"
-OPT_IN_EXAMPLE_NAMES = frozenset({"prompt_framing_study.py"})
+OPT_IN_EXAMPLE_NAMES = frozenset(
+    {
+        "agents_propose_critic.ipynb",
+        "prompt_framing_study.py",
+    }
+)
 
 
 def discover_examples() -> tuple[Path, ...]:

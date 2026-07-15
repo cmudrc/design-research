@@ -61,9 +61,11 @@ Tutorial Series
 Start with one component or follow the complete progression from task selection
 through study execution and analysis.
 
-- :doc:`tutorials/problems_catalog`
+- :doc:`tutorials/problems_text_map`
+- :doc:`tutorials/problems_truss_grammar`
+- :doc:`tutorials/agents_propose_critic`
 - :doc:`tutorials/agents_workflow`
-- :doc:`tutorials/experiments_factorial`
+- :doc:`tutorials/experiments_monty_hall`
 - :doc:`tutorials/analysis_reliability`
 - :doc:`tutorials/full_stack_study`
 - :doc:`tutorials/process_comparison`

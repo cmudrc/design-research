@@ -147,6 +147,25 @@ button.copybtn:hover {
   border-color: var(--drc-brand-strong);
 }
 
+.drc-notebook-download {
+  margin: 2rem 0 0;
+}
+
+.drc-notebook-download a {
+  display: inline-flex;
+  padding: 0.55rem 0.75rem;
+  border: 1px solid var(--drc-brand-border);
+  border-radius: 0.4rem;
+  background: var(--drc-panel-bg);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.drc-notebook-download a:hover {
+  background: var(--drc-brand-soft);
+  border-color: var(--drc-brand-strong);
+}
+
 .drc-home-badges {
   margin: 1.25rem 0 1rem;
   padding: 1rem;

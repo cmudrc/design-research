@@ -10,7 +10,7 @@ COVERAGE_MIN ?= 95
 
 .PHONY: help check-python dev dev-release-candidates release-candidates-check install-dev \
 	lint fmt fmt-check type test qa coverage docstrings-check \
-	run-example examples-test examples-coverage examples-metrics \
+	run-example examples-test examples-coverage examples-metrics notebooks-refresh \
 	docs docs-build docs-check docs-linkcheck \
 	release-check ci clean
 
@@ -22,9 +22,10 @@ help:
 	@echo "  test             Run the pytest suite."
 	@echo "  qa               Run lint, fmt-check, type, and test."
 	@echo "  run-example      Execute the live llama.cpp strategy-comparison study example."
-	@echo "  examples-test    Execute all bundled example scripts."
+	@echo "  examples-test    Execute all offline example scripts and notebooks."
 	@echo "  examples-coverage Require every public API export to appear in an example."
 	@echo "  examples-metrics Generate example and public-API badge artifacts."
+	@echo "  notebooks-refresh Execute offline tutorial notebooks and save their outputs."
 	@echo "  docs             Build the HTML docs."
 	@echo "  ci               Run the main local CI checks."
 
@@ -82,6 +83,9 @@ examples-coverage: check-python examples-metrics
 examples-metrics: check-python examples-test
 	$(PYTHON) scripts/generate_examples_metrics.py
 	$(PYTHON) scripts/generate_examples_badges.py
+
+notebooks-refresh: check-python
+	$(PYTHON) scripts/run_notebooks.py --in-place
 
 docs-build: check-python
 	PYTHONPATH=src $(SPHINX) -b html docs docs/_build/html -n -W --keep-going -E

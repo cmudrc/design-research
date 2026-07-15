@@ -1,10 +1,11 @@
 Tutorials
 =========
 
-This tutorial series starts with one library at a time, then composes the
-libraries around reproducible design-research workflows. Every tutorial except
-the final live-model walkthrough is deterministic and runs without network
-access.
+This tutorial series starts with executable Jupyter notebooks for one library
+at a time, then composes the libraries around reproducible design-research
+workflows. Every notebook renders its saved results directly after the cell
+that produced them. Only the Agents propose/critic notebook and final local-model
+walkthrough require a running model service.
 
 .. image:: ../_static/ecosystem-platform.svg
    :alt: Problems, agents, experiments, and analysis connected as one research workflow.
@@ -16,9 +17,9 @@ Choose A Starting Point
 -----------------------
 
 Install ``design-research`` to follow the complete series. Install a component
-package directly when you only need its focused tutorial.
-Each tutorial links its runnable source and follows the same VS Code workflow;
-see :doc:`../vscode_start` for the complete editor setup.
+package directly when you only need its focused notebook. Each notebook page
+includes its exact environment command and a source download; see
+:doc:`../vscode_start` for the complete VS Code setup.
 
 .. list-table:: Tutorial paths
    :header-rows: 1
@@ -26,14 +27,20 @@ see :doc:`../vscode_start` for the complete editor setup.
    * - Tutorial
      - Primary skill
      - Libraries
-   * - :doc:`problems_catalog`
-     - Find a task and inspect its executable contract.
+   * - :doc:`problems_text_map`
+     - Map 126 packaged word problems with TF-IDF and t-SNE.
      - Problems
+   * - :doc:`problems_truss_grammar`
+     - Inspect and manually apply planar-truss grammar rules.
+     - Problems
+   * - :doc:`agents_propose_critic`
+     - Refine a design rationale with an existing LLM pattern.
+     - Agents, Ollama
    * - :doc:`agents_workflow`
-     - Build an observable deterministic workflow.
+     - Build a deterministic workflow from logic steps.
      - Agents
-   * - :doc:`experiments_factorial`
-     - Define and materialize a reproducible study.
+   * - :doc:`experiments_monty_hall`
+     - Test stay versus switch as a seeded experiment.
      - Experiments
    * - :doc:`analysis_reliability`
      - Quantify agreement among protocol coders.
@@ -51,23 +58,28 @@ see :doc:`../vscode_start` for the complete editor setup.
 Recommended Order
 -----------------
 
-1. Complete the four focused tutorials in any order.
-2. Run :doc:`full_stack_study` to see the shared artifact contract.
-3. Choose :doc:`process_comparison` for sequence analysis or
+1. Start with either Problems notebook, then compare the existing Agents pattern
+   with the home-built workflow.
+2. Complete the Monty Hall and reliability notebooks.
+3. Run :doc:`full_stack_study` to see the shared artifact contract.
+4. Choose :doc:`process_comparison` for sequence analysis or
    :doc:`factorial_analysis` for design-of-experiments analysis.
-4. Continue to :doc:`../prompt_framing_study` when a local ``llama.cpp`` model
+5. Continue to :doc:`../prompt_framing_study` when a local ``llama.cpp`` model
    should replace the deterministic agent.
 
 All runnable files live under ``examples/``. ``make examples-test`` executes
-the complete offline set, while ``make run-example`` runs the opt-in live
+the complete offline set. Run the propose/critic notebook from VS Code after
+starting Ollama; ``make run-example`` runs the separate opt-in ``llama.cpp``
 walkthrough.
 
 .. toctree::
    :maxdepth: 1
 
-   problems_catalog
+   problems_text_map
+   problems_truss_grammar
+   agents_propose_critic
    agents_workflow
-   experiments_factorial
+   experiments_monty_hall
    analysis_reliability
    full_stack_study
    process_comparison

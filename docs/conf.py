@@ -24,6 +24,8 @@ extensions = [
     "sphinx.ext.viewcode",
     "sphinx.ext.intersphinx",
     "sphinx_copybutton",
+    "nbsphinx",
+    "nbsphinx_link",
 ]
 
 napoleon_google_docstring = True
@@ -34,6 +36,15 @@ autodoc_typehints = "none"
 autosummary_generate = True
 autosummary_imported_members = True
 nitpicky = True
+nbsphinx_execute = "never"
+nbsphinx_allow_errors = False
+nbsphinx_epilog = r"""
+.. raw:: html
+
+   <p class="drc-notebook-download">
+     <a href="{{ env.docname.split('/')[-1] }}.ipynb" download>Download notebook (.ipynb)</a>
+   </p>
+"""
 intersphinx_mapping = {
     "python": ("https://docs.python.org/3", None),
 }

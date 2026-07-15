@@ -3,12 +3,15 @@
 The examples in this repository are intentionally small, recipe-first, and
 offline-first unless a live runtime is central to the lesson.
 
-Focused component tutorials live in `examples/tutorials/`:
+Focused, result-bearing Jupyter tutorials live in `examples/tutorials/`:
 
-- `problems_catalog.py` searches and inspects packaged design problems.
-- `agents_workflow.py` runs a deterministic two-step agent workflow.
-- `experiments_factorial.py` materializes and serializes a 2x2 study design.
-- `analysis_reliability.py` estimates agreement among protocol coders.
+- `problems_text_map.ipynb` maps packaged word problems with TF-IDF and t-SNE.
+- `problems_truss_grammar.ipynb` applies planar-truss grammar rules by hand.
+- `agents_propose_critic.ipynb` refines a rationale with Ollama and the existing
+  propose/critic pattern; it is opt-in because it requires a local model.
+- `agents_workflow.ipynb` builds a deterministic two-step workflow.
+- `experiments_monty_hall.ipynb` compares stay and switch strategies.
+- `analysis_reliability.ipynb` estimates agreement among protocol coders.
 
 The remaining examples compose two or more libraries:
 
@@ -47,7 +50,7 @@ defaults to 50 replicates per condition; set `PROMPT_STUDY_REPLICATES` to
 run a larger sample.
 
 `make examples-test` stays deterministic and offline-first by default. It runs
-all non-live examples and skips the live walkthrough unless
+all non-live examples and skips model-backed examples unless
 `RUN_LIVE_EXAMPLE=1`.
 
 Examples use the installed component packages. During a coordinated pre-release,

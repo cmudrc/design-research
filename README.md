@@ -14,7 +14,7 @@ specialized component libraries.
 ## Quality Signals
 
 - **Coverage** reports total line coverage for the default deterministic test suite; CI requires at least 95%.
-- **Examples Passing** reports checked-in example scripts that execute successfully in the examples workflow.
+- **Examples Passing** reports checked-in examples and notebooks that execute successfully in the examples workflow.
 - **API in Examples** reports curated top-level `__all__` exports referenced by runnable examples. `N/N` means every supported top-level export appears in at least one example, and CI requires 100%.
 
 Run `make coverage`, `make examples-test`, and `make examples-coverage` to reproduce these checks locally.
@@ -55,10 +55,10 @@ file.
 path: a packaged problem, public baseline agent, experiment artifacts, and
 analysis validation through the umbrella namespace.
 
-The documentation includes a progressive tutorial series with focused lessons
-for Problems, Agents, Experiments, and Analysis, followed by composed benchmark,
-process-comparison, and partial-factorial studies. The runnable focused examples
-live in `examples/tutorials/`.
+The documentation includes a progressive tutorial series with executable,
+result-bearing Jupyter notebooks for Problems, Agents, Experiments, and
+Analysis, followed by composed benchmark, process-comparison, and
+partial-factorial studies. The focused notebooks live in `examples/tutorials/`.
 
 `make run-example` is the live walkthrough. It uses a managed
 `llama.cpp` client, a workflow-backed strategy comparison, canonical exports,
@@ -73,7 +73,7 @@ GGUF model automatically, also install `huggingface-hub`; otherwise set
 `LLAMA_CPP_MODEL` to a specific local GGUF file.
 
 `make examples-test` stays deterministic and offline-first by default. It runs
-all non-live recipe-first examples and skips the live walkthrough unless
+all non-live recipe-first examples and skips model-backed examples unless
 `RUN_LIVE_EXAMPLE=1`.
 
 Install from PyPI:
