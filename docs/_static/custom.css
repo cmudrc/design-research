@@ -217,6 +217,47 @@ button.copybtn:hover {
   font-weight: 700;
 }
 
+.drc-learning-hero,
+.drc-learning-finish {
+  margin: 1.5rem 0 2rem;
+  padding: 1.25rem 1.4rem;
+  border: 1px solid transparent;
+  border-radius: 1.15rem;
+  background:
+    linear-gradient(135deg, var(--drc-panel-elevated), var(--drc-panel-bg)) padding-box,
+    var(--drc-brand-gradient) border-box;
+}
+
+.drc-learning-hero p,
+.drc-learning-finish p {
+  margin-bottom: 0.6rem;
+}
+
+.drc-learning-hero p:last-child,
+.drc-learning-finish p:last-child {
+  margin-bottom: 0;
+}
+
+.drc-learning-hero a {
+  display: inline-flex;
+  margin: 0.25rem 0.65rem 0.15rem 0;
+  padding: 0.55rem 0.8rem;
+  border: 1px solid var(--drc-brand-border);
+  border-radius: 999px;
+  background: var(--drc-panel-bg);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.drc-learning-hero a:hover {
+  border-color: var(--drc-brand-strong);
+  background: var(--drc-brand-soft);
+}
+
+.drc-learning-finish {
+  border-left-color: var(--drc-brand-strong);
+}
+
 .drc-home-ecosystem {
   margin: 1.75rem 0 2rem;
   padding: 1rem;
@@ -246,7 +287,9 @@ html[data-theme="dark"] .bd-content img.drc-ecosystem-figure {
   }
 
   .drc-home-badges,
-  .drc-home-ecosystem {
+  .drc-home-ecosystem,
+  .drc-learning-hero,
+  .drc-learning-finish {
     padding: 0.85rem;
   }
 }

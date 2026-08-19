@@ -52,9 +52,9 @@ focused notebooks' displayed results still match their source.
 
    .. note::
 
-      **Start with** :doc:`compatibility` to choose between the umbrella package
-      and direct sibling installs, then follow :doc:`tutorials/index` from one
-      library through the deterministic all-layer handoff.
+      **New to computational design research?** Follow the public,
+      self-guided :doc:`learning path <learn>`. Run a tutorial, extend an
+      example, and contribute only if doing so supports your learning.
 
 Tutorial Series
 ---------------
@@ -78,6 +78,7 @@ Guides
 Use these pages to understand the umbrella package, the shared namespace, and
 the recommended path through the ecosystem.
 
+- :doc:`learn`
 - :doc:`compatibility`
 - :doc:`tutorials/index`
 - :doc:`canonical_artifact_flow`
@@ -123,6 +124,7 @@ study design through execution and interpretation.
 Start Here
 ----------
 
+- :doc:`learn`
 - :doc:`compatibility`
 - :doc:`canonical_artifact_flow`
 - :doc:`prompt_framing_study`
@@ -139,6 +141,7 @@ Start Here
    :maxdepth: 2
    :hidden:
 
+   learn
    compatibility
    tutorials/index
    canonical_artifact_flow

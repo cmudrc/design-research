@@ -110,6 +110,7 @@ example workflow, see
 
 Choose your entry point based on how much of the ecosystem you need:
 
+- Start with the [public learning path](https://cmudrc.github.io/design-research/learn.html) when you want to learn through guided tutorials and optional open-source contribution.
 - Start with `design-research` when you want one stable namespace and one set of docs across problems, agents, experiments, and analysis.
 - Install a sibling package directly when you only need one layer or want package-specific internals; direct sibling use is fully supported.
 - See [Compatibility and Start Here](https://cmudrc.github.io/design-research/compatibility.html) for the tested package combination and install guidance.
