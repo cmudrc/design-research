@@ -73,7 +73,7 @@ else:
             },
         ],
         "navbar_align": "content",
-        "header_links_before_dropdown": 4,
+        "header_links_before_dropdown": 3,
         "show_nav_level": 2,
         "navigation_with_keys": True,
         "show_prev_next": False,
@@ -85,7 +85,9 @@ html_css_files = ["custom.css"]
 html_logo = "_static/drc-light.png"
 html_favicon = "_static/favicon.ico"
 html_title = project
-html_sidebars = {"index": [], "learn": []} if html_theme == "pydata_sphinx_theme" else {}
+html_sidebars = (
+    {"index": [], "learn": [], "guides": []} if html_theme == "pydata_sphinx_theme" else {}
+)
 
 _VIEWPORT_META_RE = re.compile(r'<meta name="viewport"[^>]*>', re.IGNORECASE)
 
