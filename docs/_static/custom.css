@@ -217,7 +217,7 @@ button.copybtn:hover {
   font-weight: 700;
 }
 
-.drc-learning-hero {
+.drc-learning-hero.docutils.container {
   margin: 1.5rem 0 2rem;
   padding: 1.25rem 1.4rem;
   border: 1px solid transparent;
@@ -281,7 +281,7 @@ html[data-theme="dark"] .bd-content img.drc-ecosystem-figure {
 
   .drc-home-badges,
   .drc-home-ecosystem,
-  .drc-learning-hero {
+  .drc-learning-hero.docutils.container {
     padding: 0.85rem;
   }
 
