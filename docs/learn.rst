@@ -1,38 +1,19 @@
-Learn With ``design-research``
-================================
+Learning Path
+=============
 
-Learn computational design research by using the same open-source tools that
-support work in the Design Research Collective. Start with a runnable tutorial,
-change an example when you are ready, and keep what you build. Sharing a patch
-or pull request is always optional.
+Explore computational design research with the open-source tools developed by
+the Design Research Collective. Start with a runnable tutorial, adapt an
+example, and follow the parts of the ecosystem that match your interests.
 
 .. container:: drc-learning-hero
 
-   **The tutorials are the opportunity.** You do not need to apply, join a
-   cohort, or contact the lab before starting.
+   Start with a tutorial. Extend an example. Share an improvement if it is
+   useful to others.
 
-   :doc:`Choose a tutorial <tutorials/index>` | :doc:`Set up VS Code <vscode_start>`
+   :doc:`Choose a tutorial <tutorials/index>` :doc:`Set up VS Code <vscode_start>`
 
-What This Path Is
------------------
-
-This is a public, self-guided learning path for anyone comfortable trying
-Python. It is not an internship, supervised research placement, or admissions
-process. There are no deadlines, meetings, certificates, or required
-contributions.
-
-Completing a tutorial or opening a contribution does not imply individual
-feedback, mentorship, lab membership, a recommendation, or a future position.
-Issues and pull requests enter the same open-source review process as every
-other contribution. Review and acceptance depend on project fit and maintainer
-availability.
-
-You do not need to tell us your age, school, or reason for using the materials.
-Do not include private information, credentials, school records, participant
-data, or sponsor data in an issue or contribution.
-
-Your Learning Path
-------------------
+Four Steps
+----------
 
 1. Run One Example
 ~~~~~~~~~~~~~~~~~~
@@ -50,42 +31,44 @@ If you already work comfortably from a terminal, use the
 All tutorials include runnable source material and displayed results. Most run
 offline. The local-model tutorial is clearly marked and can be skipped.
 
-.. list-table:: Choose by what you want to learn
-   :header-rows: 1
-   :widths: 22 34 30 14
+.. container:: drc-learning-table
 
-   * - Track
-     - Start here
-     - What you will practice
-     - Runtime
-   * - Design problems
-     - :doc:`Map packaged text problems <tutorials/problems_text_map>`
-     - Loading a research corpus, representing text, and interpreting a map
-     - Offline
-   * - Design grammars
-     - :doc:`Explore a truss grammar <tutorials/problems_truss_grammar>`
-     - Applying rules and inspecting a structured design state
-     - Offline
-   * - Agent workflows
-     - :doc:`Build a deterministic workflow <tutorials/agents_workflow>`
-     - Composing and tracing a small reasoning process
-     - Offline
-   * - Experiments
-     - :doc:`Test a Monty Hall strategy <tutorials/experiments_monty_hall>`
-     - Conditions, replication, seeding, and reproducible results
-     - Offline
-   * - Analysis
-     - :doc:`Measure coder reliability <tutorials/analysis_reliability>`
-     - Preparing observations and quantifying agreement
-     - Offline
-   * - Complete workflow
-     - :doc:`Run a full-stack study <tutorials/full_stack_study>`
-     - Connecting problems, agents, experiments, and analysis
-     - Offline
-   * - Local AI models
-     - :doc:`Try propose/critic <tutorials/agents_propose_critic>`
-     - Running and comparing a model-backed agent pattern
-     - Ollama
+   .. list-table:: Choose by what you want to learn
+      :header-rows: 1
+      :widths: 22 34 30 14
+
+      * - Track
+        - Start here
+        - What you will practice
+        - Runtime
+      * - Design problems
+        - :doc:`Map packaged text problems <tutorials/problems_text_map>`
+        - Loading a research corpus, representing text, and interpreting a map
+        - Offline
+      * - Design grammars
+        - :doc:`Explore a truss grammar <tutorials/problems_truss_grammar>`
+        - Applying rules and inspecting a structured design state
+        - Offline
+      * - Agent workflows
+        - :doc:`Build a deterministic workflow <tutorials/agents_workflow>`
+        - Composing and tracing a small reasoning process
+        - Offline
+      * - Experiments
+        - :doc:`Test a Monty Hall strategy <tutorials/experiments_monty_hall>`
+        - Conditions, replication, seeding, and reproducible results
+        - Offline
+      * - Analysis
+        - :doc:`Measure coder reliability <tutorials/analysis_reliability>`
+        - Preparing observations and quantifying agreement
+        - Offline
+      * - Complete workflow
+        - :doc:`Run a full-stack study <tutorials/full_stack_study>`
+        - Connecting problems, agents, experiments, and analysis
+        - Offline
+      * - Local AI models
+        - :doc:`Try propose/critic <tutorials/agents_propose_critic>`
+        - Running and comparing a model-backed agent pattern
+        - Ollama
 
 The :doc:`complete tutorial index <tutorials/index>` includes additional
 process-comparison and factorial-analysis paths.
@@ -102,23 +85,21 @@ Once an example runs unchanged, make one deliberate extension. For example:
 - improve an explanation that was difficult to follow.
 
 Record what you changed, what you expected, and what happened. A working
-extension and a short explanation are a complete learning outcome. You do not
-need to submit them anywhere.
+extension and a short explanation are a complete learning outcome.
 
-4. Contribute If It Helps Your Learning
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+4. Share An Improvement
+~~~~~~~~~~~~~~~~~~~~~~~
 
-If your extension fixes a defect or improves the project for other users, you
-may choose to share it:
+If your extension could help other users, share it through the usual
+open-source workflow:
 
 1. Read the `contribution guide <https://github.com/cmudrc/design-research/blob/HEAD/CONTRIBUTING.md>`_.
 2. Keep the change focused and explain the user-facing improvement.
 3. Run the checks requested by the repository you changed.
 4. Open a pull request through the repository's normal GitHub workflow.
 
-A pull request is a proposed improvement, not an application. It may be
-discussed, revised, declined, or remain unmerged. The value of the learning
-path does not depend on that outcome.
+Contributions are reviewed for project fit and may be revised before they are
+accepted.
 
 Where The Libraries Fit
 -----------------------
@@ -136,8 +117,3 @@ The umbrella package connects four focused libraries:
 
 Begin with the umbrella tutorials. Move into a component repository only when
 you want to understand or change that layer in more detail.
-
-.. container:: drc-learning-finish
-
-   **A successful first step is simple:** run one tutorial, change one thing,
-   and explain what you learned.
