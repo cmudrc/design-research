@@ -52,9 +52,9 @@ focused notebooks' displayed results still match their source.
 
    .. note::
 
-      **New to computational design research?** Follow the public,
-      self-guided :doc:`learning path <learn>`. Run a tutorial, extend an
-      example, and contribute only if doing so supports your learning.
+      **New to computational design research?** Follow the
+      :doc:`Learning Path <learn>` from a first tutorial through a complete
+      experiment and analysis workflow.
 
 Tutorial Series
 ---------------
