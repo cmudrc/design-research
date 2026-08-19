@@ -13,16 +13,19 @@ Tested Package Combination
 
 .. list-table:: Version-first compatibility matrix
    :header-rows: 1
+   :widths: 72 28
 
+   * - Package
+     - Version
    * - ``design-research``
-     - ``design-research-problems``
-     - ``design-research-agents``
-     - ``design-research-experiments``
-     - ``design-research-analysis``
-   * - ``0.4.0``
      - ``0.4.0``
+   * - ``design-research-problems``
+     - ``0.4.0``
+   * - ``design-research-agents``
      - ``0.6.0``
+   * - ``design-research-experiments``
      - ``0.3.0``
+   * - ``design-research-analysis``
      - ``0.3.1``
 
 These versions match the exact sibling pins in ``pyproject.toml`` and represent
