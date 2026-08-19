@@ -33,7 +33,7 @@ offline. The local-model tutorial is clearly marked and can be skipped.
 
 .. container:: drc-learning-table
 
-   .. list-table:: Choose by what you want to learn
+   .. list-table::
       :header-rows: 1
       :widths: 22 34 30 14
 
