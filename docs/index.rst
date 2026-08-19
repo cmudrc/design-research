@@ -79,25 +79,8 @@ Use these pages to understand the umbrella package, the shared namespace, and
 the recommended path through the ecosystem.
 
 - :doc:`learn`
-- :doc:`compatibility`
 - :doc:`tutorials/index`
-- :doc:`canonical_artifact_flow`
-- :doc:`prompt_framing_study`
-- :doc:`vscode_start`
-- :doc:`quickstart`
-- :doc:`installation`
-- :doc:`concepts`
-- :doc:`typical_workflow`
-- :doc:`philosophy`
-
-Reference
----------
-
-Look up the stable re-export surface and the extras that shape development and
-documentation workflows.
-
-- :doc:`api`
-- :doc:`dependencies_and_extras`
+- :doc:`guides`
 
 Integration With The Ecosystem
 ------------------------------
@@ -121,36 +104,10 @@ study design through execution and interpretation.
       :width: 100%
       :align: center
 
-Start Here
-----------
-
-- :doc:`learn`
-- :doc:`compatibility`
-- :doc:`canonical_artifact_flow`
-- :doc:`prompt_framing_study`
-- :doc:`vscode_start`
-- :doc:`quickstart`
-- :doc:`installation`
-- :doc:`concepts`
-- :doc:`typical_workflow`
-- :doc:`api`
-- :doc:`philosophy`
-- `CONTRIBUTING.md <https://github.com/cmudrc/design-research/blob/HEAD/CONTRIBUTING.md>`_
-
 .. toctree::
    :maxdepth: 2
    :hidden:
 
    learn
-   compatibility
    tutorials/index
-   canonical_artifact_flow
-   prompt_framing_study
-   vscode_start
-   quickstart
-   installation
-   concepts
-   typical_workflow
-   philosophy
-   api
-   dependencies_and_extras
+   guides
