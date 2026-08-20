@@ -42,7 +42,7 @@ Use these steps for any notebook in the :doc:`tutorial series
 
    .. code-block:: powershell
 
-      py -3 -m venv .venv
+      py -3.12 -m venv .venv
       .\.venv\Scripts\Activate.ps1
       python -m pip install --upgrade pip ipykernel
 
@@ -81,7 +81,7 @@ On Windows PowerShell:
 
 .. code-block:: powershell
 
-   py -3 -m venv .venv
+   py -3.12 -m venv .venv
    .\.venv\Scripts\Activate.ps1
    python -m pip install --upgrade pip
    python -m pip install design-research
@@ -148,13 +148,13 @@ Run the deterministic all-layer handoff from the integrated terminal:
    python examples/canonical_artifact_flow.py
    make examples-test
 
-``make run-example`` is the live model-backed walkthrough. Install
-``llama-cpp-python[server]`` and ``huggingface-hub`` only when you need that
+``make run-example`` is the live model-backed walkthrough. Install the
+``llama_cpp`` extra owned by the pinned Agents package only when you need that
 path:
 
 .. code-block:: bash
 
-   python -m pip install "llama-cpp-python[server]" huggingface-hub
+   python -m pip install "design-research-agents[llama_cpp]==0.6.0"
    make run-example
 
 First Development Checks
@@ -167,9 +167,13 @@ Run the checks from VS Code's integrated terminal:
    make test
    make qa
    make docs-check
+   make docs-build
 
 ``make qa`` runs linting, formatting checks, type checks, and tests. Run
-``make coverage`` before merge when changing tested behavior.
+``make coverage`` before merge when changing tested behavior. For docs,
+``make docs-check`` validates generated material and cross-file contracts;
+``make docs-build`` performs the strict Sphinx render. Run
+``make docs-linkcheck`` when public links change.
 
 Troubleshooting
 ---------------

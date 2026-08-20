@@ -1,15 +1,13 @@
 design-research
 ===============
 
-The umbrella entry point for the CMU Design Research Collective ecosystem.
+The umbrella entry point for the
+CMU Design Research Collective design-research ecosystem.
 
-``design-research`` provides a thin, stable, submodule-first namespace over the
-sibling libraries. It keeps implementation in specialized packages while
-making the ecosystem easier to discover, teach, and cite from one place.
-
-It is intentionally lightweight. The value here is not hidden implementation,
-but a coherent starting point for understanding how the package family fits
-together and when to drop into the more specialized repos directly.
+``design-research`` supplies one discoverable namespace, exact component
+version pins, and compatibility-tested examples for the package family. Its
+four wrapper submodules route to public exports owned by the specialized
+component packages; the umbrella does not reimplement their research logic.
 
 .. container:: drc-home-badges
 
@@ -31,30 +29,45 @@ together and when to drop into the more specialized repos directly.
         <a class="drc-badge-link" href="https://github.com/cmudrc/design-research/actions/workflows/docs-pages.yml">
           <img alt="Docs" src="https://github.com/cmudrc/design-research/actions/workflows/docs-pages.yml/badge.svg">
         </a>
+        <a class="drc-badge-link" href="https://pypi.org/project/design-research/">
+          <img alt="PyPI Version" src="https://img.shields.io/pypi/v/design-research.svg">
+        </a>
+        <a class="drc-badge-link" href="https://pypi.org/project/design-research/">
+          <img alt="Python Versions" src="https://img.shields.io/pypi/pyversions/design-research.svg">
+        </a>
       </div>
 
-Quality Signals
----------------
+Get Started
+-----------
 
-- ``Coverage`` reports total line coverage for the default deterministic test
-  suite; CI requires at least 95%.
-- ``Examples Passing`` reports per-file pass/fail evidence from checked-in
-  scripts and notebooks in the examples workflow.
-- ``API in Examples`` reports curated top-level ``__all__`` exports referenced
-  by runnable examples. ``N/N`` means every supported top-level export appears
-  in at least one example, and CI requires 100%.
+Python 3.12 or newer is required. A first installed-package session needs only:
 
-Run ``make coverage``, ``make examples-test``, and ``make examples-coverage``
-to reproduce these checks locally. ``make notebooks-check`` verifies that the
-focused notebooks' displayed results still match their source.
+.. code-block:: bash
 
-.. container:: drc-home-callout
+   python -m venv .venv
+   source .venv/bin/activate
+   python -m pip install --upgrade pip
+   python -m pip install design-research
 
-   .. note::
+Then import the package family through the four wrapper submodules:
 
-      **New to computational design research?** Follow the
-      :doc:`Learning Path <learn>` from a first tutorial through a complete
-      experiment and analysis workflow.
+.. code-block:: python
+
+   import design_research as dr
+
+   problem_ids = dr.problems.list_problems()
+   problem = dr.problems.get_problem(problem_ids[0])
+
+   print(problem.metadata.title)
+   print(dr.agents.Workflow)
+   print(dr.experiments.Study)
+   print(dr.analysis.validate_unified_table)
+
+- :doc:`installation` explains the base package and component-owned extras.
+- :doc:`quickstart` separates installed-package use from repository development.
+- :doc:`learn` provides the guided path through runnable tutorials.
+- :doc:`compatibility` records the exact tested versions, package classifiers,
+  and artifact-schema contract.
 
 .. container:: drc-home-callout
 
@@ -64,61 +77,64 @@ focused notebooks' displayed results still match their source.
       :doc:`Workshop Setup and Preflight page <workshop-setup>` to download the
       materials and verify your Python environment before the session.
 
-Tutorial Series
----------------
+Architecture: Two Complementary Views
+-------------------------------------
 
-Start with one component or follow the complete progression from task selection
-through study execution and analysis.
+Control Topology
+~~~~~~~~~~~~~~~~
 
-- :doc:`tutorials/problems_text_map`
-- :doc:`tutorials/problems_truss_grammar`
-- :doc:`tutorials/agents_propose_critic`
-- :doc:`tutorials/agents_workflow`
-- :doc:`tutorials/experiments_monty_hall`
-- :doc:`tutorials/analysis_reliability`
-- :doc:`tutorials/full_stack_study`
-- :doc:`tutorials/process_comparison`
-- :doc:`tutorials/factorial_analysis`
+Problems and Agents are peer study inputs. Experiments owns study design and
+coordinates their execution, then defines the artifact handoff to Analysis.
 
-Guides
-------
+Runtime And Data Flow
+~~~~~~~~~~~~~~~~~~~~~
 
-Use these pages to understand the umbrella package, the shared namespace, and
-the recommended path through the ecosystem.
+Problems + Agents → Experiments artifact set → Analysis → evidence that can
+refine the next study protocol.
 
-- :doc:`learn`
-- :doc:`workshop-setup`
-- :doc:`tutorials/index`
-- :doc:`guides`
-
-Integration With The Ecosystem
-------------------------------
-
-The Design Research Collective maintains a modular ecosystem of libraries for
-studying human and AI design behavior.
-
-- **design-research-agents** implements AI participants, workflows, and tool-using reasoning patterns.
-- **design-research-problems** provides benchmark design tasks, prompts, grammars, and evaluators.
-- **design-research-analysis** analyzes the traces, event tables, and outcomes generated during studies.
-- **design-research-experiments** sits above the stack as the study-design and orchestration layer, defining hypotheses, factors, conditions, replications, and artifact flows across agents, problems, and analysis.
-
-Together these libraries support end-to-end design research pipelines, from
-study design through execution and interpretation.
+These are two views of the same package family, not an installation order.
+The umbrella routes imports and pins a tested combination; implementation stays
+with the package that owns each behavior.
 
 .. container:: drc-home-ecosystem
 
    .. image:: _static/ecosystem-platform.svg
-      :alt: Ecosystem diagram showing experiments above agents, problems, and analysis.
+      :alt: Two-view diagram showing the control topology and runtime data flow across Problems, Agents, Experiments, and Analysis.
       :class: dark-light drc-ecosystem-figure
       :width: 100%
       :align: center
+
+Ecosystem Packages
+------------------
+
+- **Problems** — tasks, prompts, grammars, benchmarks, and evaluators:
+  `documentation <https://cmudrc.github.io/design-research-problems/>`__ ·
+  `source <https://github.com/cmudrc/design-research-problems>`__
+- **Agents** — AI participants, workflows, tools, and traceable reasoning:
+  `documentation <https://cmudrc.github.io/design-research-agents/>`__ ·
+  `source <https://github.com/cmudrc/design-research-agents>`__
+- **Experiments** — hypotheses, factors, conditions, replications, execution,
+  and artifact export:
+  `documentation <https://cmudrc.github.io/design-research-experiments/>`__ ·
+  `source <https://github.com/cmudrc/design-research-experiments>`__
+- **Analysis** — validation, transformation, statistics, and visualization:
+  `documentation <https://cmudrc.github.io/design-research-analysis/>`__ ·
+  `source <https://github.com/cmudrc/design-research-analysis>`__
+
+Quality Signals
+---------------
+
+``Coverage`` reports the deterministic test suite's total line coverage;
+``Examples Passing`` reports per-file runnable-example results; and
+``API in Examples`` reports coverage of curated top-level exports. Use
+``make coverage``, ``make examples-test``, and ``make examples-coverage`` to
+reproduce them locally.
 
 .. toctree::
    :maxdepth: 2
    :hidden:
 
-   learn
-   workshop-setup
-   idetc2026
-   tutorials/index
    guides
+   tutorials/index
+   architecture
+   reference

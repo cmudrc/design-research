@@ -51,7 +51,7 @@ as the notebook kernel.
 What Is In The Download?
 ------------------------
 
-The kit freezes the public stack at ``design-research==0.4.0`` and includes a
+The kit freezes the tested package family at ``design-research==0.4.0`` and includes a
 preflight plus eight offline examples.
 
 .. list-table:: Tutorial materials

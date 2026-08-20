@@ -86,7 +86,7 @@ html_logo = "_static/drc-light.png"
 html_favicon = "_static/favicon.ico"
 html_title = project
 html_sidebars = (
-    {"index": [], "learn": [], "workshop-setup": [], "idetc2026": [], "guides": []}
+    {"index": [], "learn": [], "workshop-setup": [], "guides": []}
     if html_theme == "pydata_sphinx_theme"
     else {}
 )

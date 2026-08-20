@@ -107,14 +107,18 @@ Where The Libraries Fit
 
 The umbrella package connects four focused libraries:
 
-- `design-research-problems <https://github.com/cmudrc/design-research-problems>`_
-  provides prompts, design tasks, grammars, benchmarks, and evaluators.
-- `design-research-agents <https://github.com/cmudrc/design-research-agents>`_
-  provides AI participants, workflows, tools, and traceable reasoning patterns.
-- `design-research-experiments <https://github.com/cmudrc/design-research-experiments>`_
-  defines hypotheses, conditions, replications, and study artifacts.
-- `design-research-analysis <https://github.com/cmudrc/design-research-analysis>`_
-  supports sequence, language, embedding, and statistical analysis.
+- `design-research-problems documentation <https://cmudrc.github.io/design-research-problems/>`_
+  (`source <https://github.com/cmudrc/design-research-problems>`__) provides
+  prompts, design tasks, grammars, benchmarks, and evaluators.
+- `design-research-agents documentation <https://cmudrc.github.io/design-research-agents/>`_
+  (`source <https://github.com/cmudrc/design-research-agents>`__) provides AI
+  participants, workflows, tools, and traceable reasoning patterns.
+- `design-research-experiments documentation <https://cmudrc.github.io/design-research-experiments/>`_
+  (`source <https://github.com/cmudrc/design-research-experiments>`__) defines
+  hypotheses, conditions, replications, execution, and study artifacts.
+- `design-research-analysis documentation <https://cmudrc.github.io/design-research-analysis/>`_
+  (`source <https://github.com/cmudrc/design-research-analysis>`__) validates,
+  transforms, models, and visualizes exported study data.
 
 Begin with the umbrella tutorials. Move into a component repository only when
 you want to understand or change that layer in more detail.

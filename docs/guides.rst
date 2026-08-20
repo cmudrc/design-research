@@ -7,7 +7,8 @@ technical reference for ``design-research``.
 Get Started
 -----------
 
-- :doc:`installation` — install the umbrella package and optional extras.
+- :doc:`installation` — install the umbrella package and find component-owned
+  optional extras.
 - :doc:`quickstart` — load the package and run a first example.
 - :doc:`vscode_start` — set up and run an example in VS Code.
 - :doc:`compatibility` — check the tested package combination and choose
@@ -30,7 +31,7 @@ Follow Complete Workflows
 Technical Reference
 -------------------
 
-- :doc:`api` — inspect the stable public namespace.
+- :doc:`api` — inspect the umbrella namespace for the pinned package family.
 - :doc:`dependencies_and_extras` — review dependency groups and optional
   tooling.
 - `Contributing guide <https://github.com/cmudrc/design-research/blob/HEAD/CONTRIBUTING.md>`_
@@ -43,11 +44,5 @@ Technical Reference
    installation
    quickstart
    vscode_start
-   compatibility
-   concepts
-   typical_workflow
-   philosophy
-   canonical_artifact_flow
-   prompt_framing_study
-   api
-   dependencies_and_extras
+   learn
+   workshop-setup

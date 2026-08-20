@@ -333,7 +333,8 @@ def llama_cpp_runtime_config(*, default_replicates: int) -> dict[str, object]:
     ]
     if missing_runtime:
         raise RuntimeError(
-            "Install llama-cpp-python[server] before running the live walkthrough. Missing: "
+            "Install the owning Agents extra before running the live walkthrough: "
+            'python -m pip install "design-research-agents[llama_cpp]==0.6.0". Missing: '
             + ", ".join(sorted(missing_runtime))
         )
 
@@ -351,8 +352,9 @@ def llama_cpp_runtime_config(*, default_replicates: int) -> dict[str, object]:
         and importlib.util.find_spec("huggingface_hub") is None
     ):
         raise RuntimeError(
-            "Install huggingface-hub or point LLAMA_CPP_MODEL at a local GGUF file before "
-            "running the live walkthrough."
+            "Install the owning Agents extra with "
+            'python -m pip install "design-research-agents[llama_cpp]==0.6.0" or point '
+            "LLAMA_CPP_MODEL at a local GGUF file before running the live walkthrough."
         )
 
     replicates = int(os.getenv("PROMPT_STUDY_REPLICATES", str(default_replicates)))

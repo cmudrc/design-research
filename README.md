@@ -4,160 +4,156 @@
 [![Examples Passing](https://raw.githubusercontent.com/cmudrc/design-research/HEAD/.github/badges/examples-passing.svg)](https://github.com/cmudrc/design-research/actions/workflows/examples.yml)
 [![API in Examples](https://raw.githubusercontent.com/cmudrc/design-research/HEAD/.github/badges/examples-api-coverage.svg)](https://github.com/cmudrc/design-research/actions/workflows/examples.yml)
 [![Docs](https://github.com/cmudrc/design-research/actions/workflows/docs-pages.yml/badge.svg)](https://github.com/cmudrc/design-research/actions/workflows/docs-pages.yml)
+[![PyPI Version](https://img.shields.io/pypi/v/design-research.svg)](https://pypi.org/project/design-research/)
+[![Python Versions](https://img.shields.io/pypi/pyversions/design-research.svg)](https://pypi.org/project/design-research/)
 
-`design-research` is the umbrella entry-point package in the cmudrc design
-research ecosystem.
-
-It provides a thin, submodule-first namespace over the ecosystem's
-specialized component libraries.
-
-## Quality Signals
-
-- **Coverage** reports total line coverage for the default deterministic test suite; CI requires at least 95%.
-- **Examples Passing** reports per-file pass/fail evidence from checked-in scripts and notebooks in the examples workflow.
-- **API in Examples** reports curated top-level `__all__` exports referenced by runnable examples. `N/N` means every supported top-level export appears in at least one example, and CI requires 100%.
-
-Run `make coverage`, `make examples-test`, and `make examples-coverage` to reproduce these checks locally. `make examples-test` writes the evidence used by the badges to `artifacts/examples/example_results.json`; metrics reject missing, stale, or incomplete evidence. `make notebooks-check` separately verifies that every focused notebook's saved outputs match its source.
-
-## Overview
-
-This package focuses on discoverability and coherence rather than reimplementation:
-
-- Submodule-first top-level API: `problems`, `agents`, `experiments`, `analysis`
-- Wrapper submodules that mirror each sibling library's public API by default
-- Shared ecosystem framing and philosophy in one canonical package
-- Lightweight wrapper design that preserves modular versioning boundaries
+`design-research` is the umbrella entry point for the
+CMU Design Research Collective design-research ecosystem. It supplies one
+discoverable namespace, exact component-version pins, and compatibility-tested
+examples for the package family while leaving component implementation in the
+packages that own it.
 
 ## Quickstart
 
-Requires Python 3.12+.
-Maintainer workflows target Python `3.12` (`.python-version`).
+Python 3.12 or newer is required.
 
 ```bash
+python -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+python -m pip install design-research
+```
+
+Then use the four wrapper submodules through the umbrella namespace:
+
+```python
+import design_research as dr
+
+problem_ids = dr.problems.list_problems()
+problem = dr.problems.get_problem(problem_ids[0])
+
+print(problem.metadata.title)
+print(dr.agents.Workflow)
+print(dr.experiments.Study)
+print(dr.analysis.validate_unified_table)
+```
+
+The package root intentionally exports only `__version__` and the four wrapper
+submodules. For the pinned package family, each wrapper mirrors its component
+package's public exports. Use `design_research.problems`,
+`design_research.agents`, `design_research.experiments`, and
+`design_research.analysis`; install a component directly when you only need
+that package or its optional extras.
+
+See the [installation guide](https://cmudrc.github.io/design-research/installation.html),
+[learning path](https://cmudrc.github.io/design-research/learn.html), and
+[compatibility and package status](https://cmudrc.github.io/design-research/compatibility.html)
+for the next step.
+
+## Architecture: Two Complementary Views
+
+The same four packages are useful to describe in two different ways:
+
+- **Control topology:** Problems and Agents are peer study inputs. Experiments
+  owns study design and coordinates their execution, then defines the artifact
+  handoff to Analysis.
+- **Runtime and data flow:** Problems + Agents → Experiments artifact set →
+  Analysis → evidence that can refine the next study protocol.
+
+Neither view is a package-install order. The umbrella routes imports and pins a
+tested combination; it does not move implementation ownership out of the
+component packages.
+
+![Two complementary views of the design-research ecosystem](docs/_static/ecosystem-platform.svg)
+
+## Ecosystem Packages
+
+- **Problems** — tasks, prompts, grammars, benchmarks, and evaluators:
+  [documentation](https://cmudrc.github.io/design-research-problems/) ·
+  [source](https://github.com/cmudrc/design-research-problems)
+- **Agents** — AI participants, workflows, tools, and traceable reasoning:
+  [documentation](https://cmudrc.github.io/design-research-agents/) ·
+  [source](https://github.com/cmudrc/design-research-agents)
+- **Experiments** — hypotheses, factors, conditions, replications, execution,
+  and artifact export:
+  [documentation](https://cmudrc.github.io/design-research-experiments/) ·
+  [source](https://github.com/cmudrc/design-research-experiments)
+- **Analysis** — validation, transformation, statistics, and visualization of
+  study artifacts:
+  [documentation](https://cmudrc.github.io/design-research-analysis/) ·
+  [source](https://github.com/cmudrc/design-research-analysis)
+
+## Repository Development
+
+For a source checkout, install contributor tooling and run the deterministic
+all-layer compatibility path:
+
+```bash
+git clone https://github.com/cmudrc/design-research.git
+cd design-research
 python -m venv .venv
 source .venv/bin/activate
 make dev
 make test
 python examples/canonical_artifact_flow.py
-python -m pip install "llama-cpp-python[server]" huggingface-hub
-make run-example
 make examples-test
 ```
 
-The umbrella installs the exact published component versions declared in
-`pyproject.toml`. Update those pins and the compatibility matrix together, then
-run `make ci` against the same packages users receive from PyPI.
+`examples/canonical_artifact_flow.py` resolves a packaged problem, runs the
+public seeded baseline agent, exports experiment artifacts, and validates them
+through the umbrella's Analysis wrapper. The default checks remain
+deterministic and offline-first.
 
-`examples/canonical_artifact_flow.py` is the deterministic compatibility smoke
-path: a packaged problem, public baseline agent, experiment artifacts, and
-analysis validation through the umbrella namespace.
-
-The documentation includes a progressive tutorial series with executable,
-result-bearing Jupyter notebooks for Problems, Agents, Experiments, and
-Analysis, followed by composed benchmark, process-comparison, and
-partial-factorial studies. The focused notebooks live in `examples/tutorials/`.
-
-`make run-example` is the live walkthrough. It uses a managed
-`llama.cpp` client, a workflow-backed strategy comparison, canonical exports,
-and downstream analysis helpers. The live workflow path now uses the sibling
-public seams directly: a prompt-built `design_research.agents.Workflow`,
-`design_research.agents.PromptWorkflowAgent`,
-`design_research.agents.SeededRandomBaselineAgent`,
-`design_research.experiments.run_study(..., agent_bindings=...)`, plus
-`design_research.analysis.integration`. Install
-`llama-cpp-python[server]` first. If you want the client to fetch its default
-GGUF model automatically, also install `huggingface-hub`; otherwise set
-`LLAMA_CPP_MODEL` to a specific local GGUF file.
-
-`make examples-test` stays deterministic and offline-first by default. It runs
-all offline recipe-first examples. Set `RUN_OLLAMA_EXAMPLES=1` for the
-propose/critic notebook or `RUN_LLAMA_CPP_EXAMPLES=1` for the managed
-llama.cpp walkthrough. The selectors are independent; enabling one does not
-run the other.
-
-Install from PyPI:
+The separate live walkthrough uses the Agents package's `llama_cpp` extra:
 
 ```bash
-pip install design-research
+python -m pip install "design-research-agents[llama_cpp]==0.6.0"
+make run-example
 ```
 
-Then start from the umbrella namespace:
+Set `LLAMA_CPP_MODEL` to a local GGUF file or allow the installed Hugging Face
+client to fetch the walkthrough's default model. Set
+`RUN_LLAMA_CPP_EXAMPLES=1` to include this path in `make examples-test`;
+`RUN_OLLAMA_EXAMPLES=1` independently enables the Ollama tutorial.
 
-```python
-import design_research as dr
-from design_research import problems, agents, experiments, analysis
+## Quality Signals
 
-problem_ids = problems.list_problems()
-problem = problems.get_problem(problem_ids[0])
+- **Coverage** reports total line coverage for the default deterministic test
+  suite; CI requires at least 95%.
+- **Examples Passing** reports per-file pass/fail evidence from checked-in
+  scripts and notebooks.
+- **API in Examples** reports curated top-level `__all__` exports referenced by
+  runnable examples; CI requires 100%.
 
-print(type(problem).__name__)
-print(agents.MultiStepAgent)
-print(experiments.Study)
-print(analysis.validate_unified_table)
-```
+Run `make coverage`, `make examples-test`, and `make examples-coverage` to
+reproduce those checks. `make notebooks-check` verifies that focused
+notebooks' saved outputs match their source.
 
-The package root intentionally stays small: it exports only ``__version__`` and
-the four wrapper submodules. Reach the stable user-facing APIs through
-`design_research.problems`, `design_research.agents`,
-`design_research.experiments`, and `design_research.analysis` rather than a
-flattened root namespace.
-
-For a VS Code-oriented path that starts from PyPI and then shows the repository
-example workflow, see
-[Run An Example In VS Code](https://cmudrc.github.io/design-research/vscode_start.html).
-
-## Start Here
-
-Choose your entry point based on how much of the ecosystem you need:
-
-- Start with the [Learning Path](https://cmudrc.github.io/design-research/learn.html) for a guided progression through the tutorials.
-- Start with `design-research` when you want one stable namespace and one set of docs across problems, agents, experiments, and analysis.
-- Install a sibling package directly when you only need one layer or want package-specific internals; direct sibling use is fully supported.
-- See [Compatibility and Start Here](https://cmudrc.github.io/design-research/compatibility.html) for the tested package combination and install guidance.
-- See [Run An Example In VS Code](https://cmudrc.github.io/design-research/vscode_start.html) for a PyPI install path and source checkout example path.
-- See [Canonical Artifact Flow](https://cmudrc.github.io/design-research/canonical_artifact_flow.html) for the deterministic all-layer handoff.
-- See [Prompt-Framing Study Walkthrough](https://cmudrc.github.io/design-research/prompt_framing_study.html) for the live composed workflow.
-
-## Ecosystem Integration
-
-The Design Research Collective maintains a modular ecosystem of libraries for
-studying human and AI design behavior.
-
-- **design-research-agents** implements AI participants, workflows, and tool-using reasoning patterns.
-- **design-research-problems** provides benchmark design tasks, prompts, grammars, and evaluators.
-- **design-research-analysis** analyzes the traces, event tables, and outcomes generated during studies.
-- **design-research-experiments** sits above the stack as the study-design and orchestration layer, defining hypotheses, factors, conditions, replications, and artifact flows across agents, problems, and analysis.
-
-Together these libraries support end-to-end design research pipelines, from
-study design through execution and interpretation.
-
-## Philosophy
-
-The full ecosystem philosophy is documented in the
-[published philosophy page](https://cmudrc.github.io/design-research/philosophy.html).
-
-## Docs
-
-See the published documentation for quickstart, concepts, workflow framing,
-philosophy, and API reference.
-
-Build docs locally with:
+For documentation changes, run:
 
 ```bash
-make docs
+make docs-check
+make docs-build
 ```
+
+`docs-check` validates generated tutorial material and cross-file contracts;
+`docs-build` performs the strict Sphinx HTML build. Run `make docs-linkcheck`
+when public links change.
+
+The tested package versions and current package metadata status are documented
+in the [compatibility page](https://cmudrc.github.io/design-research/compatibility.html).
+Those factual classifiers are not an ecosystem-wide maturity scheme; that
+separate policy remains tracked in
+[issue #12](https://github.com/cmudrc/design-research/issues/12).
 
 ## Public API
 
-The supported top-level public surface is whatever is exported from
-`design_research.__all__`.
-
-Top-level exports include:
-
-- Wrapper submodules: `problems`, `agents`, `experiments`, `analysis`
-- Package metadata: `__version__`
+The supported umbrella surface is what `design_research.__all__` and the four
+wrapper modules export for the exact component versions pinned in
+`pyproject.toml`. Package-specific APIs, optional dependencies, and behavior
+remain documented by their owning packages.
 
 ## Contributing
 
-Contribution workflow and quality gates are documented in
-[CONTRIBUTING.md](https://github.com/cmudrc/design-research/blob/HEAD/CONTRIBUTING.md).
+See [CONTRIBUTING.md](https://github.com/cmudrc/design-research/blob/HEAD/CONTRIBUTING.md)
+for the contributor workflow and release gates.

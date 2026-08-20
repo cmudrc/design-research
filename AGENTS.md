@@ -2,8 +2,8 @@
 
 ## Purpose
 
-This repository hosts `design-research`, a thin Python 3.12+ umbrella package
-for the CMU Design Research Collective ecosystem. Keep changes focused,
+This repository hosts `design-research`, the thin Python 3.12+ umbrella for the
+CMU Design Research Collective design-research ecosystem. Keep changes focused,
 keep the public API intentional, and avoid duplicating logic from sibling
 component libraries.
 
@@ -27,7 +27,8 @@ merging.
   - `make test`
 - If docs changed:
   - `make docs-check`
-  - `make docs`
+  - `make docs-build`
+  - `make docs-linkcheck` when public links changed
 - If the example changed:
   - `make examples-test` (live examples require their runtime-specific opt-in variable)
   - `make live-smoke` for a focused semantic check of both live tutorials (or use the runtime-specific `make live-smoke-ollama` and `make live-smoke-llama-cpp` targets)

@@ -255,3 +255,86 @@ def test_docs_consistency_tracks_prompt_study_default(
     assert checker.validate_prompt_study_replicates() == [
         f"{docs_path} documents 8 default replicates; expected 50."
     ]
+
+
+def test_docs_consistency_parses_pinned_install_with_extra(monkeypatch: MonkeyPatch) -> None:
+    """An owning-package extra must not hide the package/version association."""
+    checker = _load_script_module(monkeypatch, "check_docs_consistency")
+    match = checker.INSTALL_REQUIREMENT_PATTERN.search(
+        'python -m pip install "design-research-agents[llama_cpp]==0.6.0"'
+    )
+
+    assert match is not None
+    assert match.group("package") == "design-research-agents"
+    assert match.group("version") == "0.6.0"
+
+
+def test_docs_consistency_binds_compatibility_rows_to_packages(
+    monkeypatch: MonkeyPatch, tmp_path: Path
+) -> None:
+    """Compatibility versions should be parsed from their own package rows."""
+    checker = _load_script_module(monkeypatch, "check_docs_consistency")
+    compatibility_path = tmp_path / "compatibility.rst"
+    compatibility_path.write_text(
+        """\
+   * - ``design-research``
+     - ``0.4.0``
+     - Alpha
+   * - ``design-research-agents``
+     - ``0.6.0``
+     - Pre-Alpha
+""",
+        encoding="utf-8",
+    )
+
+    assert checker.documented_compatibility_rows(compatibility_path) == (
+        ("design-research", "0.4.0", "Alpha"),
+        ("design-research-agents", "0.6.0", "Pre-Alpha"),
+    )
+
+    errors = checker.validate_compatibility_rows(
+        versions={"design-research": "0.4.0", "design-research-agents": "0.6.0"},
+        statuses={"design-research": "Alpha", "design-research-agents": "Alpha"},
+        path=compatibility_path,
+    )
+    assert errors == [
+        "docs/compatibility.rst lists design-research-agents status 'Pre-Alpha'; expected 'Alpha'."
+    ]
+
+
+def test_docs_consistency_reads_component_status_from_source_metadata(
+    monkeypatch: MonkeyPatch, tmp_path: Path
+) -> None:
+    """Adjacent component metadata should own the documented status label."""
+    checker = _load_script_module(monkeypatch, "check_docs_consistency")
+    umbrella_root = tmp_path / "design-research"
+    component_root = tmp_path / "design-research-agents"
+    umbrella_root.mkdir()
+    component_root.mkdir()
+    project_text = """\
+[project]
+name = "{name}"
+version = "{version}"
+classifiers = ["Development Status :: {number} - {status}"]
+"""
+    (umbrella_root / "pyproject.toml").write_text(
+        project_text.format(name="design-research", version="0.4.0", number="3", status="Alpha"),
+        encoding="utf-8",
+    )
+    (component_root / "pyproject.toml").write_text(
+        project_text.format(
+            name="design-research-agents",
+            version="0.6.0",
+            number="2",
+            status="Pre-Alpha",
+        ),
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(checker, "PROJECT_PATH", umbrella_root / "pyproject.toml")
+
+    assert checker.expected_development_statuses(
+        {"design-research": "0.4.0", "design-research-agents": "0.6.0"}
+    ) == {
+        "design-research": "Alpha",
+        "design-research-agents": "Pre-Alpha",
+    }
