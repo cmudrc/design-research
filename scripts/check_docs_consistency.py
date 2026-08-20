@@ -14,6 +14,8 @@ README_PATH = Path("README.md")
 PROJECT_PATH = Path("pyproject.toml")
 VERSION_PATH = Path("src/design_research/_version.py")
 COMPATIBILITY_PATH = DOCS_DIR / "compatibility.rst"
+WORKSHOP_SETUP_PATH = DOCS_DIR / "workshop-setup.rst"
+IDETC_REQUIREMENTS_PATH = Path("tutorial_materials/idetc2026/requirements.txt")
 INSTALL_REQUIREMENT_PATTERN = re.compile(
     r"design-research(?:-(?:problems|agents|experiments|analysis))?==(?P<version>[0-9.]+)"
 )
@@ -103,8 +105,10 @@ def validate_documented_versions() -> list[str]:
     """Verify tutorial install commands and compatibility docs against pins."""
     versions = expected_package_versions()
     errors: list[str] = []
-    tutorial_paths = tuple(sorted((DOCS_DIR / "tutorials").glob("*.rst"))) + tuple(
-        sorted(Path("examples/tutorials").glob("*.ipynb"))
+    tutorial_paths = (
+        tuple(sorted((DOCS_DIR / "tutorials").glob("*.rst")))
+        + tuple(sorted(Path("examples/tutorials").glob("*.ipynb")))
+        + (WORKSHOP_SETUP_PATH, IDETC_REQUIREMENTS_PATH)
     )
     for path in tutorial_paths:
         text = path.read_text(encoding="utf-8")

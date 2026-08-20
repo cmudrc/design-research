@@ -86,7 +86,9 @@ html_logo = "_static/drc-light.png"
 html_favicon = "_static/favicon.ico"
 html_title = project
 html_sidebars = (
-    {"index": [], "learn": [], "guides": []} if html_theme == "pydata_sphinx_theme" else {}
+    {"index": [], "learn": [], "workshop-setup": [], "idetc2026": [], "guides": []}
+    if html_theme == "pydata_sphinx_theme"
+    else {}
 )
 
 _VIEWPORT_META_RE = re.compile(r'<meta name="viewport"[^>]*>', re.IGNORECASE)

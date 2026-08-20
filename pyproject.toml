@@ -94,6 +94,7 @@ convention = "google"
 [tool.ruff.lint.per-file-ignores]
 "tests/*.py" = ["D"]
 "src/design_research/*.pyi" = ["F403"]
+"tutorial_materials/idetc2026/preflight.py" = ["UP036"]
 
 [tool.mypy]
 packages = ["design_research"]
