@@ -14,8 +14,53 @@ Requirements
 
 - Python 3.12 or newer. Maintainer workflows target the version in
   ``.python-version``.
-- VS Code with the Python extension.
+- VS Code with Microsoft's `Python extension
+  <https://marketplace.visualstudio.com/items?itemName=ms-python.python>`_ and
+  `Jupyter extension
+  <https://marketplace.visualstudio.com/items?itemName=ms-toolsai.jupyter>`_.
 - A VS Code integrated terminal.
+
+Run A Downloaded Tutorial Notebook
+----------------------------------
+
+Use these steps for any notebook in the :doc:`tutorial series
+<tutorials/index>`:
+
+1. Create an empty folder, open it with ``File > Open Folder`` in VS Code, and
+   open ``Terminal > New Terminal``.
+2. Create a virtual environment and install the notebook kernel support.
+
+   On macOS or Linux:
+
+   .. code-block:: bash
+
+      python -m venv .venv
+      source .venv/bin/activate
+      python -m pip install --upgrade pip ipykernel
+
+   On Windows PowerShell:
+
+   .. code-block:: powershell
+
+      py -3 -m venv .venv
+      .\.venv\Scripts\Activate.ps1
+      python -m pip install --upgrade pip ipykernel
+
+3. On the tutorial page, choose **Download this notebook (.ipynb)** near the
+   heading and save the file in the folder you opened in VS Code.
+4. Open the downloaded ``.ipynb`` file. Read its **Setup** section, then run
+   the listed ``python -m pip install ...`` command in the integrated terminal.
+   Each tutorial names its own package and any plotting dependencies.
+5. Use the kernel picker at the top right of the notebook, choose **Python
+   Environments**, and select the interpreter inside ``.venv``. If it is not
+   listed, run ``Python: Select Interpreter`` from the command palette and
+   select ``.venv/bin/python`` on macOS/Linux or
+   ``.venv\Scripts\python.exe`` on Windows.
+6. Scan the notebook's saved results, then choose **Run All** in the notebook
+   toolbar and compare them with the fresh output from your environment.
+
+The Ollama-backed propose/critic notebook has one additional requirement: keep
+``ollama serve`` running as instructed in that notebook's **Setup** section.
 
 Installed Package From PyPI
 ---------------------------
@@ -36,7 +81,7 @@ On Windows PowerShell:
 
 .. code-block:: powershell
 
-   py -3.12 -m venv .venv
+   py -3 -m venv .venv
    .\.venv\Scripts\Activate.ps1
    python -m pip install --upgrade pip
    python -m pip install design-research
@@ -130,7 +175,10 @@ Troubleshooting
 ---------------
 
 - If VS Code imports fail but the terminal works, reselect the ``.venv``
-  interpreter and reload the window.
+  interpreter or notebook kernel, then reload the window.
+- If a notebook says that no kernel is available, confirm that ``ipykernel`` is
+  installed in ``.venv`` and select that environment again with the kernel
+  picker.
 - If ``make`` uses the wrong Python, activate ``.venv`` in the terminal or run
   ``PYTHON=.venv/bin/python make test``.
 - If Windows activation is blocked, switch the terminal profile to Command

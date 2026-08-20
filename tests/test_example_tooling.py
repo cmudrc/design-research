@@ -226,3 +226,32 @@ def test_notebook_freshness_detects_source_and_output_drift(
     assert freshness.validate_notebook(notebook) == [
         "saved outputs changed after freshness metadata was recorded"
     ]
+
+
+def test_docs_consistency_tracks_prompt_study_default(
+    monkeypatch: MonkeyPatch, tmp_path: Path
+) -> None:
+    """Walkthrough prose should not drift from its executable default."""
+    checker = _load_script_module(monkeypatch, "check_docs_consistency")
+    study_path = tmp_path / "prompt_study.py"
+    docs_path = tmp_path / "prompt_study.rst"
+    study_path.write_text(
+        "DEFAULT_REPLICATES_PER_CONDITION = 50\n",
+        encoding="utf-8",
+    )
+    docs_path.write_text(
+        "The default configuration uses 50 replicates per condition.\n",
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(checker, "PROMPT_STUDY_PATH", study_path)
+    monkeypatch.setattr(checker, "PROMPT_STUDY_DOC_PATH", docs_path)
+
+    assert checker.validate_prompt_study_replicates() == []
+
+    docs_path.write_text(
+        "The default configuration uses 8 replicates per condition.\n",
+        encoding="utf-8",
+    )
+    assert checker.validate_prompt_study_replicates() == [
+        f"{docs_path} documents 8 default replicates; expected 50."
+    ]

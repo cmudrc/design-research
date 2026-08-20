@@ -40,6 +40,7 @@ Run locally with:
 ```bash
 make run-example
 make examples-test
+make live-smoke
 ```
 
 `make run-example` executes the live canonical walkthrough in
@@ -47,7 +48,19 @@ make examples-test
 If you want the default model download path, also install `huggingface-hub`;
 otherwise set `LLAMA_CPP_MODEL` to a specific local GGUF file. The live study
 defaults to 50 replicates per condition; set `PROMPT_STUDY_REPLICATES` to
-run a larger sample.
+choose a different sample size.
+
+`make live-smoke` is the maintainer gate for both model-backed tutorials. It
+executes the Ollama notebook once and runs the managed llama.cpp walkthrough
+with two replicates per condition (six total runs, four live model calls). Use
+`make live-smoke-ollama` or `make live-smoke-llama-cpp` when only one runtime is
+available. The Ollama target expects a running local service with `qwen3:8b`;
+the llama.cpp target expects `llama-cpp-python[server]` and either
+`huggingface-hub` or a local `LLAMA_CPP_MODEL` GGUF file. These targets are for
+periodic and pre-release checks on model-capable infrastructure; default CI
+remains deterministic and offline. A first-time managed startup may download
+the default model and waits up to five minutes; override that window with
+`LLAMA_CPP_STARTUP_TIMEOUT_SECONDS` when needed.
 
 `make examples-test` stays deterministic and offline-first by default. It runs
 all offline examples. Set `RUN_OLLAMA_EXAMPLES=1` for the propose/critic

@@ -38,8 +38,12 @@ analysis path.
    :start-at: def main()
    :end-before: def _agent_run(
 
-Expected Output
+Selected Output
 ---------------
+
+The complete output also names the problem, reports each condition's mean
+outcome and transition-matrix p-value, and gives the artifact directory. These
+lines capture the main process-comparison checks:
 
 .. code-block:: text
 

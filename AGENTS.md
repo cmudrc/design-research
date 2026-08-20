@@ -29,8 +29,8 @@ merging.
   - `make docs-check`
   - `make docs`
 - If the example changed:
-  - `make run-example` (install `llama-cpp-python[server]`; also install `huggingface-hub` unless `LLAMA_CPP_MODEL` points at a local GGUF file)
   - `make examples-test` (live examples require their runtime-specific opt-in variable)
+  - `make live-smoke` for a focused semantic check of both live tutorials (or use the runtime-specific `make live-smoke-ollama` and `make live-smoke-llama-cpp` targets)
 - Pre-merge baseline:
   - `make ci`
 - Pre-publish baseline:
@@ -51,6 +51,7 @@ merging.
 ## Behavioral Guardrails
 
 - Keep tests deterministic and offline by default.
+- Run `make live-smoke` periodically and before releases on model-capable infrastructure; do not make the default CI loop depend on local model services.
 - Let the canonical walkthrough fail fast when the `llama.cpp` runtime is missing rather than silently falling back.
 - Keep total line coverage at or above 95% in CI and local release work.
 - Update tests, docs, and examples alongside behavior changes.
