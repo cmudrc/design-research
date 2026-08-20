@@ -60,13 +60,18 @@ Optionally point the walkthrough at a specific local GGUF file:
    export LLAMA_CPP_MODEL=/path/to/model.gguf
    make run-example
 
-The default configuration uses eight replicates per condition. To push to a
-larger sample size, raise the replicate count explicitly:
+The default configuration uses 50 replicates per condition. To choose a
+different sample size, set the replicate count explicitly:
 
 .. code-block:: bash
 
    export PROMPT_STUDY_REPLICATES=12
    make run-example
+
+Maintainers can use ``make live-smoke-llama-cpp`` for a smoke-sized semantic
+check with two replicates per condition. The smoke target still exercises both
+model-backed prompt strategies; it does not replace the full walkthrough when
+you need study-scale results.
 
 The example writes canonical exports to
 ``artifacts/examples/prompt_strategy_comparison_study`` and writes a markdown
@@ -80,7 +85,9 @@ for the live-agent conditions: it expects a real ``llama.cpp`` runtime.
 If ``LLAMA_CPP_MODEL`` is not set, the client falls back to its built-in model
 defaults and Hugging Face repo settings. The first run may therefore download a
 model before the walkthrough executes, which is why the setup above includes
-``huggingface-hub``.
+``huggingface-hub``. The managed client allows up to five minutes for that first
+startup. On an unusually slow connection, set
+``LLAMA_CPP_STARTUP_TIMEOUT_SECONDS`` to a larger number of seconds.
 
 The script is intentionally written in a linear, step-by-step style so it can
 double as training material and as the literal-included documentation example.

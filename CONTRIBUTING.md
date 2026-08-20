@@ -61,8 +61,8 @@ make docs
 If the example or walkthrough docs changed, also run:
 
 ```bash
-make run-example
 make examples-test
+make live-smoke
 ```
 
 `make run-example` is the live walkthrough path and uses a managed
@@ -73,6 +73,13 @@ GGUF file. Set `RUN_LLAMA_CPP_EXAMPLES=1` to include that walkthrough in
 `make examples-test`. Set `RUN_OLLAMA_EXAMPLES=1` independently for the
 Ollama-backed propose/critic notebook. Both remain opt-in so the default local
 and CI loop stays offline-safe.
+
+`make live-smoke` is the focused semantic gate for both live tutorials. It
+runs the Ollama notebook once and uses two replicates per condition for the
+managed llama.cpp study. Run `make live-smoke-ollama` or
+`make live-smoke-llama-cpp` if only one runtime is provisioned. Run the
+combined target periodically and before releases on model-capable
+infrastructure; it is intentionally separate from offline CI.
 
 `make examples-test` records one result per discovered file in
 `artifacts/examples/example_results.json`; badge generation rejects evidence

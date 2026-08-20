@@ -37,8 +37,11 @@ versioned event artifact.
    :language: python
    :linenos:
 
-Expected Output
+Selected Output
 ---------------
+
+The script also prints the selected problem and agent, mean outcome, and output
+directory. These lines capture the main completion checks:
 
 .. code-block:: text
 

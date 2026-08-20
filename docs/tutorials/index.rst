@@ -77,6 +77,7 @@ its committed source.
 
 .. toctree::
    :maxdepth: 1
+   :hidden:
 
    problems_text_map
    problems_truss_grammar

@@ -16,8 +16,14 @@ VERSION_PATH = Path("src/design_research/_version.py")
 COMPATIBILITY_PATH = DOCS_DIR / "compatibility.rst"
 WORKSHOP_SETUP_PATH = DOCS_DIR / "workshop-setup.rst"
 IDETC_REQUIREMENTS_PATH = Path("tutorial_materials/idetc2026/requirements.txt")
+PROMPT_STUDY_PATH = Path("examples/prompt_framing_study.py")
+PROMPT_STUDY_DOC_PATH = DOCS_DIR / "prompt_framing_study.rst"
 INSTALL_REQUIREMENT_PATTERN = re.compile(
     r"design-research(?:-(?:problems|agents|experiments|analysis))?==(?P<version>[0-9.]+)"
+)
+DEFAULT_REPLICATES_PATTERN = re.compile(
+    r"default configuration uses (?P<count>[0-9]+) replicates per condition",
+    flags=re.IGNORECASE,
 )
 
 
@@ -74,6 +80,7 @@ def validate_docs_tree() -> list[str]:
     elif "design_research" not in API_PATH.read_text(encoding="utf-8"):
         errors.append("docs/api.rst does not reference the package module.")
     errors.extend(validate_documented_versions())
+    errors.extend(validate_prompt_study_replicates())
     return errors
 
 
@@ -128,6 +135,38 @@ def validate_documented_versions() -> list[str]:
         if f"``{version}``" not in compatibility:
             errors.append(f"docs/compatibility.rst omits {package_name} version {version}.")
     return errors
+
+
+def prompt_study_default_replicates() -> int:
+    """Read the walkthrough's default replicate count from its source file."""
+    module = ast.parse(PROMPT_STUDY_PATH.read_text(encoding="utf-8"))
+    for node in module.body:
+        if not isinstance(node, ast.Assign) or not isinstance(node.value, ast.Constant):
+            continue
+        if not isinstance(node.value.value, int):
+            continue
+        if any(
+            isinstance(target, ast.Name) and target.id == "DEFAULT_REPLICATES_PER_CONDITION"
+            for target in node.targets
+        ):
+            return node.value.value
+    raise ValueError(f"{PROMPT_STUDY_PATH} omits integer DEFAULT_REPLICATES_PER_CONDITION.")
+
+
+def validate_prompt_study_replicates() -> list[str]:
+    """Keep the documented walkthrough default synchronized with the script."""
+    documented = DEFAULT_REPLICATES_PATTERN.search(
+        PROMPT_STUDY_DOC_PATH.read_text(encoding="utf-8")
+    )
+    if documented is None:
+        return [f"{PROMPT_STUDY_DOC_PATH} omits the default prompt-study replicate count."]
+    expected = prompt_study_default_replicates()
+    observed = int(documented.group("count"))
+    if observed != expected:
+        return [
+            f"{PROMPT_STUDY_DOC_PATH} documents {observed} default replicates; expected {expected}."
+        ]
+    return []
 
 
 def main() -> int:
