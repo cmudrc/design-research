@@ -76,7 +76,7 @@ def test_canonical_artifact_flow_example_executes(tmp_path: Path) -> None:
     """The canonical flow should exercise the full public umbrella handoff."""
     completed = _run_example("canonical_artifact_flow.py", tmp_path=tmp_path)
     assert "Canonical artifact flow: canonical_artifact_flow" in completed.stdout
-    assert "Package path: problems -> agents -> experiments -> analysis" in completed.stdout
+    assert "Runtime flow: problems + agents -> experiment artifacts -> analysis" in completed.stdout
     assert "Problem: Decision Problem - Student Laptop Design Under Choice-Based Demand" in (
         completed.stdout
     )
