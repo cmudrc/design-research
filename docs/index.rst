@@ -56,6 +56,14 @@ focused notebooks' displayed results still match their source.
       :doc:`Learning Path <learn>` from a first tutorial through a complete
       experiment and analysis workflow.
 
+.. container:: drc-home-callout
+
+   .. important::
+
+      **Joining the IDETC 2026 tutorial on Sunday, August 23?** Use the
+      :doc:`Workshop Setup and Preflight page <workshop-setup>` to download the
+      materials and verify your Python environment before the session.
+
 Tutorial Series
 ---------------
 
@@ -79,6 +87,7 @@ Use these pages to understand the umbrella package, the shared namespace, and
 the recommended path through the ecosystem.
 
 - :doc:`learn`
+- :doc:`workshop-setup`
 - :doc:`tutorials/index`
 - :doc:`guides`
 
@@ -109,5 +118,7 @@ study design through execution and interpretation.
    :hidden:
 
    learn
+   workshop-setup
+   idetc2026
    tutorials/index
    guides

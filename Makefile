@@ -11,7 +11,7 @@ COVERAGE_MIN ?= 95
 .PHONY: help check-python dev install-dev \
 	lint fmt fmt-check type test qa coverage docstrings-check \
 	run-example examples-test examples-coverage examples-metrics notebooks-check notebooks-refresh notebooks-type \
-	docs docs-build docs-check docs-linkcheck \
+	idetc2026-bundle idetc2026-bundle-check docs docs-build docs-check docs-linkcheck \
 	release-check ci clean
 
 help:
@@ -26,6 +26,7 @@ help:
 	@echo "  notebooks-check  Verify that committed notebook source and outputs are fresh."
 	@echo "  notebooks-refresh Execute offline tutorial notebooks and save their outputs."
 	@echo "  notebooks-type   Type-check Python code embedded in tutorial notebooks."
+	@echo "  idetc2026-bundle Build the deterministic IDETC 2026 tutorial download."
 	@echo "  docs             Build the HTML docs."
 	@echo "  ci               Run the main local CI checks."
 
@@ -85,10 +86,16 @@ notebooks-check: check-python
 notebooks-type: check-python
 	$(PYTHON) scripts/check_notebook_typing.py
 
+idetc2026-bundle: check-python
+	$(PYTHON) scripts/build_idetc2026_bundle.py
+
+idetc2026-bundle-check: check-python
+	$(PYTHON) scripts/build_idetc2026_bundle.py --check
+
 docs-build: check-python
 	PYTHONPATH=src $(SPHINX) -b html docs docs/_build/html -n -W --keep-going -E
 
-docs-check: check-python notebooks-check
+docs-check: check-python notebooks-check idetc2026-bundle-check
 	$(PYTHON) scripts/check_docs_consistency.py
 
 docs-linkcheck: check-python

@@ -11,6 +11,7 @@ example, and follow the parts of the ecosystem that match your interests.
    useful to others.
 
    :doc:`Choose a tutorial <tutorials/index>` :doc:`Set up VS Code <vscode_start>`
+   :doc:`Workshop setup and preflight <workshop-setup>`
 
 Four Steps
 ----------
