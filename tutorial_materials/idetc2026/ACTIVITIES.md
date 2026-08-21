@@ -3,9 +3,8 @@
 This activity pack is separate from the preflight kit so that the tutorial
 notebooks can be updated without changing the participant environment.
 
-Extract the `notebooks/` and `scripts/` folders into the setup folder you used
-for preflight. In VS Code or your preferred IDE, select the Python interpreter
-and notebook kernel inside that folder's `.venv`.
+Use the Python interpreter and notebook kernel from the `.venv` created during
+preflight.
 
 ## Participant notebooks
 
