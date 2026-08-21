@@ -1,4 +1,4 @@
-"""Build the deterministic IDETC 2026 participant tutorial archive."""
+"""Build deterministic IDETC 2026 setup assets and activity archive."""
 
 from __future__ import annotations
 
@@ -10,15 +10,24 @@ from zipfile import ZIP_DEFLATED, ZipFile, ZipInfo
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 SOURCE_ROOT = REPO_ROOT / "tutorial_materials" / "idetc2026"
-ARCHIVE_ROOT = PurePosixPath("idetc2026-design-research-tutorial")
-OUTPUT_PATH = REPO_ROOT / "docs" / "_static" / "idetc2026-design-research-tutorial.zip"
 FIXED_TIMESTAMP = (1980, 1, 1, 0, 0, 0)
 FILE_MODE = 0o100644
 
-BUNDLE_FILES = (
-    (SOURCE_ROOT / "README.md", PurePosixPath("README.md")),
-    (SOURCE_ROOT / "requirements.txt", PurePosixPath("requirements.txt")),
-    (SOURCE_ROOT / "preflight.py", PurePosixPath("preflight.py")),
+SETUP_ASSETS = (
+    (
+        SOURCE_ROOT / "requirements.txt",
+        REPO_ROOT / "docs" / "_static" / "workshop-requirements.txt",
+    ),
+    (
+        SOURCE_ROOT / "preflight.py",
+        REPO_ROOT / "docs" / "_static" / "workshop-preflight.py",
+    ),
+)
+
+ACTIVITIES_ROOT = PurePosixPath("idetc2026-design-research-activities")
+ACTIVITIES_OUTPUT_PATH = REPO_ROOT / "docs" / "_static" / "idetc2026-design-research-activities.zip"
+ACTIVITIES_FILES = (
+    (SOURCE_ROOT / "ACTIVITIES.md", PurePosixPath("README.md")),
     (
         REPO_ROOT / "examples" / "tutorials" / "problems_text_map.ipynb",
         PurePosixPath("notebooks/problems_text_map.ipynb"),
@@ -54,12 +63,15 @@ BUNDLE_FILES = (
 )
 
 
-def build_bundle_bytes() -> bytes:
-    """Return the complete archive as deterministic bytes."""
+def build_bundle_bytes(
+    archive_root: PurePosixPath,
+    bundle_files: tuple[tuple[Path, PurePosixPath], ...],
+) -> bytes:
+    """Return one complete archive as deterministic bytes."""
     buffer = io.BytesIO()
     with ZipFile(buffer, mode="w", compression=ZIP_DEFLATED, compresslevel=9) as archive:
-        for source_path, relative_path in BUNDLE_FILES:
-            archive_path = ARCHIVE_ROOT / relative_path
+        for source_path, relative_path in bundle_files:
+            archive_path = archive_root / relative_path
             info = ZipInfo(str(archive_path), date_time=FIXED_TIMESTAMP)
             info.compress_type = ZIP_DEFLATED
             info.create_system = 3
@@ -80,41 +92,66 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--check",
         action="store_true",
-        help="fail if the committed archive does not match its source manifest",
+        help="fail if a committed download does not match its source",
     )
     parser.add_argument(
-        "--output",
-        type=Path,
-        default=OUTPUT_PATH,
-        help="archive path to write or check",
+        "--kind",
+        choices=("all", "setup", "activities"),
+        default="all",
+        help="downloads to build or check; defaults to all",
     )
     return parser.parse_args()
 
 
 def main() -> int:
-    """Build the archive or verify that the committed copy is current."""
+    """Build downloads or verify that the committed copies are current."""
     args = parse_args()
-    expected = build_bundle_bytes()
-    output_path = args.output.resolve()
+    failed = False
 
-    if args.check:
-        if not output_path.is_file():
-            print(f"IDETC 2026 bundle is missing: {output_path}")
-            print("Run `make idetc2026-bundle` to generate it.")
-            return 1
-        actual = output_path.read_bytes()
-        if actual != expected:
-            print(f"IDETC 2026 bundle is stale: {output_path}")
-            print(f"Expected {bundle_summary(expected)}")
-            print(f"Actual   {bundle_summary(actual)}")
-            print("Run `make idetc2026-bundle` to refresh it.")
-            return 1
-        print(f"IDETC 2026 bundle is current: {bundle_summary(actual)}")
-        return 0
+    if args.kind in {"all", "setup"}:
+        for source_path, output_path in SETUP_ASSETS:
+            expected = source_path.read_bytes()
+            label = output_path.name
+            if not args.check:
+                output_path.parent.mkdir(parents=True, exist_ok=True)
+                output_path.write_bytes(expected)
+                print(f"Wrote {output_path}: {bundle_summary(expected)}")
+                continue
+            if not output_path.is_file():
+                print(f"Workshop setup asset is missing: {output_path}")
+                failed = True
+                continue
+            actual = output_path.read_bytes()
+            if actual != expected:
+                print(f"Workshop setup asset is stale: {output_path}")
+                print(f"Expected {bundle_summary(expected)}")
+                print(f"Actual   {bundle_summary(actual)}")
+                failed = True
+                continue
+            print(f"Workshop setup asset is current ({label}): {bundle_summary(actual)}")
 
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_path.write_bytes(expected)
-    print(f"Wrote {output_path}: {bundle_summary(expected)}")
+    if args.kind in {"all", "activities"}:
+        expected = build_bundle_bytes(ACTIVITIES_ROOT, ACTIVITIES_FILES)
+        if not args.check:
+            ACTIVITIES_OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
+            ACTIVITIES_OUTPUT_PATH.write_bytes(expected)
+            print(f"Wrote {ACTIVITIES_OUTPUT_PATH}: {bundle_summary(expected)}")
+        elif not ACTIVITIES_OUTPUT_PATH.is_file():
+            print(f"IDETC 2026 activities bundle is missing: {ACTIVITIES_OUTPUT_PATH}")
+            failed = True
+        else:
+            actual = ACTIVITIES_OUTPUT_PATH.read_bytes()
+            if actual != expected:
+                print(f"IDETC 2026 activities bundle is stale: {ACTIVITIES_OUTPUT_PATH}")
+                print(f"Expected {bundle_summary(expected)}")
+                print(f"Actual   {bundle_summary(actual)}")
+                failed = True
+            else:
+                print(f"IDETC 2026 activities bundle is current: {bundle_summary(actual)}")
+
+    if failed:
+        print("Run `make idetc2026-bundle` to refresh the downloads.")
+        return 1
     return 0
 
 
