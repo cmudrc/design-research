@@ -15,7 +15,8 @@ On macOS or Linux:
 
    mkdir -p design-research-workshop
    cd design-research-workshop
-   python3.12 -c "from urllib.request import urlretrieve as get; get('https://cmudrc.github.io/design-research/_static/workshop-requirements.txt', 'requirements.txt'); get('https://cmudrc.github.io/design-research/_static/workshop-preflight.py', 'preflight.py')"
+   curl -fsSLo requirements.txt 'https://cmudrc.github.io/design-research/_static/workshop-requirements.txt'
+   curl -fsSLo preflight.py 'https://cmudrc.github.io/design-research/_static/workshop-preflight.py'
    python3.12 -m venv .venv
    .venv/bin/python -m pip install --upgrade pip
    .venv/bin/python -m pip install -r requirements.txt
@@ -27,11 +28,12 @@ On Windows PowerShell:
 
    New-Item -ItemType Directory -Force design-research-workshop | Out-Null
    Set-Location design-research-workshop
-   py -3.12 -c "from urllib.request import urlretrieve as get; get('https://cmudrc.github.io/design-research/_static/workshop-requirements.txt', 'requirements.txt'); get('https://cmudrc.github.io/design-research/_static/workshop-preflight.py', 'preflight.py')"
+   curl.exe -fsSLo requirements.txt 'https://cmudrc.github.io/design-research/_static/workshop-requirements.txt'
+   curl.exe -fsSLo preflight.py 'https://cmudrc.github.io/design-research/_static/workshop-preflight.py'
    py -3.12 -m venv .venv
-   .venv\Scripts\python -m pip install --upgrade pip
-   .venv\Scripts\python -m pip install -r requirements.txt
-   .venv\Scripts\python preflight.py
+   .\.venv\Scripts\python.exe -m pip install --upgrade pip
+   .\.venv\Scripts\python.exe -m pip install -r requirements.txt
+   .\.venv\Scripts\python.exe preflight.py
 
 A successful check ends with ``Preflight passed. You are ready for the
 workshop.`` Keep the ``design-research-workshop`` folder. Activity materials

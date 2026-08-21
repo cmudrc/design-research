@@ -81,6 +81,13 @@ def test_setup_assets_are_direct_environment_only_downloads() -> None:
     assert "idetc2026-design-research-setup.zip" not in setup_page
     assert "workshop-requirements.txt" in setup_page
     assert "workshop-preflight.py" in setup_page
+    assert "curl -fsSLo requirements.txt" in setup_page
+    assert "curl -fsSLo preflight.py" in setup_page
+    assert "curl.exe -fsSLo requirements.txt" in setup_page
+    assert "curl.exe -fsSLo preflight.py" in setup_page
+    assert "urllib.request" not in setup_page
+    assert "--insecure" not in setup_page
+    assert "curl -k" not in setup_page
     assert "IDETC" not in setup_page
     assert "ASME" not in setup_page
 
