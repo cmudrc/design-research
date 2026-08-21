@@ -7,8 +7,15 @@ activity notebooks will be provided separately at the tutorial.
 
 ## Set up before Sunday
 
-Install Python 3.12, VS Code, and the VS Code Python and Jupyter extensions.
-Open this extracted folder in VS Code, then use its integrated terminal.
+The tested, recommended path uses Python 3.12 with VS Code and the VS Code
+Python and Jupyter extensions. Other IDEs and notebook environments are also
+appropriate if they can use the same Python `.venv` and select it as the
+notebook kernel. There is nothing VS Code-specific in the workshop software
+stack.
+
+For the recommended path, open this extracted folder in VS Code and use its
+integrated terminal. You can run the same commands in the terminal for another
+IDE or in your system terminal.
 
 On macOS or Linux:
 
@@ -36,7 +43,8 @@ Preflight passed. You are ready for the tutorial.
 
 In VS Code, run `Python: Select Interpreter` from the command palette and select
 the interpreter inside `.venv`. Select that same environment as the notebook
-kernel.
+kernel. In another IDE, use its environment controls to select the interpreter
+and notebook kernel inside `.venv`.
 
 ## What the preflight checks
 
@@ -57,7 +65,8 @@ download, or model service.
 
 Keep this folder and its `.venv`. At the tutorial, download the activity pack
 provided by the facilitator and extract its `notebooks/` and `scripts/` folders
-here. Open the activity notebook in VS Code and select the same `.venv` kernel.
+here. Open the activity notebook in VS Code or your preferred IDE and select the
+same `.venv` kernel.
 
 You do not need the activity notebooks to complete setup. They are distributed
 separately so that the tutorial content can reflect the latest package examples

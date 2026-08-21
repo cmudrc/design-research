@@ -19,13 +19,18 @@ participant environment.
 Before Sunday
 -------------
 
-Install `Python 3.12 <https://www.python.org/downloads/>`_,
-`VS Code <https://code.visualstudio.com/>`_, and the VS Code **Python** and
-**Jupyter** extensions. Python 3.12 is the recommended tutorial version even
-though the package supports newer Python releases.
+The tested, recommended path uses
+`Python 3.12 <https://www.python.org/downloads/>`_ with
+`VS Code <https://code.visualstudio.com/>`_ and the VS Code **Python** and
+**Jupyter** extensions. Other IDEs and notebook environments are also
+appropriate if they can use the same Python ``.venv`` and select it as the
+notebook kernel. There is nothing VS Code-specific in the workshop software
+stack. Python 3.12 is the recommended tutorial version even though the package
+supports newer Python releases.
 
-Extract the download, open its folder in VS Code, and create the tutorial
-environment without activating it.
+Extract the download and create the tutorial environment without activating
+it. For the recommended path, open the extracted folder in VS Code and use its
+integrated terminal.
 
 On macOS or Linux:
 
@@ -48,7 +53,8 @@ On Windows PowerShell:
 A successful check ends with ``Preflight passed. You are ready for the
 tutorial.`` In VS Code, run ``Python: Select Interpreter`` from the command
 palette and choose the interpreter inside ``.venv``. Use that same environment
-as the notebook kernel.
+as the notebook kernel. In another IDE, use its environment controls to select
+the interpreter and notebook kernel inside ``.venv``.
 
 Once the preflight passes, setup is complete. You do not need the activity
 notebooks in advance.
@@ -89,9 +95,9 @@ At The Tutorial
 
 The facilitator will provide the current activity pack. Extract its
 ``notebooks/`` and ``scripts/`` folders into the setup folder, open the activity
-notebook in VS Code, and select the existing ``.venv`` kernel. The activity pack
-is built independently from the setup kit, so notebook updates do not require a
-second installation.
+notebook in VS Code or your preferred IDE, and select the existing ``.venv``
+kernel. The activity pack is built independently from the setup kit, so
+notebook updates do not require a second installation.
 
 Model-Backed Examples
 ---------------------
