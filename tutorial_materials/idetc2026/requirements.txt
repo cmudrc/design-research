@@ -1,3 +1,8 @@
 design-research==0.4.0
+design-research-agents[memory-graph,providers]==0.6.0
+design-research-analysis[data,lang,seq,stats]==0.3.1
+design-research-experiments[doe]==0.3.0
+design-research-problems[grammar,pandas,solvers]==0.4.0
 ipykernel>=7.3,<8
-scikit-learn>=1.5,<2
+nbclient>=0.11,<1
+nbformat>=5.10,<6

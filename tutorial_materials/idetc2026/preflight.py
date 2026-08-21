@@ -1,4 +1,4 @@
-"""Verify the IDETC 2026 participant environment and tutorial kit."""
+"""Verify the IDETC 2026 participant environment independently of activities."""
 
 from __future__ import annotations
 
@@ -6,6 +6,7 @@ import importlib
 import sys
 from importlib.metadata import PackageNotFoundError, version
 from pathlib import Path
+from tempfile import TemporaryDirectory
 
 EXPECTED_VERSIONS = {
     "design-research": "0.4.0",
@@ -15,24 +16,87 @@ EXPECTED_VERSIONS = {
     "design-research-problems": "0.4.0",
 }
 REQUIRED_IMPORTS = (
+    "anthropic",
     "design_research",
     "design_research_agents",
     "design_research_analysis",
     "design_research_experiments",
     "design_research_problems",
+    "google.genai",
+    "groq",
+    "hmmlearn",
     "ipykernel",
+    "matplotlib",
+    "nbclient",
+    "nbformat",
+    "networkx",
+    "nevergrad",
+    "numpy",
+    "openai",
+    "pandas",
+    "pyDOE3",
+    "pymoo",
+    "scipy",
     "sklearn",
+    "statsmodels",
+    "trussme",
 )
-REQUIRED_MATERIALS = (
-    "notebooks/problems_text_map.ipynb",
-    "notebooks/problems_truss_grammar.ipynb",
-    "notebooks/agents_workflow.ipynb",
-    "notebooks/experiments_monty_hall.ipynb",
-    "notebooks/analysis_reliability.ipynb",
-    "scripts/canonical_artifact_flow.py",
-    "scripts/long_agent_markov_comparison.py",
-    "scripts/partial_factorial_ideation_regression.py",
-)
+
+
+def run_stack_smoke_check() -> None:
+    """Exercise the public stack through one deterministic offline study."""
+    import design_research as dr
+
+    problem_id = "decision_laptop_design_profit_maximization"
+    agent_id = "SeededRandomBaselineAgent"
+    problem = dr.problems.get_problem(problem_id)
+    if not problem.metadata.title:
+        raise RuntimeError("The packaged problem did not load correctly.")
+
+    with TemporaryDirectory(prefix="idetc2026-preflight-") as directory:
+        output_dir = Path(directory)
+        study = dr.experiments.build_strategy_comparison_study(
+            dr.experiments.StrategyComparisonConfig(
+                study_id="idetc2026-preflight",
+                title="IDETC 2026 Preflight",
+                description="Verify the installed Design Research stack.",
+                bundle=dr.experiments.BenchmarkBundle(
+                    bundle_id="idetc2026-preflight",
+                    name="IDETC 2026 Preflight",
+                    description="One packaged problem and deterministic baseline agent.",
+                    problem_ids=(problem_id,),
+                    agent_specs=(agent_id,),
+                ),
+                run_budget=dr.experiments.RunBudget(
+                    replicates=1,
+                    parallelism=1,
+                    max_runs=1,
+                ),
+                output_dir=output_dir,
+            )
+        )
+        conditions = dr.experiments.build_design(study)
+        results = dr.experiments.run_study(
+            study,
+            conditions=conditions,
+            checkpoint=False,
+            show_progress=False,
+        )
+        artifacts = dr.experiments.export_analysis_tables(
+            study,
+            conditions=conditions,
+            run_results=results,
+            output_dir=output_dir / "analysis",
+            validate_with_analysis_package=True,
+        )
+        report = dr.analysis.validate_experiment_events(artifacts["events.csv"])
+
+    if len(conditions) != 1 or len(results) != 1:
+        raise RuntimeError("The stack smoke study did not produce one result.")
+    if results[0].status.value != "success":
+        raise RuntimeError(f"The stack smoke study failed: {results[0].error_info}")
+    if not report.is_valid:
+        raise RuntimeError("The stack smoke study produced invalid analysis artifacts.")
 
 
 def main() -> int:
@@ -45,6 +109,9 @@ def main() -> int:
         errors.append("Python 3.12 or newer is required.")
     elif sys.version_info[:2] != (3, 12):
         print("Note: Python 3.12 is recommended for the tutorial.")
+
+    if ".venv" not in Path(sys.executable).parts:
+        errors.append("The preflight must be run with the tutorial .venv interpreter.")
 
     for module_name in REQUIRED_IMPORTS:
         try:
@@ -67,10 +134,13 @@ def main() -> int:
                 f"Expected {package_name}=={expected_version}; found {installed_version}."
             )
 
-    kit_root = Path(__file__).resolve().parent
-    for relative_path in REQUIRED_MATERIALS:
-        if not (kit_root / relative_path).is_file():
-            errors.append(f"Tutorial material is missing: {relative_path}")
+    if not errors:
+        try:
+            run_stack_smoke_check()
+        except Exception as exc:
+            errors.append(f"Stack smoke check failed: {type(exc).__name__}: {exc}")
+        else:
+            print("Stack: problems -> agents -> experiments -> analysis [ok]")
 
     if errors:
         print("\nPreflight failed:")
@@ -78,7 +148,6 @@ def main() -> int:
             print(f"- {error}")
         return 1
 
-    print(f"Materials: {len(REQUIRED_MATERIALS)} files [ok]")
     print("\nPreflight passed. You are ready for the tutorial.")
     return 0
 

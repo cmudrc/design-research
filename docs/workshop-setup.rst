@@ -3,16 +3,18 @@ Workshop Setup and Preflight
 
 Use this page to prepare for **AI Experiments in Engineering Design: A Tutorial
 on the Design Research Open-Source Ecosystem** at IDETC-CIE 2026 on Sunday,
-August 23. The participant path is deterministic and runs offline after the
-one-time installation.
+August 23. Complete the one-time installation before Sunday. The activity
+notebooks are separate so that they can stay current without changing the
+participant environment.
 
 .. container:: drc-home-callout
 
    .. important::
 
-      :download:`Download the IDETC 2026 tutorial materials
-      <_static/idetc2026-design-research-tutorial.zip>` and complete the
-      preflight below before Sunday. Keep the extracted folder together.
+      :download:`Download the IDETC 2026 setup kit
+      <_static/idetc2026-design-research-setup.zip>` and complete the preflight
+      below before Sunday. Keep the extracted folder and its ``.venv`` together.
+      The activity notebooks will be provided separately at the tutorial.
 
 Before Sunday
 -------------
@@ -48,59 +50,55 @@ tutorial.`` In VS Code, run ``Python: Select Interpreter`` from the command
 palette and choose the interpreter inside ``.venv``. Use that same environment
 as the notebook kernel.
 
-What Is In The Download?
-------------------------
+Once the preflight passes, setup is complete. You do not need the activity
+notebooks in advance.
 
-The kit freezes the public stack at ``design-research==0.4.0`` and includes a
-preflight plus eight offline examples.
+What The Setup Prepares
+-----------------------
 
-.. list-table:: Tutorial materials
+The setup kit freezes the public Design Research stack and installs a broad,
+cross-platform tutorial environment. The preflight imports that environment
+and runs a small deterministic workflow through problems, agents, experiments,
+and analysis. It does not check for particular activity notebooks.
+
+.. list-table:: Preinstalled capabilities
    :header-rows: 1
-   :widths: 32 50 18
+   :widths: 28 40 32
 
-   * - File
-     - Purpose
-     - Suggested use
-   * - ``notebooks/problems_text_map.ipynb``
-     - Map packaged design problems using TF-IDF and t-SNE.
-     - Participant exercise
-   * - ``notebooks/problems_truss_grammar.ipynb``
-     - Apply design-grammar rules to a planar truss.
-     - Participant exercise
-   * - ``notebooks/agents_workflow.ipynb``
-     - Build and trace a deterministic agent workflow.
-     - Participant exercise
-   * - ``notebooks/experiments_monty_hall.ipynb``
-     - Define conditions and run a seeded experiment.
-     - Participant exercise
-   * - ``notebooks/analysis_reliability.ipynb``
-     - Measure agreement among protocol coders.
-     - Participant exercise
-   * - ``scripts/canonical_artifact_flow.py``
-     - Pass one packaged problem through agents, experiments, and analysis.
-     - Optional stack check
-   * - ``scripts/long_agent_markov_comparison.py``
-     - Compare two scripted design processes as Markov chains.
-     - Composed example
-   * - ``scripts/partial_factorial_ideation_regression.py``
-     - Fit a regression from a partial factorial ideation study.
-     - Composed example
+   * - Capability
+     - Included surface
+     - Preflight evidence
+   * - Design Research ecosystem
+     - Problems, agents, experiments, and analysis
+     - Imports, versions, and an offline end-to-end smoke study
+   * - Notebook runtime
+     - IPython kernel, ``nbformat``, and ``nbclient``
+     - Imports from the selected ``.venv``
+   * - Data and visualization
+     - NumPy, pandas, Matplotlib, SciPy, and scikit-learn
+     - Imports
+   * - Study and analysis methods
+     - DOE, optimization, sequence analysis, graphs, and statistics
+     - Imports
+   * - Model-service clients
+     - OpenAI, Anthropic, Gemini, and Groq client libraries
+     - Imports only; no account or credential is required
 
-About ``canonical_artifact_flow.py``
-------------------------------------
+At The Tutorial
+---------------
 
-This is the smallest end-to-end example in the repository. It loads one
-packaged design problem, runs a seeded baseline agent twice, exports the
-standard experiment artifacts, and asks the analysis package to validate and
-summarize them. It does not call an AI model or require network access. Think
-of it as an optional plumbing check, not the first tutorial exercise.
+The facilitator will provide the current activity pack. Extract its
+``notebooks/`` and ``scripts/`` folders into the setup folder, open the activity
+notebook in VS Code, and select the existing ``.venv`` kernel. The activity pack
+is built independently from the setup kit, so notebook updates do not require a
+second installation.
 
 Model-Backed Examples
 ---------------------
 
-The participant kit does not require Ollama, ``llama.cpp``, a model download,
-or an API key. Model-backed demonstrations are a separate facilitator path so
-that model availability cannot block the offline exercises.
+The setup kit installs several hosted-model client libraries to preserve
+tutorial flexibility, but it does not require an API key, local model download,
+Ollama, or ``llama.cpp``. Model availability cannot block the offline exercises.
 
 Troubleshooting
 ---------------
