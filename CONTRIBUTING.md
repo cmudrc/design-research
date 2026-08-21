@@ -55,24 +55,36 @@ make test
 make notebooks-type
 make notebooks-check
 make docs-check
-make docs
+make docs-build
 ```
+
+For documentation changes, `make docs-check` validates generated material and
+cross-file contracts, while `make docs-build` performs the strict Sphinx HTML
+render. Run `make docs-linkcheck` whenever public links change.
 
 If the example or walkthrough docs changed, also run:
 
 ```bash
-make run-example
 make examples-test
+make live-smoke
 ```
 
 `make run-example` is the live walkthrough path and uses a managed
-`llama.cpp` client. Install `llama-cpp-python[server]` before running it. If
-you want to use the default GGUF download path, also install
-`huggingface-hub`; otherwise set `LLAMA_CPP_MODEL` to point at a specific local
-GGUF file. Set `RUN_LLAMA_CPP_EXAMPLES=1` to include that walkthrough in
+`llama.cpp` client. Install the pinned Agents package's owning extra with
+`python -m pip install "design-research-agents[llama_cpp]==0.6.0"` before
+running it. Set `LLAMA_CPP_MODEL` to point at a specific local GGUF file or
+allow the included Hugging Face client to fetch the default. Set
+`RUN_LLAMA_CPP_EXAMPLES=1` to include that walkthrough in
 `make examples-test`. Set `RUN_OLLAMA_EXAMPLES=1` independently for the
 Ollama-backed propose/critic notebook. Both remain opt-in so the default local
 and CI loop stays offline-safe.
+
+`make live-smoke` is the focused semantic gate for both live tutorials. It
+runs the Ollama notebook once and uses two replicates per condition for the
+managed llama.cpp study. Run `make live-smoke-ollama` or
+`make live-smoke-llama-cpp` if only one runtime is provisioned. Run the
+combined target periodically and before releases on model-capable
+infrastructure; it is intentionally separate from offline CI.
 
 `make examples-test` records one result per discovered file in
 `artifacts/examples/example_results.json`; badge generation rejects evidence

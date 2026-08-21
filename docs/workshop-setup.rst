@@ -56,10 +56,10 @@ notebooks in advance.
 What The Setup Prepares
 -----------------------
 
-The setup kit freezes the public Design Research stack and installs a broad,
-cross-platform tutorial environment. The preflight imports that environment
-and runs a small deterministic workflow through problems, agents, experiments,
-and analysis. It does not check for particular activity notebooks.
+The setup kit freezes the tested Design Research package family and installs a
+broad, cross-platform tutorial environment. The preflight imports that
+environment and runs a small deterministic workflow through problems, agents,
+experiments, and analysis. It does not check for particular activity notebooks.
 
 .. list-table:: Preinstalled capabilities
    :header-rows: 1

@@ -7,10 +7,12 @@ SPHINX ?= $(PYTHON) -m sphinx
 BUILD ?= $(PYTHON) -m build
 TWINE ?= $(PYTHON) -m twine
 COVERAGE_MIN ?= 95
+LIVE_SMOKE_REPLICATES ?= 2
 
 .PHONY: help check-python dev install-dev \
 	lint fmt fmt-check type test qa coverage docstrings-check \
-	run-example examples-test examples-coverage examples-metrics notebooks-check notebooks-refresh notebooks-type \
+	run-example live-smoke live-smoke-ollama live-smoke-llama-cpp \
+	examples-test examples-coverage examples-metrics notebooks-check notebooks-refresh notebooks-type \
 	idetc2026-bundle idetc2026-bundle-check docs docs-build docs-check docs-linkcheck \
 	release-check ci clean
 
@@ -20,6 +22,9 @@ help:
 	@echo "  test             Run the pytest suite."
 	@echo "  qa               Run lint, fmt-check, type, and test."
 	@echo "  run-example      Execute the live llama.cpp strategy-comparison study example."
+	@echo "  live-smoke       Exercise both live tutorial runtimes with smoke-sized work."
+	@echo "  live-smoke-ollama Exercise the Ollama propose/critic tutorial."
+	@echo "  live-smoke-llama-cpp Exercise the managed llama.cpp tutorial with two replicates."
 	@echo "  examples-test    Execute all offline example scripts and notebooks."
 	@echo "  examples-coverage Require every public API export to appear in an example."
 	@echo "  examples-metrics Generate example and public-API badge artifacts."
@@ -66,6 +71,14 @@ docstrings-check: check-python
 
 run-example: check-python
 	PYTHONPATH=src $(PYTHON) examples/prompt_framing_study.py
+
+live-smoke-ollama: check-python
+	$(PYTHON) scripts/run_notebooks.py examples/tutorials/agents_propose_critic.ipynb
+
+live-smoke-llama-cpp: check-python
+	PROMPT_STUDY_REPLICATES=$(LIVE_SMOKE_REPLICATES) PYTHONPATH=src $(PYTHON) examples/prompt_framing_study.py
+
+live-smoke: live-smoke-ollama live-smoke-llama-cpp
 
 examples-test: check-python
 	$(PYTHON) scripts/run_examples.py

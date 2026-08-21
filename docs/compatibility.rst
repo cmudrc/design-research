@@ -1,90 +1,108 @@
-Compatibility And Start Here
-============================
+Compatibility And Package Status
+================================
 
-``design-research`` is an optional umbrella package for the ecosystem, not the
-only supported way to use the underlying libraries.
-
-Use the compatibility matrix below when you want the tested package
-combination. Use the decision table below when you need to choose between the
-umbrella package and a direct sibling install.
+``design-research`` is an optional umbrella package, not the only supported
+way to use the component libraries. This page records the exact package family
+tested by the current umbrella release and separates those compatibility facts
+from broader maturity policy.
 
 Tested Package Combination
 --------------------------
 
-.. list-table:: Version-first compatibility matrix
+.. list-table:: Exact umbrella pins and current package metadata
    :header-rows: 1
-   :widths: 72 28
+   :widths: 54 20 26
 
    * - Package
      - Version
+     - PyPI development classifier
    * - ``design-research``
      - ``0.4.0``
+     - Alpha
    * - ``design-research-problems``
      - ``0.4.0``
+     - Alpha
    * - ``design-research-agents``
      - ``0.6.0``
+     - Pre-Alpha
    * - ``design-research-experiments``
      - ``0.3.0``
+     - Alpha
    * - ``design-research-analysis``
      - ``0.3.1``
+     - Alpha
 
-These versions match the exact sibling pins in ``pyproject.toml`` and represent
-the tested umbrella combination for the current docs baseline.
+The versions match the exact dependencies in ``pyproject.toml``. Normal
+``python -m pip install design-research`` usage and pull-request CI resolve
+this published combination. The table does not promise compatibility for
+unlisted versions.
 
-Pull-request CI and normal ``pip install design-research`` usage resolve these
-exact published versions from ``pyproject.toml``. Component changes are
-released and validated in their owning repositories before the umbrella pin is
-advanced, so the matrix above describes the same package family users install.
+The status column reports each package's current ``Development Status``
+classifier; it does not define stable, experimental, research, or legacy
+states for the ecosystem. A shared maturity-label policy remains open in
+`issue #12 <https://github.com/cmudrc/design-research/issues/12>`_. Until that
+policy is decided, consult each package's release notes and documentation for
+package-specific change guidance.
 
-The bundled examples and smoke tests intentionally target this pinned family
-through public integration points. :doc:`canonical_artifact_flow` is the no-network smoke
-path: it resolves a packaged problem, runs the public seeded baseline agent,
-exports canonical experiment artifacts, and validates them with
-``design_research_analysis.integration``. The live walkthrough adds
-``PromptWorkflowAgent`` and a prompt-built ``Workflow`` on top of that same
-artifact contract. The shipped example scripts expect installed sibling
-packages. The family smoke test uses those installed pins by default. Contributors
-can opt into source worktrees with the documented ``DESIGN_RESEARCH_*_SRC`` or
-``DESIGN_RESEARCH_*_ROOT`` environment overrides.
+Artifact Contract
+-----------------
 
-Start Here Vs Go Direct
------------------------
+The current deterministic family path writes an Experiments manifest with
+artifact schema ``0.2.0``. The umbrella family smoke test passes that exported
+artifact set to ``design-research-analysis==0.3.1`` and validates its event
+table. This is the tested handoff:
+
+.. code-block:: text
+
+   Problems + Agents -> Experiments artifact set (schema 0.2.0) -> Analysis
+
+Treat the artifact directory and its manifest schema as the cross-package data
+contract. A package version, API status, and artifact schema version answer
+different questions; none should be used as a substitute for the others.
+
+Public API Scope
+----------------
+
+The umbrella root exports ``__version__`` plus ``problems``, ``agents``,
+``experiments``, and ``analysis``. For the exact pins above, each wrapper
+mirrors its component package's public ``__all__`` exports. This provides one
+consistent import route for the tested family without claiming that every
+component symbol is permanently stable across future releases.
+
+The no-network :doc:`canonical_artifact_flow` exercises those public wrappers:
+it resolves a packaged problem, runs the public seeded baseline agent, exports
+canonical experiment artifacts, and validates them through top-level Analysis
+helpers. The live :doc:`prompt_framing_study` adds a prompt-built Agents
+workflow while retaining the same artifact handoff.
+
+Start With The Umbrella Or Go Direct
+------------------------------------
 
 .. list-table:: Choosing an install path
    :header-rows: 1
 
    * - Start with ``design-research``
-     - Install a sibling package directly
-   * - You want one stable namespace across problems, agents, experiments, and
-       analysis.
-     - You only need one layer of the ecosystem for a focused workflow.
-   * - You want the umbrella docs, examples, and compatibility guidance to stay
-       in one place.
-     - You want package-specific internals, lower-level helpers, or a narrower
-       dependency surface.
-   * - You plan to compose end-to-end workflows and prefer a shared import style.
-     - You already know which component package owns the behavior you need.
+     - Install a component directly
+   * - You want one import route across Problems, Agents, Experiments, and
+       Analysis for the tested combination.
+     - You need only one package or a narrower dependency surface.
+   * - You want the shared learning path, composed examples, and compatibility
+       record.
+     - You need component-specific optional backends, internals, or detailed
+       API guidance.
+   * - You are composing the complete artifact handoff.
+     - You already know which package owns the behavior you need.
 
-Direct sibling use is fully supported. The umbrella package is a convenience
-layer for discovery, stable imports, and composed workflow guidance.
+Direct component use remains supported by each owning package:
 
-The package root intentionally stays narrow: it exports only ``__version__``
-plus the four wrapper submodules. Stable user-facing symbols remain under
-``design_research.problems``, ``design_research.agents``,
-``design_research.experiments``, and ``design_research.analysis`` rather than a
-flattened root namespace.
-
-Release Planning
-----------------
-
-The ecosystem no longer uses monthly milestone names as the default release
-coordination mechanism. Use the version matrix above for tested package
-combinations, and use GitHub Releases or PyPI versions for published package
-state.
+- `Problems <https://cmudrc.github.io/design-research-problems/>`__
+- `Agents <https://cmudrc.github.io/design-research-agents/>`__
+- `Experiments <https://cmudrc.github.io/design-research-experiments/>`__
+- `Analysis <https://cmudrc.github.io/design-research-analysis/>`__
 
 Next Step
 ---------
 
-If you want to see the umbrella package drive a real composed workflow, start
-with :doc:`canonical_artifact_flow` and continue to :doc:`prompt_framing_study`
-for the live walkthrough.
+Start with :doc:`canonical_artifact_flow` for the deterministic all-package
+handoff, then continue to :doc:`prompt_framing_study` only when you want the
+optional local-model runtime.

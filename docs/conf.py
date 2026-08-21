@@ -38,11 +38,11 @@ autosummary_imported_members = True
 nitpicky = True
 nbsphinx_execute = "never"
 nbsphinx_allow_errors = False
-nbsphinx_epilog = r"""
+nbsphinx_prolog = r"""
 .. raw:: html
 
    <p class="drc-notebook-download">
-     <a href="{{ env.docname.split('/')[-1] }}.ipynb" download>Download notebook (.ipynb)</a>
+     <a href="{{ env.docname.split('/')[-1] }}.ipynb" download>Download this notebook (.ipynb)</a>
    </p>
 """
 intersphinx_mapping = {
@@ -86,7 +86,7 @@ html_logo = "_static/drc-light.png"
 html_favicon = "_static/favicon.ico"
 html_title = project
 html_sidebars = (
-    {"index": [], "learn": [], "workshop-setup": [], "idetc2026": [], "guides": []}
+    {"index": [], "learn": [], "workshop-setup": [], "guides": []}
     if html_theme == "pydata_sphinx_theme"
     else {}
 )

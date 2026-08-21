@@ -50,7 +50,7 @@ Run It
 
 .. code-block:: bash
 
-   python -m pip install "llama-cpp-python[server]" huggingface-hub
+   python -m pip install "design-research-agents[llama_cpp]==0.6.0"
    make run-example
 
 Optionally point the walkthrough at a specific local GGUF file:
@@ -60,13 +60,18 @@ Optionally point the walkthrough at a specific local GGUF file:
    export LLAMA_CPP_MODEL=/path/to/model.gguf
    make run-example
 
-The default configuration uses eight replicates per condition. To push to a
-larger sample size, raise the replicate count explicitly:
+The default configuration uses 50 replicates per condition. To choose a
+different sample size, set the replicate count explicitly:
 
 .. code-block:: bash
 
    export PROMPT_STUDY_REPLICATES=12
    make run-example
+
+Maintainers can use ``make live-smoke-llama-cpp`` for a smoke-sized semantic
+check with two replicates per condition. The smoke target still exercises both
+model-backed prompt strategies; it does not replace the full walkthrough when
+you need study-scale results.
 
 The example writes canonical exports to
 ``artifacts/examples/prompt_strategy_comparison_study`` and writes a markdown
@@ -78,9 +83,11 @@ validation summary. The script intentionally has no deterministic fallback path
 for the live-agent conditions: it expects a real ``llama.cpp`` runtime.
 
 If ``LLAMA_CPP_MODEL`` is not set, the client falls back to its built-in model
-defaults and Hugging Face repo settings. The first run may therefore download a
-model before the walkthrough executes, which is why the setup above includes
-``huggingface-hub``.
+defaults and Hugging Face repo settings. The Agents ``llama_cpp`` extra
+includes that download client, so the first run may download a model before the
+walkthrough executes. The managed client allows up to five minutes for that
+first startup. On an unusually slow connection, set
+``LLAMA_CPP_STARTUP_TIMEOUT_SECONDS`` to a larger number of seconds.
 
 The script is intentionally written in a linear, step-by-step style so it can
 double as training material and as the literal-included documentation example.
@@ -99,7 +106,7 @@ Code
 When To Go Direct
 -----------------
 
-Use the umbrella package when you want one stable import surface for the
-ecosystem. Install a sibling package directly when you only need one layer or
-want package-specific internals. See :doc:`compatibility` for the tested
-version combination and install guidance.
+Use the umbrella package when you want one import route for the exact tested
+package family. Install a component directly when you only need one package or
+want package-specific internals and extras. See :doc:`compatibility` for the
+tested version combination and API scope.

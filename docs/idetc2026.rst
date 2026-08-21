@@ -1,3 +1,5 @@
+:orphan:
+
 IDETC 2026 Tutorial Setup
 =========================
 

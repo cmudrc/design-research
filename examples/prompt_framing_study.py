@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import importlib.util
 import os
+from collections.abc import Sequence
 from pathlib import Path
 
 import design_research as dr
@@ -22,6 +23,9 @@ EXACT_PERMUTATION_THRESHOLD = 250_000
 MONTE_CARLO_PERMUTATIONS = 20_000
 PERMUTATION_TEST_SEED = 17
 STRATEGY_ORDER = (BASELINE_AGENT_ID, "neutral_prompt", "profit_focus_prompt")
+MODEL_BACKED_STRATEGY_IDS = ("neutral_prompt", "profit_focus_prompt")
+PRIMARY_METRIC = "predicted_share"
+SECONDARY_METRIC = "expected_demand_units"
 PAIRWISE_COMPARISONS = (
     ("profit_focus_prompt", "neutral_prompt"),
     ("neutral_prompt", BASELINE_AGENT_ID),
@@ -54,6 +58,8 @@ def main() -> None:
         host=str(runtime["host"]),
         port=int(runtime["port"]),
         context_window=int(runtime["context_window"]),
+        startup_timeout_seconds=float(runtime["startup_timeout_seconds"]),
+        request_timeout_seconds=float(runtime["request_timeout_seconds"]),
     ) as llm_client:
         # Each `agent_id` in the strategy bundle maps either to a public agent
         # id resolved directly by experiments or to one explicit binding that
@@ -92,6 +98,10 @@ def main() -> None:
             show_progress=False,
         )
 
+    # Treat this as a live-runtime check, not merely a deterministic-baseline
+    # check: every model-backed prompt strategy must produce usable evidence.
+    successful_results = _require_successful_model_strategies(results)
+
     # Export the standard analysis tables so the next steps can work from the
     # same artifacts users would inspect after their own runs.
     artifact_paths = dr.experiments.export_analysis_tables(
@@ -109,12 +119,12 @@ def main() -> None:
     # and another for a secondary business-facing metric, without hand-loading CSVs.
     primary_metric_rows = dr.analysis.build_condition_metric_table_from_artifacts(
         artifact_paths["events.csv"],
-        metric="market_share_proxy",
+        metric=PRIMARY_METRIC,
         condition_column="agent_id",
     )
     demand_metric_rows = dr.analysis.build_condition_metric_table_from_artifacts(
         artifact_paths["events.csv"],
-        metric="expected_demand_units",
+        metric=SECONDARY_METRIC,
         condition_column="agent_id",
     )
 
@@ -122,7 +132,7 @@ def main() -> None:
     # permutation test helper.
     comparison_report = dr.analysis.compare_condition_pairs_from_artifacts(
         artifact_paths["events.csv"],
-        metric="market_share_proxy",
+        metric=PRIMARY_METRIC,
         condition_column="agent_id",
         condition_pairs=PAIRWISE_COMPARISONS,
         alternative="greater",
@@ -156,11 +166,8 @@ def main() -> None:
     # summary after the run finishes.
     primary_means = condition_means(primary_metric_rows)
     demand_means = condition_means(demand_metric_rows)
-    successful_results = [result for result in results if result.status.value == "success"]
 
-    # Fail loudly if the live walkthrough did not actually produce usable data.
-    if not successful_results:
-        raise RuntimeError("The live walkthrough completed without any successful runs.")
+    # Fail loudly if the exported live data is not structurally usable.
     if validation_report.errors:
         raise RuntimeError(
             "Unified event table validation failed:\n- " + "\n- ".join(validation_report.errors)
@@ -180,8 +187,8 @@ def main() -> None:
     for strategy_name in STRATEGY_ORDER:
         print(
             f"  - agent_id={strategy_name}: "
-            f"mean_market_share_proxy={primary_means.get(strategy_name, 0.0):.4f}, "
-            f"mean_expected_demand_units={demand_means.get(strategy_name, 0.0):.0f}"
+            f"mean_{PRIMARY_METRIC}={primary_means.get(strategy_name, 0.0):.4f}, "
+            f"mean_{SECONDARY_METRIC}={demand_means.get(strategy_name, 0.0):.0f}"
         )
     print(comparison_report.render_brief())
     print(dr.experiments.render_significance_brief(significance_rows))
@@ -250,6 +257,50 @@ def condition_means(rows: list[dict[str, object]]) -> dict[str, float]:
     }
 
 
+def _require_successful_model_strategies(results: Sequence[object]) -> list[object]:
+    """Require observed successes from every model-backed prompt strategy."""
+    successful_results: list[object] = []
+    successful_strategy_ids: set[str] = set()
+    model_attempts: dict[str, list[str]] = {
+        strategy_id: [] for strategy_id in MODEL_BACKED_STRATEGY_IDS
+    }
+    for result in results:
+        raw_status = getattr(result, "status", None)
+        status = getattr(raw_status, "value", raw_status)
+        run_spec = getattr(result, "run_spec", None)
+        strategy_ref = getattr(run_spec, "agent_spec_ref", None)
+        strategy_id = str(strategy_ref) if strategy_ref is not None else None
+        if strategy_id in model_attempts:
+            error_info = getattr(result, "error_info", None)
+            detail = str(error_info).strip() if error_info else str(status)
+            if detail not in model_attempts[strategy_id]:
+                model_attempts[strategy_id].append(detail)
+        if status != "success":
+            continue
+        successful_results.append(result)
+        if strategy_id is not None:
+            successful_strategy_ids.add(strategy_id)
+
+    missing_strategy_ids = [
+        strategy_id
+        for strategy_id in MODEL_BACKED_STRATEGY_IDS
+        if strategy_id not in successful_strategy_ids
+    ]
+    if missing_strategy_ids:
+        attempt_summary = "; ".join(
+            f"{strategy_id}: {', '.join(model_attempts[strategy_id]) or 'no result'}"
+            for strategy_id in missing_strategy_ids
+        )
+        raise RuntimeError(
+            "The live walkthrough requires at least one successful result from each "
+            "model-backed prompt strategy. Missing successful strategies: "
+            + ", ".join(missing_strategy_ids)
+            + ". Observed attempts: "
+            + attempt_summary
+        )
+    return successful_results
+
+
 def decision_candidate_schema(problem: object) -> dict[str, object]:
     """Build a JSON schema for discrete decision-factor candidates."""
     properties: dict[str, object] = {}
@@ -282,7 +333,8 @@ def llama_cpp_runtime_config(*, default_replicates: int) -> dict[str, object]:
     ]
     if missing_runtime:
         raise RuntimeError(
-            "Install llama-cpp-python[server] before running the live walkthrough. Missing: "
+            "Install the owning Agents extra before running the live walkthrough: "
+            'python -m pip install "design-research-agents[llama_cpp]==0.6.0". Missing: '
             + ", ".join(sorted(missing_runtime))
         )
 
@@ -300,8 +352,9 @@ def llama_cpp_runtime_config(*, default_replicates: int) -> dict[str, object]:
         and importlib.util.find_spec("huggingface_hub") is None
     ):
         raise RuntimeError(
-            "Install huggingface-hub or point LLAMA_CPP_MODEL at a local GGUF file before "
-            "running the live walkthrough."
+            "Install the owning Agents extra with "
+            'python -m pip install "design-research-agents[llama_cpp]==0.6.0" or point '
+            "LLAMA_CPP_MODEL at a local GGUF file before running the live walkthrough."
         )
 
     replicates = int(os.getenv("PROMPT_STUDY_REPLICATES", str(default_replicates)))
@@ -316,6 +369,10 @@ def llama_cpp_runtime_config(*, default_replicates: int) -> dict[str, object]:
         "host": os.getenv("LLAMA_CPP_HOST", "127.0.0.1").strip() or "127.0.0.1",
         "port": int(os.getenv("LLAMA_CPP_PORT", "8001")),
         "context_window": int(os.getenv("LLAMA_CPP_CONTEXT_WINDOW", "4096")),
+        # The first startup may include a roughly 1 GB model download. Keep the
+        # wait finite but long enough for an ordinary laptop connection.
+        "startup_timeout_seconds": float(os.getenv("LLAMA_CPP_STARTUP_TIMEOUT_SECONDS", "300")),
+        "request_timeout_seconds": float(os.getenv("LLAMA_CPP_REQUEST_TIMEOUT_SECONDS", "120")),
         "replicates": replicates,
     }
 

@@ -37,8 +37,11 @@ also defines the explicit condition matrix and deterministic participant.
    :start-at: def main()
    :end-before: def _study(
 
-Expected Output
+Selected Output
 ---------------
+
+The script also lists the fitted task-family terms and artifact directory.
+These lines capture the main regression checks:
 
 .. code-block:: text
 

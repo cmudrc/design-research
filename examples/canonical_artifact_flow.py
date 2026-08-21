@@ -1,4 +1,4 @@
-"""Smallest deterministic problems-agents-experiments-analysis handoff."""
+"""Smallest deterministic peer-input artifact flow through the umbrella."""
 
 from __future__ import annotations
 
@@ -15,7 +15,7 @@ PRIMARY_METRIC = "primary_outcome"
 
 
 def main() -> None:
-    """Run one packaged problem through the public umbrella stack."""
+    """Run one packaged problem through the public umbrella package family."""
     # Start with a packaged benchmark from design-research-problems. The umbrella
     # import keeps the example focused on the workflow instead of package wiring.
     problem = dr.problems.get_problem(PROBLEM_ID)
@@ -82,7 +82,7 @@ def main() -> None:
     # Keep terminal output compact: enough to confirm the packages worked
     # together and point readers at the generated artifacts.
     print("Canonical artifact flow:", study.study_id)
-    print("Package path: problems -> agents -> experiments -> analysis")
+    print("Runtime flow: problems + agents -> experiment artifacts -> analysis")
     print("Problem:", problem.metadata.title)
     print("Agent:", AGENT_ID)
     print("Runs:", len(results), f"({successes} success)")

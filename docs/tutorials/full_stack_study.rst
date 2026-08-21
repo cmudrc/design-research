@@ -1,9 +1,10 @@
 Compose The Libraries: Run A Benchmark Study
 ============================================
 
-This tutorial runs the smallest deterministic Problems to Agents to Experiments
-to Analysis handoff. It is the recommended compatibility smoke test and the
-best starting point for a new composed study.
+This tutorial runs the smallest deterministic handoff from peer Problems and
+Agents inputs through Experiments artifacts into Analysis. It is the
+recommended compatibility smoke test and the best starting point for a new
+composed study.
 
 What You Will Learn
 -------------------
@@ -37,13 +38,16 @@ versioned event artifact.
    :language: python
    :linenos:
 
-Expected Output
+Selected Output
 ---------------
+
+The script also prints the selected problem and agent, mean outcome, and output
+directory. These lines capture the main completion checks:
 
 .. code-block:: text
 
    Canonical artifact flow: canonical_artifact_flow
-   Package path: problems -> agents -> experiments -> analysis
+   Runtime flow: problems + agents -> experiment artifacts -> analysis
    Runs: 2 (2 success)
    Event rows valid: True (rows=2)
    Summary report: canonical_artifact_flow_summary.md

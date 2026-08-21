@@ -1,13 +1,27 @@
 Typical Workflow
 ================
 
-1. Import ``design_research`` to anchor ecosystem discovery.
-2. Select one or more wrapper submodules based on task:
-   - ``design_research.problems`` for benchmark tasks and registries.
-   - ``design_research.agents`` for participants and coordination patterns.
-   - ``design_research.experiments`` for study definitions and orchestration.
-   - ``design_research.analysis`` for downstream analysis and reporting.
-3. Build end-to-end studies by composing these layers without duplicating logic.
-   Start with :doc:`canonical_artifact_flow` for the smallest all-layer handoff,
-   then see :doc:`prompt_framing_study` for the live walkthrough.
-4. Keep package-specific details in component repositories.
+Use the control topology to decide who owns each step and the runtime flow to
+trace the artifacts that connect those steps.
+
+1. **Select Problems inputs.** Choose packaged tasks, prompts, grammars, or
+   evaluators through ``design_research.problems``.
+2. **Select Agents inputs.** Choose participants or workflows through
+   ``design_research.agents``. Problems and Agents are peer inputs to the study.
+3. **Define and run the study.** Use ``design_research.experiments`` for
+   hypotheses, conditions, replication, execution control, and artifact export.
+4. **Analyze the exported artifacts.** Use ``design_research.analysis`` to
+   validate and transform the event tables, then compute or visualize results.
+5. **Refine the protocol.** Feed the evidence into the next Experiments study
+   definition without changing ownership of Problems, Agents, or Analysis.
+
+The runtime handoff is therefore:
+
+.. code-block:: text
+
+   Problems + Agents -> Experiments artifact set -> Analysis -> protocol refinement
+
+Start with :doc:`canonical_artifact_flow` for the smallest deterministic
+all-package handoff. Continue to :doc:`prompt_framing_study` only when a live
+model-backed Agents workflow is useful. Use the owning component documentation
+for package-specific APIs and optional dependencies.

@@ -3,8 +3,10 @@
 from __future__ import annotations
 
 import json
+import runpy
 import subprocess
 from pathlib import Path
+from types import SimpleNamespace
 from typing import Any
 
 import pytest
@@ -62,11 +64,19 @@ def _notebook_has_png(notebook_name: str) -> bool:
     )
 
 
+def _prompt_study_result(strategy_id: str, *, status: str) -> SimpleNamespace:
+    """Build the minimal run-result shape consumed by the live semantic guard."""
+    return SimpleNamespace(
+        status=SimpleNamespace(value=status),
+        run_spec=SimpleNamespace(agent_spec_ref=strategy_id),
+    )
+
+
 def test_canonical_artifact_flow_example_executes(tmp_path: Path) -> None:
     """The canonical flow should exercise the full public umbrella handoff."""
     completed = _run_example("canonical_artifact_flow.py", tmp_path=tmp_path)
     assert "Canonical artifact flow: canonical_artifact_flow" in completed.stdout
-    assert "Package path: problems -> agents -> experiments -> analysis" in completed.stdout
+    assert "Runtime flow: problems + agents -> experiment artifacts -> analysis" in completed.stdout
     assert "Problem: Decision Problem - Student Laptop Design Under Choice-Based Demand" in (
         completed.stdout
     )
@@ -172,6 +182,17 @@ def test_agents_propose_critic_tutorial_records_llm_result() -> None:
     assert "tradeoff" in output
 
 
+def test_agents_propose_critic_tutorial_enforces_successful_approval() -> None:
+    """The Ollama tutorial should fail when its final result is not usable."""
+    notebook = _load_notebook("agents_propose_critic.ipynb")
+    source = "\n".join(
+        "".join(cell.get("source", [])) for cell in notebook["cells"] if cell["cell_type"] == "code"
+    )
+
+    assert "if not result.success or not result.approved:" in source
+    assert "raise RuntimeError(" in source
+
+
 def test_agents_workflow_tutorial_records_deterministic_result() -> None:
     """The advanced Agents tutorial should retain its dependency-graph result."""
     output = _notebook_output_text("agents_workflow.ipynb")
@@ -209,6 +230,74 @@ def test_prompt_framing_walkthrough_uses_public_prompt_workflow_agent() -> None:
     assert "build_json_prompt_workflow" in source
     assert "PromptWorkflowAgent" in source
     assert "agent_bindings" in source
+
+
+def test_prompt_framing_walkthrough_rejects_baseline_only_success() -> None:
+    """A deterministic baseline must not masquerade as a passing live smoke test."""
+    namespace = runpy.run_path(str(EXAMPLES_DIR / "prompt_framing_study.py"))
+    require_successes = namespace["_require_successful_model_strategies"]
+    results = [
+        _prompt_study_result("SeededRandomBaselineAgent", status="success"),
+        _prompt_study_result("neutral_prompt", status="failed"),
+        _prompt_study_result("profit_focus_prompt", status="failed"),
+    ]
+
+    with pytest.raises(
+        RuntimeError,
+        match="Missing successful strategies: neutral_prompt, profit_focus_prompt",
+    ):
+        require_successes(results)
+
+
+def test_prompt_framing_walkthrough_requires_each_model_strategy() -> None:
+    """Every model-backed strategy should contribute an observed successful result."""
+    namespace = runpy.run_path(str(EXAMPLES_DIR / "prompt_framing_study.py"))
+    require_successes = namespace["_require_successful_model_strategies"]
+    results = [
+        _prompt_study_result("SeededRandomBaselineAgent", status="success"),
+        _prompt_study_result("neutral_prompt", status="success"),
+        _prompt_study_result("profit_focus_prompt", status="failed"),
+    ]
+
+    with pytest.raises(
+        RuntimeError,
+        match="Missing successful strategies: profit_focus_prompt",
+    ):
+        require_successes(results)
+
+
+def test_prompt_framing_walkthrough_accepts_both_model_strategies() -> None:
+    """The guard should pass after both live prompt strategies succeed."""
+    namespace = runpy.run_path(str(EXAMPLES_DIR / "prompt_framing_study.py"))
+    require_successes = namespace["_require_successful_model_strategies"]
+    results = [
+        _prompt_study_result("SeededRandomBaselineAgent", status="failed"),
+        _prompt_study_result("neutral_prompt", status="success"),
+        _prompt_study_result("profit_focus_prompt", status="success"),
+    ]
+
+    assert require_successes(results) == results[1:]
+
+
+def test_prompt_framing_metrics_match_pinned_problem_integration() -> None:
+    """Analysis metric names should match the evaluator's exported rows."""
+    from design_research_problems.integration import (
+        evaluate_problem_output,
+        resolve_problem_binding,
+    )
+
+    namespace = runpy.run_path(str(EXAMPLES_DIR / "prompt_framing_study.py"))
+    binding = resolve_problem_binding(namespace["PROBLEM_ID"])
+    problem = binding.problem_object
+    candidate = {factor.key: factor.levels[0] for factor in problem.option_factors}
+    rows = evaluate_problem_output(
+        binding,
+        candidate,
+    )
+    metric_names = {row["metric_name"] for row in rows}
+
+    assert namespace["PRIMARY_METRIC"] in metric_names
+    assert namespace["SECONDARY_METRIC"] in metric_names
 
 
 def test_examples_stay_on_public_artifact_helpers() -> None:

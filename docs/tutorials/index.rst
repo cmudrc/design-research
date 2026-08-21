@@ -8,7 +8,7 @@ that produced them. Only the Agents propose/critic notebook and final local-mode
 walkthrough require a running model service.
 
 .. image:: ../_static/ecosystem-platform.svg
-   :alt: Problems, agents, experiments, and analysis connected as one research workflow.
+   :alt: Two-view diagram showing control responsibilities and runtime artifact flow across Problems, Agents, Experiments, and Analysis.
    :class: dark-light drc-ecosystem-figure
    :width: 100%
    :align: center
@@ -77,6 +77,7 @@ its committed source.
 
 .. toctree::
    :maxdepth: 1
+   :hidden:
 
    problems_text_map
    problems_truss_grammar
