@@ -1,12 +1,10 @@
 Workshop Setup and Preflight
 ============================
 
-Complete this setup before **AI Experiments in Engineering Design: A Tutorial
-on the Design Research Open-Source Ecosystem** at IDETC-CIE 2026 on Sunday,
-August 23.
+Complete this one-time setup before attending a Design Research workshop.
 
-Before Sunday
--------------
+Before The Workshop
+-------------------
 
 Install `Python 3.12 <https://www.python.org/downloads/>`_, open a terminal, and
 run the block for your operating system.
@@ -15,9 +13,9 @@ On macOS or Linux:
 
 .. code-block:: bash
 
-   python3.12 -c "from urllib.request import urlretrieve; urlretrieve('https://cmudrc.github.io/design-research/_static/idetc2026-design-research-setup.zip', 'idetc2026-design-research-setup.zip')"
-   python3.12 -m zipfile -e idetc2026-design-research-setup.zip .
-   cd idetc2026-design-research-setup
+   mkdir -p design-research-workshop
+   cd design-research-workshop
+   python3.12 -c "from urllib.request import urlretrieve as get; get('https://cmudrc.github.io/design-research/_static/workshop-requirements.txt', 'requirements.txt'); get('https://cmudrc.github.io/design-research/_static/workshop-preflight.py', 'preflight.py')"
    python3.12 -m venv .venv
    .venv/bin/python -m pip install --upgrade pip
    .venv/bin/python -m pip install -r requirements.txt
@@ -27,14 +25,14 @@ On Windows PowerShell:
 
 .. code-block:: powershell
 
-   py -3.12 -c "from urllib.request import urlretrieve; urlretrieve('https://cmudrc.github.io/design-research/_static/idetc2026-design-research-setup.zip', 'idetc2026-design-research-setup.zip')"
-   py -3.12 -m zipfile -e idetc2026-design-research-setup.zip .
-   Set-Location idetc2026-design-research-setup
+   New-Item -ItemType Directory -Force design-research-workshop | Out-Null
+   Set-Location design-research-workshop
+   py -3.12 -c "from urllib.request import urlretrieve as get; get('https://cmudrc.github.io/design-research/_static/workshop-requirements.txt', 'requirements.txt'); get('https://cmudrc.github.io/design-research/_static/workshop-preflight.py', 'preflight.py')"
    py -3.12 -m venv .venv
    .venv\Scripts\python -m pip install --upgrade pip
    .venv\Scripts\python -m pip install -r requirements.txt
    .venv\Scripts\python preflight.py
 
 A successful check ends with ``Preflight passed. You are ready for the
-tutorial.`` Keep the ``idetc2026-design-research-setup`` folder. The activity
-notebooks will be provided separately at the tutorial.
+workshop.`` Keep the ``design-research-workshop`` folder. Activity materials
+will be provided separately for the workshop.

@@ -1,4 +1,4 @@
-"""Tests for the separate reproducible IDETC 2026 participant bundles."""
+"""Tests for the reproducible IDETC 2026 participant downloads."""
 
 from __future__ import annotations
 
@@ -10,16 +10,12 @@ from zipfile import ZipFile
 from tests._subprocess_support import REPO_ROOT
 
 BUNDLE_DIR = REPO_ROOT / "docs" / "_static"
-SETUP_PATH = BUNDLE_DIR / "idetc2026-design-research-setup.zip"
-SETUP_ROOT = "idetc2026-design-research-setup"
+SETUP_REQUIREMENTS_PATH = BUNDLE_DIR / "workshop-requirements.txt"
+SETUP_PREFLIGHT_PATH = BUNDLE_DIR / "workshop-preflight.py"
+SETUP_ZIP_PATH = BUNDLE_DIR / "idetc2026-design-research-setup.zip"
 ACTIVITIES_PATH = BUNDLE_DIR / "idetc2026-design-research-activities.zip"
 ACTIVITIES_ROOT = "idetc2026-design-research-activities"
 
-EXPECTED_SETUP_PATHS = (
-    f"{SETUP_ROOT}/README.md",
-    f"{SETUP_ROOT}/requirements.txt",
-    f"{SETUP_ROOT}/preflight.py",
-)
 EXPECTED_ACTIVITIES_PATHS = (
     f"{ACTIVITIES_ROOT}/README.md",
     f"{ACTIVITIES_ROOT}/notebooks/problems_text_map.ipynb",
@@ -43,8 +39,8 @@ EXPECTED_REQUIREMENTS = (
 )
 
 
-def test_committed_bundles_match_source_manifests() -> None:
-    """The public archives should never drift from their canonical sources."""
+def test_committed_downloads_match_source_manifests() -> None:
+    """The public downloads should never drift from their canonical sources."""
     completed = subprocess.run(
         [sys.executable, "scripts/build_idetc2026_bundle.py", "--check"],
         cwd=REPO_ROOT,
@@ -54,7 +50,7 @@ def test_committed_bundles_match_source_manifests() -> None:
     )
 
     assert completed.returncode == 0, completed.stdout + completed.stderr
-    assert "IDETC 2026 setup bundle is current" in completed.stdout
+    assert completed.stdout.count("Workshop setup asset is current") == 2
     assert "IDETC 2026 activities bundle is current" in completed.stdout
 
 
@@ -71,15 +67,22 @@ def _assert_safe_manifest(path: Path, expected_paths: tuple[str, ...]) -> None:
     assert all(".." not in Path(name).parts for name in names)
 
 
-def test_setup_bundle_has_safe_environment_only_manifest() -> None:
-    """The advance setup download should not freeze activity notebooks."""
-    _assert_safe_manifest(SETUP_PATH, EXPECTED_SETUP_PATHS)
+def test_setup_assets_are_direct_environment_only_downloads() -> None:
+    """The advance setup should publish only direct environment files."""
+    source_root = REPO_ROOT / "tutorial_materials" / "idetc2026"
 
-    with ZipFile(SETUP_PATH) as archive:
-        requirements = archive.read(f"{SETUP_ROOT}/requirements.txt").decode()
+    assert SETUP_REQUIREMENTS_PATH.read_text() == EXPECTED_REQUIREMENTS
+    assert SETUP_REQUIREMENTS_PATH.read_bytes() == (source_root / "requirements.txt").read_bytes()
+    assert SETUP_PREFLIGHT_PATH.read_bytes() == (source_root / "preflight.py").read_bytes()
+    compile(SETUP_PREFLIGHT_PATH.read_text(), str(SETUP_PREFLIGHT_PATH), "exec")
+    assert not SETUP_ZIP_PATH.exists()
 
-    assert requirements == EXPECTED_REQUIREMENTS
-    assert not any("/notebooks/" in name for name in EXPECTED_SETUP_PATHS)
+    setup_page = (REPO_ROOT / "docs" / "workshop-setup.rst").read_text()
+    assert "idetc2026-design-research-setup.zip" not in setup_page
+    assert "workshop-requirements.txt" in setup_page
+    assert "workshop-preflight.py" in setup_page
+    assert "IDETC" not in setup_page
+    assert "ASME" not in setup_page
 
 
 def test_activity_bundle_has_safe_content_only_manifest() -> None:

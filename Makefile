@@ -31,7 +31,7 @@ help:
 	@echo "  notebooks-check  Verify that committed notebook source and outputs are fresh."
 	@echo "  notebooks-refresh Execute offline tutorial notebooks and save their outputs."
 	@echo "  notebooks-type   Type-check Python code embedded in tutorial notebooks."
-	@echo "  idetc2026-bundle Build the deterministic IDETC 2026 setup and activity downloads."
+	@echo "  idetc2026-bundle Build the deterministic workshop setup assets and IDETC 2026 activity download."
 	@echo "  docs             Build the HTML docs."
 	@echo "  ci               Run the main local CI checks."
 

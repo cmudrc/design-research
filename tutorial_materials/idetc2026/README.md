@@ -1,4 +1,4 @@
-# IDETC 2026 AI Experiments Tutorial Setup
+# Design Research Workshop Setup
 
 From this folder, run the block for your operating system.
 
@@ -23,5 +23,5 @@ py -3.12 -m venv .venv
 Success ends with:
 
 ```text
-Preflight passed. You are ready for the tutorial.
+Preflight passed. You are ready for the workshop.
 ```
