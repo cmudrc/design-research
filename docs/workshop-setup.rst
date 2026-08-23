@@ -3,6 +3,13 @@ Workshop Setup and Preflight
 
 Complete this one-time setup before attending a Design Research workshop.
 
+Workshop Materials
+------------------
+
+All materials for today's workshop will be posted in the `shared workshop folder`_.
+
+.. _shared workshop folder: https://drive.google.com/drive/folders/1Z0KLcHs40g2jvrcrCNZjmxXs5g6YyUwv?usp=sharing
+
 Before The Workshop
 -------------------
 
