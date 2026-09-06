@@ -17,19 +17,19 @@ Tested Package Combination
      - Version
      - PyPI development classifier
    * - ``design-research``
-     - ``0.4.0``
+     - ``0.5.0``
      - Alpha
    * - ``design-research-problems``
-     - ``0.4.0``
+     - ``0.5.0``
      - Alpha
    * - ``design-research-agents``
-     - ``0.6.0``
+     - ``0.7.0``
      - Pre-Alpha
    * - ``design-research-experiments``
-     - ``0.3.0``
+     - ``0.4.0``
      - Alpha
    * - ``design-research-analysis``
-     - ``0.3.1``
+     - ``0.4.0``
      - Alpha
 
 The versions match the exact dependencies in ``pyproject.toml``. Normal
@@ -49,7 +49,7 @@ Artifact Contract
 
 The current deterministic family path writes an Experiments manifest with
 artifact schema ``0.2.0``. The umbrella family smoke test passes that exported
-artifact set to ``design-research-analysis==0.3.1`` and validates its event
+artifact set to ``design-research-analysis==0.4.0`` and validates its event
 table. This is the tested handoff:
 
 .. code-block:: text
