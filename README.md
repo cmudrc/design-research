@@ -50,6 +50,23 @@ See the [installation guide](https://cmudrc.github.io/design-research/installati
 [compatibility and package status](https://cmudrc.github.io/design-research/compatibility.html)
 for the next step.
 
+## Study to Evidence to Paper Draft
+
+Study execution always retains terminal run evidence; it does not create a
+manuscript. An explicit later action can use the exported study directory and
+installed component packages to create a clearly labeled `paper-draft/` in a
+fresh process. The output contains evidence-backed LaTeX and Markdown,
+curated references, linked tables and figures, and visible TODOs wherever
+evidence or author judgment is still required.
+
+The deterministic offline examples
+[`ideation_evidence_to_paper.py`](examples/ideation_evidence_to_paper.py) and
+[`computational_design_evidence_to_paper.py`](examples/computational_design_evidence_to_paper.py)
+exercise that full handoff, compile the LaTeX when Tectonic is installed, and
+verify `study-paper-draft.zip`. The generated material is a review-required
+paper draft, not an asserted scientific interpretation or publication-ready
+manuscript.
+
 ## Architecture: Two Complementary Views
 
 The same four packages are useful to describe in two different ways:

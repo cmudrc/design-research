@@ -135,6 +135,17 @@ def test_family_wrapper_exports_track_pinned_siblings() -> None:
     assert dr.analysis.compute_interrater_reliability is (
         sibling_analysis.compute_interrater_reliability
     )
+    assert dr.problems.collect_problem_paper_contributions is (
+        sibling_problems.collect_problem_paper_contributions
+    )
+    assert dr.agents.collect_agent_paper_contributions is (
+        sibling_agents.collect_agent_paper_contributions
+    )
+    assert dr.experiments.export_paper_draft is sibling_experiments.export_paper_draft
+    assert dr.analysis.create_research_bundle is sibling_analysis.create_research_bundle
+    assert dr.analysis.verify_research_bundle is sibling_analysis.verify_research_bundle
+    assert sibling_problems.PAPER_CONTRIBUTION_VERSION == "0.1.0"
+    assert sibling_agents.PAPER_CONTRIBUTION_VERSION == "0.1.0"
     assert callable(dr.agents.MCPServerConfig.python_module)
     assert dr.experiments.__version__ == sibling_experiments.__version__
 
@@ -194,3 +205,7 @@ def test_family_interoperability_smoke(tmp_path: Path) -> None:
     manifest = json.loads(exported["manifest.json"].read_text(encoding="utf-8"))
     assert manifest["schema_version"] == "0.2.0"
     assert metric_rows
+
+    manifest["future_additive_metadata"] = {"consumer_may_ignore": True}
+    exported["manifest.json"].write_text(json.dumps(manifest), encoding="utf-8")
+    assert dr.analysis.validate_experiment_events(exported["events.csv"]).is_valid

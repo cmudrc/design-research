@@ -31,6 +31,13 @@ The remaining examples compose two or more libraries:
   fits a regression directly from canonical experiment artifacts.
 - `partial_factorial_ideation_regression.py` samples a larger model-by-task
   ideation design and fits a linear model without user-facing table plumbing.
+- `ideation_evidence_to_paper.py` runs 24 deterministic offline ideation
+  attempts, retains one failure and two documented exclusions, then uses a
+  fresh process to assemble, compile, and bundle the evidence-backed draft.
+- `computational_design_evidence_to_paper.py` runs the packaged student-laptop
+  problem and seeded baseline agent, retains authentic candidate/evaluator
+  records, and carries an artifact-first profile, table, and figure into a
+  fresh-process draft and verified bundle.
 - `prompt_framing_study.py` is the canonical live walkthrough. It keeps the
   managed `llama.cpp` runtime, workflow-backed strategy arms, pairwise
   condition comparisons, and markdown reporting.
@@ -72,6 +79,12 @@ with `LLAMA_CPP_STARTUP_TIMEOUT_SECONDS` when needed.
 all offline examples. Set `RUN_OLLAMA_EXAMPLES=1` for the propose/critic
 notebook or `RUN_LLAMA_CPP_EXAMPLES=1` for the managed llama.cpp walkthrough.
 The selectors are independent.
+
+The two evidence-to-paper examples accept `--phase run` and `--phase draft` so
+the persisted-directory handoff can be inspected directly. With no phase they
+orchestrate those operations in separate interpreters. Add
+`--require-tectonic` to the draft phase when a missing LaTeX compiler should be
+an error rather than a reported skip.
 
 Every run writes one pass, fail, or skip record per discovered example to
 `artifacts/examples/example_results.json`. `make examples-coverage` consumes
