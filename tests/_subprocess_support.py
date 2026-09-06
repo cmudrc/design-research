@@ -15,6 +15,17 @@ SIBLING_REPOS = (
     "design-research-experiments",
     "design-research-analysis",
 )
+WHEEL_ONLY_ENV = "DESIGN_RESEARCH_WHEEL_ONLY"
+
+
+def _remove_source_overrides(env: dict[str, str]) -> None:
+    """Remove paths that can replace installed candidate distributions."""
+    env.pop("PYTHONPATH", None)
+    env.pop("DESIGN_RESEARCH_WORKSPACE_ROOT", None)
+    for repo_name in SIBLING_REPOS:
+        repo_key = repo_name.removeprefix("design-research-").replace("-", "_").upper()
+        env.pop(f"DESIGN_RESEARCH_{repo_key}_SRC", None)
+        env.pop(f"DESIGN_RESEARCH_{repo_key}_ROOT", None)
 
 
 def subprocess_env(
@@ -24,6 +35,16 @@ def subprocess_env(
 ) -> dict[str, str]:
     """Build a subprocess environment for repo-local test commands."""
     env = os.environ.copy()
+    for key, value in (updates or {}).items():
+        if value is None:
+            env.pop(key, None)
+        else:
+            env[key] = value
+
+    if env.get(WHEEL_ONLY_ENV, "").strip() == "1":
+        _remove_source_overrides(env)
+        return env
+
     pythonpath_entries = [str(REPO_ROOT / "src")]
     if workspace_root is not None:
         env["DESIGN_RESEARCH_WORKSPACE_ROOT"] = str(workspace_root)
@@ -34,11 +55,6 @@ def subprocess_env(
     if existing_pythonpath := env.get("PYTHONPATH"):
         pythonpath_entries.append(existing_pythonpath)
     env["PYTHONPATH"] = os.pathsep.join(pythonpath_entries)
-    for key, value in (updates or {}).items():
-        if value is None:
-            env.pop(key, None)
-        else:
-            env[key] = value
     return env
 
 

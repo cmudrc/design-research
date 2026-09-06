@@ -25,15 +25,16 @@ classifiers = [
   "Typing :: Typed",
 ]
 dependencies = [
-  "design-research-problems==0.4.0",
-  "design-research-agents==0.6.0",
-  "design-research-experiments==0.3.0",
-  "design-research-analysis==0.3.1",
+  "design-research-problems==0.5.0",
+  "design-research-agents==0.7.0",
+  "design-research-experiments==0.4.0",
+  "design-research-analysis==0.4.0",
 ]
 
 [project.optional-dependencies]
 dev = [
   "build>=1.4.2,<2",
+  "design-research-analysis[stats]==0.4.0",
   "ipykernel>=7.3,<8",
   "mypy>=1.20.0,<2",
   "nbclient>=0.11,<1",

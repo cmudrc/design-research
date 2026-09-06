@@ -22,7 +22,7 @@ open its containing folder in VS Code, and use the integrated terminal:
 
 .. code-block:: bash
 
-   python -m pip install design-research==0.4.0
+   python -m pip install design-research==0.5.0
    python partial_factorial_ideation_regression.py
 
 Core Orchestration

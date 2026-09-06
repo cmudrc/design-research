@@ -50,7 +50,7 @@ Agents package:
 
 .. code-block:: bash
 
-   python -m pip install "design-research-agents[llama_cpp]==0.6.0"
+   python -m pip install "design-research-agents[llama_cpp]==0.7.0"
    make run-example
 
 Set ``LLAMA_CPP_MODEL`` to a local GGUF file or allow the installed Hugging
