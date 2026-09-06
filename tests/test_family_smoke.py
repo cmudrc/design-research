@@ -17,10 +17,10 @@ SIBLING_REPOS = (
     "design-research-analysis",
 )
 EXPECTED_VERSIONS = {
-    "design_research_problems": "0.4.0",
-    "design_research_agents": "0.6.0",
-    "design_research_experiments": "0.3.0",
-    "design_research_analysis": "0.3.1",
+    "design_research_problems": "0.5.0",
+    "design_research_agents": "0.7.0",
+    "design_research_experiments": "0.4.0",
+    "design_research_analysis": "0.4.0",
 }
 
 
@@ -105,7 +105,7 @@ def test_family_wrapper_exports_track_pinned_siblings() -> None:
     sibling_analysis = importlib.import_module("design_research_analysis")
     sibling_problems = importlib.import_module("design_research_problems")
 
-    assert dr.__version__ == "0.4.0"
+    assert dr.__version__ == "0.5.0"
     assert {
         module.__name__: module.__version__
         for module in (

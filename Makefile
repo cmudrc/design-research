@@ -8,13 +8,15 @@ BUILD ?= $(PYTHON) -m build
 TWINE ?= $(PYTHON) -m twine
 COVERAGE_MIN ?= 95
 LIVE_SMOKE_REPLICATES ?= 2
+CANDIDATE_WHEELHOUSE ?= artifacts/candidate-wheelhouse
+CANDIDATE_ARTIFACTS ?= artifacts/candidate-family
 
 .PHONY: help check-python dev install-dev \
 	lint fmt fmt-check type test qa coverage docstrings-check \
 	run-example live-smoke live-smoke-ollama live-smoke-llama-cpp \
 	examples-test examples-coverage examples-metrics notebooks-check notebooks-refresh notebooks-type \
 	idetc2026-bundle idetc2026-bundle-check docs docs-build docs-check docs-linkcheck \
-	release-check ci clean
+	release-check candidate-family-check ci clean
 
 help:
 	@echo "Common targets:"
@@ -32,6 +34,7 @@ help:
 	@echo "  notebooks-refresh Execute offline tutorial notebooks and save their outputs."
 	@echo "  notebooks-type   Type-check Python code embedded in tutorial notebooks."
 	@echo "  idetc2026-bundle Build the deterministic workshop setup assets and IDETC 2026 activity download."
+	@echo "  candidate-family-check Install and exercise exactly five candidate wheels in a clean environment."
 	@echo "  docs             Build the HTML docs."
 	@echo "  ci               Run the main local CI checks."
 
@@ -120,6 +123,11 @@ release-check: check-python
 	rm -rf build dist
 	$(BUILD)
 	$(TWINE) check dist/*
+
+candidate-family-check: check-python
+	$(PYTHON) scripts/check_candidate_family.py \
+		--wheelhouse "$(CANDIDATE_WHEELHOUSE)" \
+		--artifacts-dir "$(CANDIDATE_ARTIFACTS)"
 
 ci: qa coverage docstrings-check notebooks-type docs-check examples-coverage release-check
 

@@ -55,7 +55,7 @@ make live-smoke
 Agents extra:
 
 ```bash
-python -m pip install "design-research-agents[llama_cpp]==0.6.0"
+python -m pip install "design-research-agents[llama_cpp]==0.7.0"
 ```
 
 That extra includes the managed llama.cpp server and the Hugging Face download

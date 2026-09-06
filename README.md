@@ -124,7 +124,7 @@ deterministic and offline-first.
 The separate live walkthrough uses the Agents package's `llama_cpp` extra:
 
 ```bash
-python -m pip install "design-research-agents[llama_cpp]==0.6.0"
+python -m pip install "design-research-agents[llama_cpp]==0.7.0"
 make run-example
 ```
 
