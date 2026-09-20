@@ -100,6 +100,44 @@ def test_ideation_example_preserves_failure_and_exclusion_accounting(tmp_path: P
     )
 
 
+def test_two_problem_packets_share_citations_and_retain_complete_prompt(tmp_path: Path) -> None:
+    """Real Problems packets must aggregate with shared citations and full materials."""
+    problem_ids = (
+        "ideation_peanut_shelling",
+        "ideation_peanut_shelling_fu_cagan_kotovsky_2010",
+    )
+    study = dr.experiments.Study(
+        study_id="shared-problem-citations",
+        title="Shared problem citations",
+        description="Validate configured materials without executing a study.",
+        problem_ids=problem_ids,
+        output_dir=tmp_path / "shared-problem-citations",
+    )
+    packets = tuple(dr.problems.collect_problem_paper_contributions(pid) for pid in problem_ids)
+    shared_keys = {ref["key"] for ref in packets[0]["references"]} & {
+        ref["key"] for ref in packets[1]["references"]
+    }
+    assert shared_keys
+
+    support = dr.experiments.collect_paper_support(study, component_packets=packets)
+
+    for reference in support.references:
+        if reference["key"] in shared_keys:
+            assert {source["component_id"] for source in reference["provenance"]} == set(
+                problem_ids
+            )
+    prompt = next(
+        item
+        for item in support.contributions
+        if item.source.component_id == problem_ids[1] and "prompt_id" in item.metadata
+    )
+    statement = dr.problems.get_problem(problem_ids[1]).statement_markdown
+    assert prompt.metadata["statement_markdown"] == statement
+    assert statement.strip() in prompt.text
+    assert "50 kg (110 lbs) per hour" in prompt.text
+    assert support.run_accounting["attempted"] == 0
+
+
 def test_canonical_forty_run_accounting_fixture_reconciles(tmp_path: Path) -> None:
     """Preserve the release-authority 40/37/3/35/2 accounting fixture."""
     levels = tuple(
