@@ -66,6 +66,8 @@ Then import the package family through the four wrapper submodules:
 - :doc:`installation` explains the base package and component-owned extras.
 - :doc:`quickstart` separates installed-package use from repository development.
 - :doc:`learn` provides the guided path through runnable tutorials.
+- :doc:`tutorials/study_to_paper_draft` covers the complete retained-evidence
+  and explicit paper-draft handoff.
 - :doc:`compatibility` records the exact tested versions, package classifiers,
   and artifact-schema contract.
 

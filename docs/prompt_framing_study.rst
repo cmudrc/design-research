@@ -50,7 +50,7 @@ Run It
 
 .. code-block:: bash
 
-   python -m pip install "design-research-agents[llama_cpp]==0.6.0"
+   python -m pip install "design-research-agents[llama_cpp]==0.7.0"
    make run-example
 
 Optionally point the walkthrough at a specific local GGUF file:

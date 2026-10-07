@@ -334,7 +334,7 @@ def llama_cpp_runtime_config(*, default_replicates: int) -> dict[str, object]:
     if missing_runtime:
         raise RuntimeError(
             "Install the owning Agents extra before running the live walkthrough: "
-            'python -m pip install "design-research-agents[llama_cpp]==0.6.0". Missing: '
+            'python -m pip install "design-research-agents[llama_cpp]==0.7.0". Missing: '
             + ", ".join(sorted(missing_runtime))
         )
 
@@ -353,7 +353,7 @@ def llama_cpp_runtime_config(*, default_replicates: int) -> dict[str, object]:
     ):
         raise RuntimeError(
             "Install the owning Agents extra with "
-            'python -m pip install "design-research-agents[llama_cpp]==0.6.0" or point '
+            'python -m pip install "design-research-agents[llama_cpp]==0.7.0" or point '
             "LLAMA_CPP_MODEL at a local GGUF file before running the live walkthrough."
         )
 

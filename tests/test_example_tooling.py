@@ -7,6 +7,7 @@ import json
 import subprocess
 from pathlib import Path
 from types import ModuleType
+from zipfile import ZIP_DEFLATED, ZipFile
 
 import nbformat
 import pytest
@@ -91,6 +92,75 @@ def _load_script_module(monkeypatch: MonkeyPatch, name: str) -> ModuleType:
     """Import one script module after exposing the scripts directory."""
     monkeypatch.syspath_prepend(str(SCRIPTS_DIR))
     return importlib.import_module(name)
+
+
+def _write_metadata_wheel(directory: Path, name: str, version: str) -> Path:
+    """Write the minimal metadata needed for candidate-wheel inventory tests."""
+    filename_name = name.replace("-", "_")
+    wheel_path = directory / f"{filename_name}-{version}-py3-none-any.whl"
+    metadata_path = f"{filename_name}-{version}.dist-info/METADATA"
+    with ZipFile(wheel_path, mode="w", compression=ZIP_DEFLATED) as archive:
+        archive.writestr(
+            metadata_path, f"Metadata-Version: 2.4\nName: {name}\nVersion: {version}\n"
+        )
+    return wheel_path
+
+
+def test_subprocess_env_removes_source_paths_for_wheel_only_runs(
+    monkeypatch: MonkeyPatch, tmp_path: Path
+) -> None:
+    """Candidate-wheel checks must not inherit any editable source override."""
+    monkeypatch.setenv("PYTHONPATH", "/tmp/inherited-source")
+    monkeypatch.setenv("DESIGN_RESEARCH_PROBLEMS_SRC", "/tmp/problems-source")
+    monkeypatch.setenv("DESIGN_RESEARCH_AGENTS_ROOT", "/tmp/agents-source")
+
+    env = subprocess_env(
+        workspace_root=tmp_path,
+        updates={"DESIGN_RESEARCH_WHEEL_ONLY": "1"},
+    )
+
+    assert "PYTHONPATH" not in env
+    assert "DESIGN_RESEARCH_WORKSPACE_ROOT" not in env
+    assert "DESIGN_RESEARCH_PROBLEMS_SRC" not in env
+    assert "DESIGN_RESEARCH_AGENTS_ROOT" not in env
+    assert env["DESIGN_RESEARCH_WHEEL_ONLY"] == "1"
+
+
+def test_candidate_family_inventory_requires_exact_versions(
+    monkeypatch: MonkeyPatch, tmp_path: Path
+) -> None:
+    """The release gate should accept one wheel at every coordinated version."""
+    checker = _load_script_module(monkeypatch, "check_candidate_family")
+    for name, (version, _module_name) in checker.EXPECTED_DISTRIBUTIONS.items():
+        _write_metadata_wheel(tmp_path, name, version)
+
+    discovered = checker.discover_candidate_wheels(tmp_path)
+
+    assert set(discovered) == set(checker.EXPECTED_DISTRIBUTIONS)
+
+
+def test_candidate_family_inventory_rejects_one_wrong_version(
+    monkeypatch: MonkeyPatch, tmp_path: Path
+) -> None:
+    """A single stale family wheel must fail before environment creation."""
+    checker = _load_script_module(monkeypatch, "check_candidate_family")
+    for name, (version, _module_name) in checker.EXPECTED_DISTRIBUTIONS.items():
+        candidate_version = "9.9.9" if name == "design-research-analysis" else version
+        _write_metadata_wheel(tmp_path, name, candidate_version)
+
+    with pytest.raises(ValueError, match=r"Expected design-research-analysis==0\.4\.0"):
+        checker.discover_candidate_wheels(tmp_path)
+
+
+def test_candidate_family_artifacts_must_stay_under_repo_artifacts(
+    monkeypatch: MonkeyPatch, tmp_path: Path
+) -> None:
+    """The overwrite option must never target an unbounded directory."""
+    checker = _load_script_module(monkeypatch, "check_candidate_family")
+    monkeypatch.setattr(checker, "ARTIFACTS_ROOT", tmp_path / "artifacts")
+
+    with pytest.raises(ValueError, match="must be a child"):
+        checker._prepare_artifacts_dir(tmp_path / "outside", overwrite=True)
 
 
 def test_execute_examples_records_pass_failure_and_skip(monkeypatch: MonkeyPatch) -> None:
@@ -261,12 +331,12 @@ def test_docs_consistency_parses_pinned_install_with_extra(monkeypatch: MonkeyPa
     """An owning-package extra must not hide the package/version association."""
     checker = _load_script_module(monkeypatch, "check_docs_consistency")
     match = checker.INSTALL_REQUIREMENT_PATTERN.search(
-        'python -m pip install "design-research-agents[llama_cpp]==0.6.0"'
+        'python -m pip install "design-research-agents[llama_cpp]==0.7.0"'
     )
 
     assert match is not None
     assert match.group("package") == "design-research-agents"
-    assert match.group("version") == "0.6.0"
+    assert match.group("version") == "0.7.0"
 
 
 def test_docs_consistency_binds_compatibility_rows_to_packages(

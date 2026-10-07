@@ -71,7 +71,7 @@ make live-smoke
 
 `make run-example` is the live walkthrough path and uses a managed
 `llama.cpp` client. Install the pinned Agents package's owning extra with
-`python -m pip install "design-research-agents[llama_cpp]==0.6.0"` before
+`python -m pip install "design-research-agents[llama_cpp]==0.7.0"` before
 running it. Set `LLAMA_CPP_MODEL` to point at a specific local GGUF file or
 allow the included Hugging Face client to fetch the default. Set
 `RUN_LLAMA_CPP_EXAMPLES=1` to include that walkthrough in

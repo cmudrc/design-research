@@ -17,7 +17,6 @@ VERSION_PATH = Path("src/design_research/_version.py")
 COMPATIBILITY_PATH = DOCS_DIR / "compatibility.rst"
 IDETC_REDIRECT_PATH = DOCS_DIR / "idetc2026.rst"
 WORKSHOP_SETUP_PATH = DOCS_DIR / "workshop-setup.rst"
-IDETC_REQUIREMENTS_PATH = Path("tutorial_materials/idetc2026/requirements.txt")
 FAMILY_SMOKE_PATH = Path("tests/test_family_smoke.py")
 PROMPT_STUDY_PATH = Path("examples/prompt_framing_study.py")
 PROMPT_STUDY_DOC_PATH = DOCS_DIR / "prompt_framing_study.rst"
@@ -309,7 +308,11 @@ def validate_compatibility_rows(
 
 
 def validate_documented_versions() -> list[str]:
-    """Verify public install commands and compatibility rows against pins."""
+    """Verify current install commands and compatibility rows against pins.
+
+    The IDETC participant requirements are a frozen, independently tested environment
+    lock and intentionally remain outside this release-candidate documentation check.
+    """
     versions = expected_package_versions()
     errors: list[str] = []
     documented_paths = tuple(
@@ -320,7 +323,6 @@ def validate_documented_versions() -> list[str]:
                 Path("examples/README.md"),
                 PROMPT_STUDY_PATH,
                 WORKSHOP_SETUP_PATH,
-                IDETC_REQUIREMENTS_PATH,
                 *DOCS_DIR.rglob("*.rst"),
                 *Path("examples/tutorials").glob("*.ipynb"),
             },

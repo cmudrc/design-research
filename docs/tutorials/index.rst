@@ -54,6 +54,9 @@ includes its exact environment command and a source download; see
    * - :doc:`factorial_analysis`
      - Fit a regression from a partial factorial study.
      - Problems, Experiments, Analysis
+   * - :doc:`study_to_paper_draft`
+     - Retain study evidence, then explicitly compile and bundle a paper draft.
+     - All four libraries
 
 Recommended Order
 -----------------
@@ -64,7 +67,8 @@ Recommended Order
 3. Run :doc:`full_stack_study` to see the shared artifact contract.
 4. Choose :doc:`process_comparison` for sequence analysis or
    :doc:`factorial_analysis` for design-of-experiments analysis.
-5. Continue to :doc:`../prompt_framing_study` when a local ``llama.cpp`` model
+5. Complete :doc:`study_to_paper_draft` for the fresh-process reporting handoff.
+6. Continue to :doc:`../prompt_framing_study` when a local ``llama.cpp`` model
    should replace the deterministic agent.
 
 All runnable files live under ``examples/``. ``make examples-test`` executes
@@ -88,3 +92,4 @@ its committed source.
    full_stack_study
    process_comparison
    factorial_analysis
+   study_to_paper_draft

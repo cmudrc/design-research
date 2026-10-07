@@ -154,7 +154,7 @@ path:
 
 .. code-block:: bash
 
-   python -m pip install "design-research-agents[llama_cpp]==0.6.0"
+   python -m pip install "design-research-agents[llama_cpp]==0.7.0"
    make run-example
 
 First Development Checks
