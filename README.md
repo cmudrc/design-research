@@ -50,6 +50,12 @@ See the [installation guide](https://cmudrc.github.io/design-research/installati
 [compatibility and package status](https://cmudrc.github.io/design-research/compatibility.html)
 for the next step.
 
+Check [workflow maturity](https://cmudrc.github.io/design-research/maturity.html)
+before choosing a research path. The pinned deterministic artifact handoff is
+stable for research within its documented scope; paper drafting and live-model
+paths are experimental. These labels do not certify scientific conclusions or
+promise compatibility across package upgrades.
+
 ## Study to Evidence to Paper Draft
 
 Study execution always retains terminal run evidence; it does not create a

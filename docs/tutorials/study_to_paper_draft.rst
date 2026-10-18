@@ -1,6 +1,10 @@
 Study to Evidence to Paper Draft
 ================================
 
+**Workflow maturity: experimental.** The tested export path produces an
+author-reviewed draft, not a validated scientific interpretation. See
+:doc:`/maturity` for scope, evidence, and expected change.
+
 This workflow treats paper preparation as a deliberate continuation of study
 execution. Every attempted run leaves durable evidence. No paper files appear
 until a separate explicit action reads the completed study directory.

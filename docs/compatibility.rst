@@ -37,15 +37,16 @@ The versions match the exact dependencies in ``pyproject.toml``. Normal
 this published combination. The table does not promise compatibility for
 unlisted versions.
 
-The status column reports each package's current ``Development Status``
-classifier; it does not define stable, experimental, research, or legacy
-states for the ecosystem. A shared maturity-label policy remains open in
-`issue #12 <https://github.com/cmudrc/design-research/issues/12>`_. Until that
-policy is decided, consult each package's release notes and documentation for
-package-specific change guidance.
+The status column reports each package's ``Development Status`` classifier.
+It is independent of the workflow-level labels in :doc:`maturity`. Those
+labels describe supported use paths and expected change; they do not change
+package classifiers or promise compatibility with unlisted versions.
 
 Artifact Contract
 -----------------
+
+**Workflow maturity: stable for research** for the canonical schema handoff
+below, within this exact package family. See :doc:`maturity` for its limits.
 
 The current deterministic family path writes an Experiments manifest with
 artifact schema ``0.2.0``. The umbrella family smoke test passes that exported

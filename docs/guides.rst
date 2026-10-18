@@ -13,6 +13,7 @@ Get Started
 - :doc:`vscode_start` — set up and run an example in VS Code.
 - :doc:`compatibility` — check the tested package combination and choose
   between the umbrella package and a sibling library.
+- :doc:`maturity` — choose a workflow with explicit evidence and change limits.
 
 Understand The Ecosystem
 ------------------------

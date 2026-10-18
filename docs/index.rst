@@ -70,6 +70,8 @@ Then import the package family through the four wrapper submodules:
   and explicit paper-draft handoff.
 - :doc:`compatibility` records the exact tested versions, package classifiers,
   and artifact-schema contract.
+- :doc:`maturity` identifies stable-for-research and experimental workflows,
+  their evidence, and their compatibility limits.
 
 .. container:: drc-home-callout
 

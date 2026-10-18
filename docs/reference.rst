@@ -7,6 +7,8 @@ dependency ownership.
 - :doc:`compatibility` records the tested package combination, factual package
   classifiers, and artifact-schema handoff.
 - :doc:`api` documents the thin umbrella namespace and pinned wrapper exports.
+- :doc:`maturity` defines workflow labels, evidence requirements, and expected
+  change independently of package classifiers.
 - :doc:`dependencies_and_extras` routes optional capabilities to the package
   that owns them.
 
@@ -15,5 +17,6 @@ dependency ownership.
    :hidden:
 
    compatibility
+   maturity
    api
    dependencies_and_extras

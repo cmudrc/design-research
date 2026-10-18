@@ -327,6 +327,51 @@ def test_docs_consistency_tracks_prompt_study_default(
     ]
 
 
+def test_docs_consistency_requires_maturity_definitions_links_and_labels(
+    monkeypatch: MonkeyPatch, tmp_path: Path
+) -> None:
+    """Maturity guidance must remain discoverable and attached to named workflows."""
+    checker = _load_script_module(monkeypatch, "check_docs_consistency")
+    docs = tmp_path / "docs"
+    docs.mkdir()
+    maturity = docs / "maturity.rst"
+    index = docs / "index.rst"
+    compatibility = docs / "compatibility.rst"
+    readme = tmp_path / "README.md"
+    for name, path in (
+        ("DOCS_DIR", docs),
+        ("MATURITY_PATH", maturity),
+        ("INDEX_PATH", index),
+        ("COMPATIBILITY_PATH", compatibility),
+        ("README_PATH", readme),
+    ):
+        monkeypatch.setattr(checker, name, path)
+
+    assert checker.validate_maturity_contract() == [f"{maturity} is missing."]
+    maturity.write_text("\n" + "\n\n".join(checker.MATURITY_LABELS) + "\n", encoding="utf-8")
+    index.write_text(":doc:`maturity`\n", encoding="utf-8")
+    readme.write_text("https://cmudrc.github.io/design-research/maturity.html", encoding="utf-8")
+    for relative_path, label in checker.WORKFLOW_MATURITY.items():
+        path = docs / relative_path
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(f"**Workflow maturity: {label}**\n:doc:`maturity`\n", encoding="utf-8")
+    assert checker.validate_maturity_contract() == []
+
+    maturity.write_text("\nExperimental\n\nLegacy\n", encoding="utf-8")
+    index.write_text("No policy link.\n", encoding="utf-8")
+    readme.write_text("No policy link.\n", encoding="utf-8")
+    compatibility.write_text("**Workflow maturity: experimental**\n", encoding="utf-8")
+    (docs / "prompt_framing_study.rst").unlink()
+    errors = checker.validate_maturity_contract()
+    assert len(errors) == 6
+    assert f"{maturity} omits the 'Stable for research' definition." in errors
+    assert f"{index} omits the maturity-policy link." in errors
+    assert f"{compatibility} omits the maturity-policy link." in errors
+    assert "README.md omits the maturity-policy link." in errors
+    assert f"{compatibility} omits its 'stable for research' workflow label." in errors
+    assert f"{docs / 'prompt_framing_study.rst'} omits its 'experimental' workflow label." in errors
+
+
 def test_docs_consistency_parses_pinned_install_with_extra(monkeypatch: MonkeyPatch) -> None:
     """An owning-package extra must not hide the package/version association."""
     checker = _load_script_module(monkeypatch, "check_docs_consistency")

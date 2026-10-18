@@ -15,6 +15,7 @@ README_PATH = Path("README.md")
 PROJECT_PATH = Path("pyproject.toml")
 VERSION_PATH = Path("src/design_research/_version.py")
 COMPATIBILITY_PATH = DOCS_DIR / "compatibility.rst"
+MATURITY_PATH = DOCS_DIR / "maturity.rst"
 IDETC_REDIRECT_PATH = DOCS_DIR / "idetc2026.rst"
 WORKSHOP_SETUP_PATH = DOCS_DIR / "workshop-setup.rst"
 FAMILY_SMOKE_PATH = Path("tests/test_family_smoke.py")
@@ -35,7 +36,13 @@ COMPONENT_DOC_URLS = (
     "https://cmudrc.github.io/design-research-experiments/",
     "https://cmudrc.github.io/design-research-analysis/",
 )
-MATURITY_ISSUE_URL = "https://github.com/cmudrc/design-research/issues/12"
+MATURITY_LABELS = ("Experimental", "Stable for research", "Legacy")
+WORKFLOW_MATURITY = {
+    "canonical_artifact_flow.rst": "stable for research",
+    "compatibility.rst": "stable for research",
+    "prompt_framing_study.rst": "experimental",
+    "tutorials/study_to_paper_draft.rst": "experimental",
+}
 EXPECTED_ROOT_TOCTREE = ("guides", "tutorials/index", "architecture", "reference")
 INSTALL_REQUIREMENT_PATTERN = re.compile(
     r"(?P<package>design-research(?:-(?:problems|agents|experiments|analysis))?)"
@@ -110,6 +117,7 @@ def validate_docs_tree() -> list[str]:
     elif "design_research" not in API_PATH.read_text(encoding="utf-8"):
         errors.append("docs/api.rst does not reference the package module.")
     errors.extend(validate_home_contract())
+    errors.extend(validate_maturity_contract())
     errors.extend(validate_documented_versions())
     errors.extend(validate_prompt_study_replicates())
     return errors
@@ -160,8 +168,30 @@ def validate_home_contract() -> list[str]:
     artifact_schema = expected_artifact_schema_version()
     if f"artifact schema ``{artifact_schema}``" not in compatibility:
         errors.append(f"docs/compatibility.rst omits tested artifact schema {artifact_schema}.")
-    if MATURITY_ISSUE_URL not in compatibility:
-        errors.append("docs/compatibility.rst omits the open maturity-policy issue.")
+    return errors
+
+
+def validate_maturity_contract() -> list[str]:
+    """Keep workflow labels and entry-point links tied to the maturity policy."""
+    if not MATURITY_PATH.exists():
+        return [f"{MATURITY_PATH} is missing."]
+    maturity = MATURITY_PATH.read_text(encoding="utf-8")
+    errors: list[str] = []
+    for label in MATURITY_LABELS:
+        if f"\n{label}\n" not in maturity:
+            errors.append(f"{MATURITY_PATH} omits the {label!r} definition.")
+    for path in (INDEX_PATH, COMPATIBILITY_PATH):
+        if ":doc:`maturity`" not in path.read_text(encoding="utf-8"):
+            errors.append(f"{path} omits the maturity-policy link.")
+    if "https://cmudrc.github.io/design-research/maturity.html" not in README_PATH.read_text(
+        encoding="utf-8"
+    ):
+        errors.append("README.md omits the maturity-policy link.")
+    for relative_path, label in WORKFLOW_MATURITY.items():
+        path = DOCS_DIR / relative_path
+        text = path.read_text(encoding="utf-8") if path.exists() else ""
+        if not re.search(rf"\*\*Workflow maturity: {re.escape(label)}\.?\*\*", text):
+            errors.append(f"{path} omits its {label!r} workflow label.")
     return errors
 
 

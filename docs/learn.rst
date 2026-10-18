@@ -5,6 +5,10 @@ Explore computational design research with the open-source tools developed by
 the Design Research Collective. Start with a runnable tutorial, adapt an
 example, and follow the parts of the ecosystem that match your interests.
 
+Before adapting a tutorial for a study, check :doc:`maturity`. Offline execution
+alone does not establish scientific validity, and live-model paths remain
+experimental even when their runtime smoke checks pass.
+
 .. container:: drc-learning-hero
 
    Start with a tutorial. Extend an example. Share an improvement if it is

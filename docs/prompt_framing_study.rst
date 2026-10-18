@@ -1,6 +1,10 @@
 Prompt Strategy Comparison Walkthrough
 ======================================
 
+**Workflow maturity: experimental.** Live-model runtimes and outputs require
+validation in your environment. See :doc:`maturity` for the distinction between
+a successful runtime smoke check and scientific evidence.
+
 This walkthrough demonstrates the umbrella package doing real work with a live
 model-backed agent while following the comparison-study recipe/reporting APIs
 published in the pinned sibling-library releases. It uses a real packaged

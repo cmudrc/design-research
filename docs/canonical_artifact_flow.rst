@@ -1,6 +1,10 @@
 Canonical Artifact Flow
 =======================
 
+**Workflow maturity: stable for research** for the exact pinned package family
+and deterministic handoff shown here. See :doc:`maturity` for the evidence and
+limits; this label does not cover every component API or scientific use.
+
 This is the smallest deterministic example that still crosses the full
 ecosystem boundary:
 
